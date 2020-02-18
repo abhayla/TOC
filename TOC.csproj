@@ -50,6 +50,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -82,6 +83,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Telegram.Bot, Version=15.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Telegram.Bot.15.3.0\lib\net45\Telegram.Bot.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -125,6 +129,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="OptionChain.aspx" />
+    <Content Include="TelegramMessage.aspx" />
     <Content Include="WebData.aspx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -209,6 +214,13 @@
     </Compile>
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
+    </Compile>
+    <Compile Include="TelegramMessage.aspx.cs">
+      <DependentUpon>TelegramMessage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TelegramMessage.aspx.designer.cs">
+      <DependentUpon>TelegramMessage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utility\Class1.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">

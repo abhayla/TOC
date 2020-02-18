@@ -78,14 +78,15 @@ namespace TOC
         {
             //xMH7BiBu6s24LHCizug3
             //https://www.quandl.com/api/v3/datasets/NSE/ABB.json?api_key=xMH7BiBu6s24LHCizug3
-            string mainurl1 = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
-            //var request = (HttpWebRequest)WebRequest.Create("http://nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=" + symbol + "&illiquid=0");
-            
+            //string mainurl1 = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+            //string mainurl1 = "http://nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=" + symbol + "&illiquid=0";
+            string mainurl1 = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=NIFTY&instrument=OPTIDX&date=-&segmentLink=17";
             var request = (HttpWebRequest)WebRequest.Create(mainurl1);
+            
+            //var request = (HttpWebRequest)WebRequest.Create(mainurl1);
             request.Accept = "*/*";
             request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
             request.Host = "nseindia.com";
-            //request.Referer = "http://nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=" + symbol + "&illiquid=0";
             request.Referer= mainurl1;
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
             request.Headers.Add("X-Requested-With", "XMLHttpRequest");
