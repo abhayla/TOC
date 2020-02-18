@@ -13,7 +13,7 @@ namespace TOC
 {
     public partial class TelegramMessage : System.Web.UI.Page
     {
-        static string botToken = "823309371:AAFDRExv8PiPpAUSWK8g88lCD2v_EJ_eIqs";
+        static string botToken = "";
         private static TelegramBotClient teleBot = new TelegramBotClient(botToken);
         string urlString = "https://api.telegram.org/bot{0}/sendMessage?chat_id={1}&text={2}";
         string groupId = "@Puneites";
