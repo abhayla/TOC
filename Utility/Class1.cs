@@ -57,4 +57,32 @@ namespace TOC
         public CompanyData[] data;
         public IndexData[] latestData;
     }
+
+    public class OptionChainColumns
+    {
+        public string CEchart;
+        public float CEopenInterest;
+        public float CEchangeinOpenInterest;
+        public float CEtotalTradedVolume;
+        public float CEimpliedVolatility;
+        public float CElastPrice;
+        public float CEchange;
+        public float CEbidQty;
+        public float CEbidprice;
+        public float CEaskPrice;
+        public float CEaskQty;
+        public float CEstrikePrice;
+        public float PEbidQty;
+        public float PEbidprice;
+        public float PEaskPrice;
+        public float PEaskQty;
+        public float PEchange;
+        public float PElastPrice;
+        public float PEimpliedVolatility;
+        public float PEtotalTradedVolume;
+        public float PEchangeinOpenInterest;
+        public float PEopenInterest;
+        public string PEchart;
+
+    }
 }

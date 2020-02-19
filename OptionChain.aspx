@@ -9,7 +9,10 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <asp:Button ID="btnRefresh" runat="server" Text="Refresh Data" OnClick="btnRefresh_Click" />
         </div>
+        <asp:GridView ID="gvData" runat="server">
+        </asp:GridView>
     </form>
 </body>
 </html>

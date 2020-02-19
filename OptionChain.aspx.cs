@@ -5,84 +5,64 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Net;
+using System.Net.Http;
 using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using HtmlAgilityPack;
 
 namespace TOC
 {
     public partial class OptionChain : System.Web.UI.Page
     {
-        string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+        private const string NSEIndiaWebsiteURL = "https://www1.nseindia.com";
+        private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
+        //string mainurl = "https://docs.microsoft.com";
+        //string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+        //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=NIFTY&instrument=OPTIDX&date=-&segmentLink=17";
+        //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         protected void Page_Load(object sender, EventArgs e)
         {
-            Uri myUri = new Uri(mainurl, UriKind.Absolute);
-            System.Net.WebRequest request = System.Net.HttpWebRequest.Create(myUri);
-            System.Net.WebResponse response = request.GetResponse();
-            System.IO.StreamReader sr = new System.IO.StreamReader(response.GetResponseStream());
-            String newestversion = sr.ReadToEnd();
-            /*
-            WebRequest webRequest = WebRequest.Create(mainurl);
-            HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
-            if (response.StatusDescription == "OK")
+            try
             {
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-                // Display the content.
-                //dynamic data = JObject.Parse(responseFromServer);
-
-                //Console.Write(data.name);
+                DownloadJSONDataFromURL(mainurl);
             }
-            */
-            //LoadJson();
+            catch (Exception ex)
+            {
+                // You might want to handle some specific errors : Just pass on up for now...
+                // Remove this catch if you don't want to handle errors here.
+                throw;
+            }
+        }
+        private JObject DownloadJSONDataFromURL(string webResourceURL)
+        {
+            string stockWatchJSONString = string.Empty;
+
+            using (var webClient = new WebClient())
+            {
+                // Set headers to download the data
+                webClient.Headers.Add("Accept: text/html, application/xhtml+xml, */*");
+                webClient.Headers.Add("User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+
+                // Download the data
+                stockWatchJSONString = webClient.DownloadString(webResourceURL);
+
+                // Serialise it into a JObject
+                JObject jObject = JObject.Parse(stockWatchJSONString);
+
+                return jObject;
+
+            }
         }
 
-        public void LoadJson()
+        protected void btnRefresh_Click(object sender, EventArgs e)
         {
-            var request = (HttpWebRequest)HttpWebRequest.Create(mainurl);
-            request.ContentType = "application/json";
-            //request.UserAgent = "Nothing";
-            //request.Accept = "*/*";
-            //request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
-            //request.Host = "nseindia.com";
-            //request.Referer = "http://nseindia.com";
-            //request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
-            //request.Headers.Add("X-Requested-With", "XMLHttpRequest");
-
-            var response = (HttpWebResponse)request.GetResponse();
-
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-            OCItem m = JsonConvert.DeserializeObject<OCItem>(responseString);
-        }
-
-        public class OCItem
-        {
-            public string CEchart;
-            public float CEopenInterest;
-            public float CEchangeinOpenInterest;
-            public float CEtotalTradedVolume;
-            public float CEimpliedVolatility;
-            public float CElastPrice;
-            public float CEchange;
-            public float CEbidQty;
-            public float CEbidprice;
-            public float CEaskPrice;
-            public float CEaskQty;
-            public float CEstrikePrice;
-            public float PEbidQty;
-            public float PEbidprice;
-            public float PEaskPrice;
-            public float PEaskQty;
-            public float PEchange;
-            public float PElastPrice;
-            public float PEimpliedVolatility;
-            public float PEtotalTradedVolume;
-            public float PEchangeinOpenInterest;
-            public float PEopenInterest;
-            public string PEchart;
-
+            btnRefresh.Text = "Refreshing...";
+            JObject equitiesStockWatchDataJObject = null;
+            equitiesStockWatchDataJObject = DownloadJSONDataFromURL(mainurl);
+            gvData.DataSource = equitiesStockWatchDataJObject;
+            gvData.DataBind();
         }
     }
 }
