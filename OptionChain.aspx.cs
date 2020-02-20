@@ -11,22 +11,30 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using HtmlAgilityPack;
+using System.Data;
+
 
 namespace TOC
 {
     public partial class OptionChain : System.Web.UI.Page
     {
         private const string NSEIndiaWebsiteURL = "https://www1.nseindia.com";
-        private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
+        //private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
         //string mainurl = "https://docs.microsoft.com";
-        //string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+        string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
         //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=NIFTY&instrument=OPTIDX&date=-&segmentLink=17";
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
-                DownloadJSONDataFromURL(mainurl);
+                JObject jObject = DownloadJSONDataFromURL(mainurl);
+                //FillDataTable(toDataTable(jObject));
+
+                Records recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                Filtered filteredObject = JsonConvert.DeserializeObject<Filtered>(jObject["filtered"].ToString());
+                DataTable dtRecords = toDataTable(recordsObject);
+                DataTable dtFiltered = toDataTable(filteredObject);
             }
             catch (Exception ex)
             {
@@ -35,6 +43,20 @@ namespace TOC
                 throw;
             }
         }
+        private static DataTable toDataTable(Records recordsObject)
+        {
+
+
+            var result = new DataTable();
+
+            return result;
+        }
+        private static DataTable toDataTable(Filtered filteredObject)
+        {
+            var result = new DataTable();
+            return result;
+        }
+
         private JObject DownloadJSONDataFromURL(string webResourceURL)
         {
             string stockWatchJSONString = string.Empty;
@@ -48,21 +70,87 @@ namespace TOC
                 // Download the data
                 stockWatchJSONString = webClient.DownloadString(webResourceURL);
 
+                //DataTable dt = toDataTable(stockWatchJSONString);
+
                 // Serialise it into a JObject
                 JObject jObject = JObject.Parse(stockWatchJSONString);
 
                 return jObject;
-
             }
         }
 
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
             btnRefresh.Text = "Refreshing...";
-            JObject equitiesStockWatchDataJObject = null;
-            equitiesStockWatchDataJObject = DownloadJSONDataFromURL(mainurl);
-            gvData.DataSource = equitiesStockWatchDataJObject;
+            JObject equitiesStockWatchDataJObject = DownloadJSONDataFromURL(mainurl);
+            //JArray equitiesStockWatchDataJObject1 = new JArray(equitiesStockWatchDataJObject["filtered"]["data"]);
+            //IDictionary<string, object> dict = equitiesStockWatchDataJObject1.ToDictionary(k => ((JObject)k).Properties().First().Name, v => v.Values().First().Value<object>());
+            //var values = JsonConvert.DeserializeObject<OptionChainColumns>(equitiesStockWatchDataJObject1);
+            //int count = new System.Linq.SystemCore_EnumerableDebugView<Newtonsoft.Json.Linq.JToken>(new System.Linq.SystemCore_EnumerableDebugView<Newtonsoft.Json.Linq.JToken>(equitiesStockWatchDataJObject1).Items[0]).Items.Count;
+
+            //DataTable tester = (DataTable)JsonConvert.DeserializeObject(equitiesStockWatchDataJObject1.ToString(), (typeof(DataTable)));
+
+        }
+
+        private void FillDataTable(DataTable dt)
+        {
+            gvData.DataSource = dt;
             gvData.DataBind();
+        }
+
+
+        private static DataTable toDataTable(JObject jObj)
+        {
+            JArray jArrayCE = new JArray(jObj["filtered"]["data"][0]["CE"]);
+            JArray jArrayPE = new JArray(jObj["filtered"]["data"][0]["PE"]);
+            //jArrayCE.Add(jArrayPE);
+
+            JArray jArrayRows = new JArray(jObj["filtered"]["data"]);
+            var result = new DataTable();
+
+            //Initialize the columns, If you know the row type, replace this   
+            foreach (var row in jArrayCE)
+            {
+                foreach (var jToken in row)
+                {
+                    var jproperty = jToken as JProperty;
+                    if (jproperty == null) continue;
+                    if (result.Columns[jproperty.Name] == null)
+                        result.Columns.Add("CE"+jproperty.Name, typeof(string));
+                }
+            }
+            foreach (var row in jArrayPE)
+            {
+                foreach (var jToken in row)
+                {
+                    var jproperty = jToken as JProperty;
+                    if (jproperty == null) continue;
+                    if (result.Columns[jproperty.Name] == null)
+                        result.Columns.Add("PE" + jproperty.Name, typeof(string));
+                }
+            }
+
+            foreach (var row in jArrayRows)
+            {
+                var datarow = result.NewRow();
+                foreach (var jToken in row)
+                {
+                    var jPropertyCE = jToken["CE"] as JProperty;
+                    var jPropertyPE = jToken["PE"] as JProperty;
+                    if (jPropertyCE != null)
+                    {
+                        datarow["CE" + jPropertyCE.Name] = jPropertyCE.Value.ToString();
+                    }
+                    else if (jPropertyPE != null)
+                    {
+                        datarow["PE" + jPropertyPE.Name] = jPropertyPE.Value.ToString();
+                    }
+                    else continue;
+                }
+                result.Rows.Add(datarow);
+            }
+
+            return result;
         }
     }
 }
