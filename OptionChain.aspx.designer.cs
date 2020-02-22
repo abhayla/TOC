@@ -33,6 +33,15 @@ namespace TOC
         protected global::System.Web.UI.WebControls.Button btnRefresh;
 
         /// <summary>
+        /// btnGetButterflySpread control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnGetButterflySpread;
+
+        /// <summary>
         /// gvData control.
         /// </summary>
         /// <remarks>

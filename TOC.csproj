@@ -314,6 +314,7 @@
     </Compile>
     <Compile Include="Utility\Class1.cs" />
     <Compile Include="Utility\OCClass.cs" />
+    <Compile Include="Utility\FO.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
