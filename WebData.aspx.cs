@@ -51,112 +51,112 @@ namespace TOC
             "/live_market/dynaContent/live_watch/stock_watch/cbmSecListStockWatch.json"
         };
 
-        private static SortedList<string, SortedSet<Func<LiveData, int>>> callbackData = new SortedList<string, SortedSet<Func<LiveData, int>>>();
+        //private static SortedList<string, SortedSet<Func<LiveData, int>>> callbackData = new SortedList<string, SortedSet<Func<LiveData, int>>>();
 
-        private static SortedList<string, CompanyData> dataSet = new SortedList<string, CompanyData>();
+        //private static SortedList<string, CompanyData> dataSet = new SortedList<string, CompanyData>();
 
-        public static void StartFetch()
-        {
-            while (true)
-            {
-                try
-                {
-                    /*foreach (var s in callbackData)
-                    {
-                        LiveData d = GetLiveData(s.Key);
-                        foreach (var f in s.Value)
-                        {
-                            f(d);
-                        }
-                    }*/
-                    LiveData d = GetLiveData("SBIN");
-                }
-                catch { }
-            }
-        }
-        public static LiveData GetLiveData(string symbol)
-        {
-            //xMH7BiBu6s24LHCizug3
-            //https://www.quandl.com/api/v3/datasets/NSE/ABB.json?api_key=xMH7BiBu6s24LHCizug3
-            //string mainurl1 = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
-            //string mainurl1 = "http://nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=" + symbol + "&illiquid=0";
-            string mainurl1 = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=NIFTY&instrument=OPTIDX&date=-&segmentLink=17";
-            var request = (HttpWebRequest)WebRequest.Create(mainurl1);
+        //public static void StartFetch()
+        //{
+        //    while (true)
+        //    {
+        //        try
+        //        {
+        //            /*foreach (var s in callbackData)
+        //            {
+        //                LiveData d = GetLiveData(s.Key);
+        //                foreach (var f in s.Value)
+        //                {
+        //                    f(d);
+        //                }
+        //            }*/
+        //            LiveData d = GetLiveData("SBIN");
+        //        }
+        //        catch { }
+        //    }
+        //}
+        //public static LiveData GetLiveData(string symbol)
+        //{
+        //    //xMH7BiBu6s24LHCizug3
+        //    //https://www.quandl.com/api/v3/datasets/NSE/ABB.json?api_key=xMH7BiBu6s24LHCizug3
+        //    //string mainurl1 = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+        //    //string mainurl1 = "http://nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=" + symbol + "&illiquid=0";
+        //    string mainurl1 = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=NIFTY&instrument=OPTIDX&date=-&segmentLink=17";
+        //    var request = (HttpWebRequest)WebRequest.Create(mainurl1);
             
-            //var request = (HttpWebRequest)WebRequest.Create(mainurl1);
-            request.Accept = "*/*";
-            request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
-            request.Host = "nseindia.com";
-            request.Referer= mainurl1;
-            request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
-            request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+        //    //var request = (HttpWebRequest)WebRequest.Create(mainurl1);
+        //    request.Accept = "*/*";
+        //    request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
+        //    request.Host = "nseindia.com";
+        //    request.Referer= mainurl1;
+        //    request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
+        //    request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
-            var response = (HttpWebResponse)request.GetResponse();
+        //    var response = (HttpWebResponse)request.GetResponse();
 
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+        //    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-            int start = responseString.IndexOf("responseDiv");
-            start = responseString.IndexOf(',', start);
-            int end = responseString.IndexOf("</div>", start);
+        //    int start = responseString.IndexOf("responseDiv");
+        //    start = responseString.IndexOf(',', start);
+        //    int end = responseString.IndexOf("</div>", start);
 
-            responseString = responseString.Substring(start, end - start);
-            return readString(responseString);
-        }
+        //    responseString = responseString.Substring(start, end - start);
+        //    return readString(responseString);
+        //}
 
-        private static LiveData readString(string str)
-        {
-            LiveData d = new LiveData();
-            //SortedList<string, string> data = new SortedList<string, string>();
-            int start = str.IndexOf(','), end = 0;
-            string key = "", val = "";
-            while (-1 != start)
-            {
-                start = str.IndexOf('\"', start);
-                start++;
-                end = str.IndexOf('\"', start);
-                key = str.Substring(start, end - start);
-                start = str.IndexOf(':', end);
-                start = str.IndexOf('\"', start);
-                start++;
-                end = str.IndexOf('\"', start);
-                val = str.Substring(start, end - start);
-                start = str.IndexOf(',', end);
-                //data.Add(key, val);
-                //d.AddData(key, val);
-            }
-            return d;
-        }
-        public static void UpdateData()
-        {
-            dataSet.Clear();
-            foreach (string address in json_path)
-            {
-                var request = (HttpWebRequest)WebRequest.Create("https://nseindia.com" + address);
-                request.Accept = "*/*";
-                request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
-                request.Host = "nseindia.com";
-                request.Referer = "http://nseindia.com";
-                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
-                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+        //private static LiveData readString(string str)
+        //{
+        //    LiveData d = new LiveData();
+        //    //SortedList<string, string> data = new SortedList<string, string>();
+        //    int start = str.IndexOf(','), end = 0;
+        //    string key = "", val = "";
+        //    while (-1 != start)
+        //    {
+        //        start = str.IndexOf('\"', start);
+        //        start++;
+        //        end = str.IndexOf('\"', start);
+        //        key = str.Substring(start, end - start);
+        //        start = str.IndexOf(':', end);
+        //        start = str.IndexOf('\"', start);
+        //        start++;
+        //        end = str.IndexOf('\"', start);
+        //        val = str.Substring(start, end - start);
+        //        start = str.IndexOf(',', end);
+        //        //data.Add(key, val);
+        //        //d.AddData(key, val);
+        //    }
+        //    return d;
+        //}
+        //public static void UpdateData()
+        //{
+        //    dataSet.Clear();
+        //    foreach (string address in json_path)
+        //    {
+        //        var request = (HttpWebRequest)WebRequest.Create("https://nseindia.com" + address);
+        //        request.Accept = "*/*";
+        //        request.Headers.Add("Accept-Language", "en-US,en;q=0.5");
+        //        request.Host = "nseindia.com";
+        //        request.Referer = "http://nseindia.com";
+        //        request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:28.0) Gecko/20100101 Firefox/28.0";
+        //        request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
-                var response = (HttpWebResponse)request.GetResponse();
+        //        var response = (HttpWebResponse)request.GetResponse();
 
-                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+        //        var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-                LiveData m = JsonConvert.DeserializeObject<LiveData>(responseString);
+        //        LiveData m = JsonConvert.DeserializeObject<LiveData>(responseString);
 
-                foreach (var d in m.data)
-                {
-                    if (!dataSet.ContainsKey(d.symbol))
-                    {
-                        dataSet.Add(d.symbol, d);
-                    }
-                }
-            }
-        }
+        //        foreach (var d in m.data)
+        //        {
+        //            if (!dataSet.ContainsKey(d.symbol))
+        //            {
+        //                dataSet.Add(d.symbol, d);
+        //            }
+        //        }
+        //    }
+        //}
         protected void Page_Load(object sender, EventArgs e)
         {
-            StartFetch();
+            //StartFetch();
         }
     }
 }

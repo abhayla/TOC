@@ -31,7 +31,6 @@ namespace TOC
         {
             try
             {
-                gvData.RowDataBound += GvData_RowDataBound;
                 FetchOC();
             }
             catch (Exception ex)
@@ -253,29 +252,113 @@ namespace TOC
         }
         protected void btnGetButterflySpread_Click(object sender, EventArgs e)
         {
-            //Get all strike prices
-            GetStrikePrices();
+            CreateStrategyTable();
         }
         private List<int> GetStrikePrices()
         {
             return recordsObject.strikePrices;
         }
-        private void CreateCalculationTable()
+        private DataTable AddColumnstoStrategyTable(DataTable dt)
         {
-            DataTable dt = new DataTable();
             dt.Columns.Add("Stock");
             dt.Columns.Add("Contract");
             dt.Columns.Add("TransactionType");
             dt.Columns.Add("StrikePrice");
-            dt.Columns.Add("Quantity");
+            dt.Columns.Add("LotSize");
             dt.Columns.Add("Premium");
 
             List<int> strikePrices = GetStrikePrices();
+
             foreach (var item in strikePrices)
             {
                 dt.Columns.Add(item.ToString());
             }
+            return dt;
         }
+        private DataTable AddRowstoStrategyTable(DataTable dt)
+        {
+            List<int> strikePrices = GetStrikePrices();
+            DataRow datarow;
+            foreach (var row in filteredObject.data)
+            {
+                if (row.CE != null)
+                {
+                    //Add CE Buy row
+                    datarow = dt.NewRow();
+                    datarow["Stock"] = row.CE.underlying.ToString();
+                    datarow["Contract"] = ContractType.CE.ToString();
+                    datarow["TransactionType"] = TransactionType.Buy.ToString();
+                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["Premium"] = row.CE.lastPrice.ToString();
 
+                    foreach (var item in strikePrices)
+                    {
+                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.CallBuy(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
+                    }
+                    dt.Rows.Add(datarow);
+
+                    //Add CE Sell row
+                    datarow = dt.NewRow();
+                    datarow["Stock"] = row.CE.underlying.ToString();
+                    datarow["Contract"] = ContractType.CE.ToString();
+                    datarow["TransactionType"] = TransactionType.Sell.ToString();
+                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["Premium"] = row.CE.lastPrice.ToString();
+
+                    foreach (var item in strikePrices)
+                    {
+                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.CallSell(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
+                    }
+                    dt.Rows.Add(datarow);
+                }
+
+                if (row.PE != null)
+                {
+                    //Add PE Buy row
+                    datarow = dt.NewRow();
+                    datarow["Stock"] = row.PE.underlying.ToString();
+                    datarow["Contract"] = ContractType.PE.ToString();
+                    datarow["TransactionType"] = TransactionType.Buy.ToString();
+                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["Premium"] = row.PE.lastPrice.ToString();
+
+                    foreach (var item in strikePrices)
+                    {
+                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.PutBuy(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
+                    }
+                    dt.Rows.Add(datarow);
+
+                    //Add PE Sell row
+                    datarow = dt.NewRow();
+                    datarow["Stock"] = row.PE.underlying.ToString();
+                    datarow["Contract"] = ContractType.PE.ToString();
+                    datarow["TransactionType"] = TransactionType.Sell.ToString();
+                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["Premium"] = row.PE.lastPrice.ToString();
+
+                    foreach (var item in strikePrices)
+                    {
+                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.PutSell(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
+                    }
+                    dt.Rows.Add(datarow);
+                }
+            }
+            return dt;
+        }
+        private void CreateStrategyTable()
+        {
+            DataTable dt = new DataTable();
+            dt = AddColumnstoStrategyTable(dt);
+            dt = AddRowstoStrategyTable(dt);
+            FillDataTable(dt);
+        }
+        protected void gvData_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace TOC.Utility
 {
     public class FO
     {
-        public double CallBuy(double strikePrice, double premiumPaid, double closingPrice)
+        public static double CallBuy(double strikePrice, double premiumPaid, double closingPrice)
         {
             double result = 0;
             if (closingPrice > strikePrice)
@@ -20,7 +20,7 @@ namespace TOC.Utility
             }
             return result;
         }
-        public double PutBuy(double strikePrice, double premiumPaid, double closingPrice)
+        public static double PutBuy(double strikePrice, double premiumPaid, double closingPrice)
         {
             double result = 0;
             if (closingPrice <= strikePrice)
@@ -33,7 +33,7 @@ namespace TOC.Utility
             }
             return result;
         }
-        public double CallSell(double strikePrice, double premiumPaid, double closingPrice)
+        public static double CallSell(double strikePrice, double premiumPaid, double closingPrice)
         {
             double result = 0;
             if (closingPrice <= strikePrice)
@@ -46,7 +46,7 @@ namespace TOC.Utility
             }
             return result;
         }
-        public double PutSell(double strikePrice, double premiumPaid, double closingPrice)
+        public static double PutSell(double strikePrice, double premiumPaid, double closingPrice)
         {
             double result = 0;
             if (closingPrice >= strikePrice)
@@ -59,19 +59,19 @@ namespace TOC.Utility
             }
             return result;
         }
-        public double FutBuy(double buyPrice, double closingPrice)
+        public static double FutBuy(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = closingPrice - buyPrice;
             return result;
         }
-        public double FutSell(double buyPrice, double closingPrice)
+        public static double FutSell(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = buyPrice - closingPrice;
             return result;
         }
-        public double EQBuy(double buyPrice, double closingPrice)
+        public static double EQBuy(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = closingPrice - buyPrice;
