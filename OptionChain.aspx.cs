@@ -27,11 +27,18 @@ namespace TOC
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         Records recordsObject = new Records();
         Filtered filteredObject = new Filtered();
+        double currentPrice = 0.0;
+        double higherStrikePrice = 0.0;
+        double lowerStrikePrice = 0.0;
+        double currentStrikePrice = 0.0;
+        int diffStrikePrice = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
                 FetchOC();
+                DataTable dt = toDataTable(filteredObject);
+                FillDataTable(dt);
             }
             catch (Exception ex)
             {
@@ -43,12 +50,11 @@ namespace TOC
         private void FetchOC()
         {
             JObject jObject = DownloadJSONDataFromURL(mainurl);
-            //FillDataTable(toDataTable(jObject));
-
             recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
             filteredObject = JsonConvert.DeserializeObject<Filtered>(jObject["filtered"].ToString());
-            DataTable dt = toDataTable(filteredObject);
-            FillDataTable(dt);
+            currentPrice = recordsObject.underlyingValue;
+
+            UpdateStrikePriceDiff();
         }
         private static DataTable toDataTable(Filtered filteredObject)
         {
@@ -243,6 +249,8 @@ namespace TOC
         {
             btnRefresh.Text = "Refreshing...";
             FetchOC();
+            DataTable dt = toDataTable(filteredObject);
+            FillDataTable(dt);
             btnRefresh.Text = "Refresh Data";
         }
         private void FillDataTable(DataTable dt)
@@ -252,6 +260,7 @@ namespace TOC
         }
         protected void btnGetButterflySpread_Click(object sender, EventArgs e)
         {
+            FetchOC();
             CreateStrategyTable();
         }
         private List<int> GetStrikePrices()
@@ -351,10 +360,60 @@ namespace TOC
         }
         private void CreateStrategyTable()
         {
-            DataTable dt = new DataTable();
-            dt = AddColumnstoStrategyTable(dt);
-            dt = AddRowstoStrategyTable(dt);
-            FillDataTable(dt);
+            DataTable dtStrategy = new DataTable();
+            dtStrategy = AddColumnstoStrategyTable(dtStrategy);
+            dtStrategy = AddRowstoStrategyTable(dtStrategy);
+
+            //DataTable dtCEStrategy = dtStrategy.Rows.f
+            
+            DataRow[] drs = dtStrategy.Select("(Contract = 'CE') AND ((StrikePrice = " + lowerStrikePrice + "  AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice + " AND TransactionType = 'Sell') OR (StrikePrice = " + higherStrikePrice + " AND TransactionType = 'Buy'))");
+            //make a new "results" datatable via clone to keep structure
+            DataTable dtButterflySpreadCEStrategy = dtStrategy.Clone();
+            //Import the Rows
+            foreach (DataRow d in drs)
+            {
+                dtButterflySpreadCEStrategy.ImportRow(d);
+            }
+            
+            DataTable dtButterflySpreadCEStrategyResult = new DataTable();
+            dtButterflySpreadCEStrategyResult.Columns.Add("Stock");
+            dtButterflySpreadCEStrategyResult.Columns.Add("Contract");
+            dtButterflySpreadCEStrategyResult.Columns.Add("TransactionType");
+            dtButterflySpreadCEStrategyResult.Columns.Add("StrikePrice");
+            dtButterflySpreadCEStrategyResult.Columns.Add("LotSize");
+            dtButterflySpreadCEStrategyResult.Columns.Add("Premium");
+            dtButterflySpreadCEStrategyResult.Columns.Add("ProfitLoss");
+
+            for (int i = 0; i < dtButterflySpreadCEStrategy.Rows.Count; i++)
+            {
+                var columnName = dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString();
+                double sum = 0;
+                for (int j = 0; j < dtButterflySpreadCEStrategy.Rows.Count; j++)
+                {
+                    sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][columnName]);
+                }
+                //datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.PutSell(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
+                //rowTarget["Stock"] = dtButterflySpreadCEStrategy.Rows
+                //rowTarget["Stock"] = rowSource["Stock"];
+                dtButterflySpreadCEStrategyResult.Rows.Add(new string[] {
+                    dtButterflySpreadCEStrategy.Rows[i]["Stock"].ToString(),
+                    dtButterflySpreadCEStrategy.Rows[i]["Contract"].ToString(),
+                    dtButterflySpreadCEStrategy.Rows[i]["TransactionType"].ToString(),
+                    dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(),
+                    dtButterflySpreadCEStrategy.Rows[i]["LotSize"].ToString(),
+                    dtButterflySpreadCEStrategy.Rows[i]["Premium"].ToString(),
+                    sum.ToString()});
+            }
+
+            FillDataTable(dtButterflySpreadCEStrategyResult);
+        }
+        private void UpdateStrikePriceDiff()
+        {
+            List<int> prices = GetStrikePrices();
+            diffStrikePrice = (prices[1] - prices[0]);
+            currentStrikePrice = ((int)Math.Round(currentPrice / diffStrikePrice)) * diffStrikePrice; ;
+            lowerStrikePrice = currentStrikePrice - diffStrikePrice;
+            higherStrikePrice = currentStrikePrice + diffStrikePrice;
         }
         protected void gvData_RowDataBound(object sender, GridViewRowEventArgs e)
         {
