@@ -42,12 +42,30 @@ namespace TOC
         protected global::System.Web.UI.WebControls.Button btnGetButterflySpread;
 
         /// <summary>
-        /// gvData control.
+        /// ddlExpiryDates control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvData;
+        protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
+
+        /// <summary>
+        /// divOptionChain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOptionChain;
+
+        /// <summary>
+        /// divButterflySpread control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divButterflySpread;
     }
 }

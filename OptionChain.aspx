@@ -11,9 +11,12 @@
         <div>
             <asp:Button ID="btnRefresh" runat="server" Text="Refresh Data" OnClick="btnRefresh_Click" />
             <asp:Button ID="btnGetButterflySpread" runat="server" Text="Get Butterfly Spread" OnClick="btnGetButterflySpread_Click" />
+            <asp:DropDownList ID="ddlExpiryDates" runat="server"></asp:DropDownList>
         </div>
-        <asp:GridView ID="gvData" runat="server" OnRowDataBound="gvData_RowDataBound">
-        </asp:GridView>
+        <div runat="server" id="divOptionChain">
+        </div>
+        <div runat="server" id="divButterflySpread">
+        </div>
     </form>
 </body>
 </html>
