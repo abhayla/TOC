@@ -18,7 +18,7 @@ namespace TOC.Utility
             {
                 result = -premiumPaid;
             }
-            return result;
+            return Math.Round(result, 0);
         }
         public static double PutBuy(double strikePrice, double premiumPaid, double closingPrice)
         {
@@ -31,7 +31,7 @@ namespace TOC.Utility
             {
                 result = -premiumPaid;
             }
-            return result;
+            return Math.Round(result, 0);
         }
         public static double CallSell(double strikePrice, double premiumPaid, double closingPrice)
         {
@@ -44,7 +44,7 @@ namespace TOC.Utility
             {
                 result = premiumPaid + strikePrice - closingPrice;
             }
-            return result;
+            return Math.Round(result, 0);
         }
         public static double PutSell(double strikePrice, double premiumPaid, double closingPrice)
         {
@@ -57,25 +57,25 @@ namespace TOC.Utility
             {
                 result = premiumPaid + closingPrice - strikePrice;
             }
-            return result;
+            return Math.Round(result, 0);
         }
         public static double FutBuy(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = closingPrice - buyPrice;
-            return result;
+            return Math.Round(result, 0);
         }
         public static double FutSell(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = buyPrice - closingPrice;
-            return result;
+            return Math.Round(result, 0);
         }
         public static double EQBuy(double buyPrice, double closingPrice)
         {
             double result = 0;
             result = closingPrice - buyPrice;
-            return result;
+            return Math.Round(result, 0);
         }
     }
 }
