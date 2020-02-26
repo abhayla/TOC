@@ -45,6 +45,13 @@
             </asp:GridView>
         </div>
         <div runat="server" id="divButterflySpread">
+            <table runat="server" id="tblButterflySpread">
+                <tr>
+                    <td>
+                        <asp:GridView></asp:GridView>
+                    </td>
+                </tr>
+            </table>
         </div>
     </form>
 </body>

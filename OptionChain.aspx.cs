@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.IO;
 using System.Threading;
-using System.Reflection;
+using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using HtmlAgilityPack;
@@ -298,7 +298,7 @@ namespace TOC
         protected void btnGetButterflySpread_Click(object sender, EventArgs e)
         {
             FetchOC();
-            CreateStrategyTable();
+            CreateButterflySpreadStrategyTable();
         }
         private List<int> GetStrikePrices()
         {
@@ -346,7 +346,7 @@ namespace TOC
                     datarow["Contract"] = ContractType.CE.ToString();
                     datarow["TransactionType"] = TransactionType.Buy.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
 
@@ -362,7 +362,7 @@ namespace TOC
                     datarow["Contract"] = ContractType.CE.ToString();
                     datarow["TransactionType"] = TransactionType.Sell.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
 
@@ -381,7 +381,7 @@ namespace TOC
                     datarow["Contract"] = ContractType.PE.ToString();
                     datarow["TransactionType"] = TransactionType.Buy.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
 
@@ -397,7 +397,7 @@ namespace TOC
                     datarow["Contract"] = ContractType.PE.ToString();
                     datarow["TransactionType"] = TransactionType.Sell.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = LotSize.BankNifty.ToString();
+                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
 
@@ -411,7 +411,7 @@ namespace TOC
             }
             return dt;
         }
-        private void CreateStrategyTable()
+        private void CreateButterflySpreadStrategyTable()
         {
             dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
             dtOCCalculation = AddRowstoStrategyTable(dtOCCalculation);
@@ -427,57 +427,68 @@ namespace TOC
 
             for (int iCount = 1; iCount <= iStrategyCount; iCount++)
             {
-                double iLowerSP = currentStrikePrice - (iCount * diffStrikePrice);
-                double iHighterSP = currentStrikePrice + (iCount * diffStrikePrice);
-
-                string selectQuery = "(Contract = 'CE') AND ((StrikePrice = " +
-                    (iLowerSP) +
-                    " AND TransactionType = 'Buy') OR (StrikePrice = " +
-                    currentStrikePrice +
-                    " AND TransactionType = 'Sell') OR (StrikePrice = " +
-                    (iHighterSP) +
-                    " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
-
-                DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
-                //make a new "results" datatable via clone to keep structure
-                DataTable dtButterflySpreadCEStrategy = dtOCCalculation.Clone();
-                //Import the Rows
-                foreach (DataRow d in drs)
+                for (int iCEPE = 1; iCEPE <= 2; iCEPE++)
                 {
-                    dtButterflySpreadCEStrategy.ImportRow(d);
-                }
-
-                DataTable dtButterflySpreadCEStrategyResult = dtButterflySpread.Clone();
-                for (int i = 0; i < dtButterflySpreadCEStrategy.Rows.Count; i++)
-                {
-                    double sum = 0;
-                    var strikePrice = dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(); //30400
-
-                    for (int j = 0; j < dtButterflySpreadCEStrategy.Rows.Count; j++)
+                    double iLowerSP = currentStrikePrice - (iCount * diffStrikePrice);
+                    double iHighterSP = currentStrikePrice + (iCount * diffStrikePrice);
+                    string selectQuery = string.Empty;
+                    if (iCEPE == 1)
                     {
-                        var rowStrikePrice = dtButterflySpreadCEStrategy.Rows[j]["StrikePrice"].ToString(); //30400
-                        //var columnStrikePrice = dtButterflySpreadCEStrategy.Rows[j][strikePrice].ToString(); //-255
-                        if (rowStrikePrice == currentStrikePrice.ToString())
-                        {
-                            sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]) * 2;
-                        }
-                        else if (rowStrikePrice == iLowerSP.ToString() || rowStrikePrice == iHighterSP.ToString())
-                        {
-                            sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]);//-255,
-                        }
+                        selectQuery = "(Contract = 'CE')" +
+                        " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
+                        " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
+                        " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
+                    }
+                    else if (iCEPE == 2)
+                    {
+                        selectQuery = "(Contract = 'PE')" +
+                        " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
+                        " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
+                        " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
                     }
 
-                    dtButterflySpreadCEStrategyResult.Rows.Add(new string[] {
-                    dtButterflySpreadCEStrategy.Rows[i]["Stock"].ToString(),
-                    dtButterflySpreadCEStrategy.Rows[i]["Contract"].ToString(),
-                    dtButterflySpreadCEStrategy.Rows[i]["TransactionType"].ToString(),
-                    dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(),
-                    dtButterflySpreadCEStrategy.Rows[i]["LotSize"].ToString(),
-                    dtButterflySpreadCEStrategy.Rows[i]["Premium"].ToString(),
-                    Math.Round(sum,2).ToString()});
+                    DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
+                    //make a new "results" datatable via clone to keep structure
+                    DataTable dtButterflySpreadCEStrategy = dtOCCalculation.Clone();
+                    //Import the Rows
+                    foreach (DataRow d in drs)
+                    {
+                        dtButterflySpreadCEStrategy.ImportRow(d);
+                    }
+
+                    DataTable dtButterflySpreadCEStrategyResult = dtButterflySpread.Clone();
+                    for (int i = 0; i < dtButterflySpreadCEStrategy.Rows.Count; i++)
+                    {
+                        double sum = 0;
+                        var strikePrice = dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(); //30400
+
+                        for (int j = 0; j < dtButterflySpreadCEStrategy.Rows.Count; j++)
+                        {
+                            var rowStrikePrice = dtButterflySpreadCEStrategy.Rows[j]["StrikePrice"].ToString(); //30400
+                                                                                                                //var columnStrikePrice = dtButterflySpreadCEStrategy.Rows[j][strikePrice].ToString(); //-255
+                            if (rowStrikePrice == currentStrikePrice.ToString())
+                            {
+                                sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]) * 2;
+                            }
+                            else if (rowStrikePrice == iLowerSP.ToString() || rowStrikePrice == iHighterSP.ToString())
+                            {
+                                sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]);//-255,
+                            }
+                        }
+
+                        int lotSize = Convert.ToInt32(dtButterflySpreadCEStrategy.Rows[i]["LotSize"]);
+                        dtButterflySpreadCEStrategyResult.Rows.Add(new string[] {
+                        dtButterflySpreadCEStrategy.Rows[i]["Stock"].ToString(),
+                        dtButterflySpreadCEStrategy.Rows[i]["Contract"].ToString(),
+                        dtButterflySpreadCEStrategy.Rows[i]["TransactionType"].ToString(),
+                        dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(),
+                        lotSize.ToString(),
+                        dtButterflySpreadCEStrategy.Rows[i]["Premium"].ToString(),
+                        Math.Round(lotSize*sum,2).ToString()});
+                    }
+                    gvOptionChain.Visible = false;
+                    FillBFSpread(dtButterflySpreadCEStrategyResult);
                 }
-                gvOptionChain.Visible = false;
-                FillBFSpread(dtButterflySpreadCEStrategyResult);
             }
         }
         private void UpdateStrikePriceDetails()
