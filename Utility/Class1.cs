@@ -20,7 +20,7 @@ namespace TOC
     }
     public enum LotSize
     {
-        Nifty=50,
+        Nifty=75,
         BankNifty=20
     }
 

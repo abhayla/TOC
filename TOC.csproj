@@ -206,6 +206,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\Zerodha\zerodha-margin-calculator.js" />
     <Content Include="TelegramMessage.aspx" />
     <Content Include="WebData.aspx" />
     <Content Include="Scripts\index.js.flow" />
@@ -315,6 +316,7 @@
     <Compile Include="Utility\Class1.cs" />
     <Compile Include="Utility\OCClass.cs" />
     <Compile Include="Utility\FO.cs" />
+    <Compile Include="Utility\Telegram.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

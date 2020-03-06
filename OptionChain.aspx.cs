@@ -299,6 +299,7 @@ namespace TOC
         {
             FetchOC();
             CreateButterflySpreadStrategyTable();
+            //Telegram.SendTelegramMessage("Hello Everyone!");
         }
         private List<int> GetStrikePrices()
         {
