@@ -11,7 +11,8 @@ namespace TOC
 {
     public partial class ReadFiles : System.Web.UI.Page
     {
-        private static string FileSaveWithPath = "C:\\Abhay\\P\\Autotrader\\data\\order\\orders.csv";
+        private static string ORDERS_FILE_PATH = "C:\\Abhay\\P\\Autotrader\\data\\order\\orders.csv";
+        private static string MY_ORDERS_FILE_PATH = "C:\\Abhay\\P\\Autotrader\\data\\order\\myorders.csv";
         private static string FileWatcherPath = @"C:\Abhay\P\Autotrader\data\order\";
         DataTable olddt = new DataTable();
         DataTable newOrdersdt = new DataTable();
@@ -43,7 +44,7 @@ namespace TOC
             try
             {
                 DataTable newdt = new DataTable();
-                newdt = ReadCsvFile();
+                newdt = ReadFromCsvFile();
 
                 //PrepareTelegramMessage(newdt, olddt);
 
@@ -61,7 +62,7 @@ namespace TOC
         private void FindNewOrders()
         {
             DataTable newdt = new DataTable();
-            newdt = ReadCsvFile();
+            newdt = ReadFromCsvFile();
             newOrdersdt = newdt.Clone();
             alreadySentCallsdt = newdt.Clone();
             bool isRowExistinFile = false;
@@ -139,19 +140,52 @@ namespace TOC
 
                         //Add sent messages to the list
                         alreadySentCallsdt.Rows.Add(row.ItemArray);
+
+                        using (StreamWriter writer = new StreamWriter(MY_ORDERS_FILE_PATH))
+                        {
+                            WriteDataTable(alreadySentCallsdt, writer, true);
+                        }
                     }
                 }
-
             }
         }
 
-        public DataTable ReadCsvFile()
+        public static void WriteDataTable(DataTable sourceTable, TextWriter writer, bool includeHeaders)
+        {
+            if (includeHeaders)
+            {
+                IEnumerable<String> headerValues = sourceTable.Columns
+                    .OfType<DataColumn>()
+                    .Select(column => QuoteValue(column.ColumnName));
+
+                writer.WriteLine(String.Join(",", headerValues));
+            }
+
+            IEnumerable<String> items = null;
+
+            foreach (DataRow row in sourceTable.Rows)
+            {
+                items = row.ItemArray.Select(o => QuoteValue(o?.ToString() ?? String.Empty));
+                writer.WriteLine(String.Join(",", items));
+            }
+
+            writer.Flush();
+        }
+
+        private static string QuoteValue(string value)
+        {
+            return String.Concat("\"",
+            value.Replace("\"", "\"\""), "\"");
+        }
+
+
+        public DataTable ReadFromCsvFile()
         {
             DataTable dtCsv = new DataTable();
             string Fulltext;
             try
             {
-                using (StreamReader sr = new StreamReader(FileSaveWithPath))
+                using (StreamReader sr = new StreamReader(ORDERS_FILE_PATH))
                 {
                     while (!sr.EndOfStream)
                     {
