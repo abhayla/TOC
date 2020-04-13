@@ -35,7 +35,7 @@ namespace TOC
         //TimeSpan timeCommodityReport = new TimeSpan(23, 59, 0);
         TimeSpan timeStartClosePosition = new TimeSpan(13, 25, 0);
         TimeSpan timeClosePosition = new TimeSpan(13, 26, 0);
-        TimeSpan timeEquityReport = new TimeSpan(22, 54, 0);
+        TimeSpan timeEquityReport = new TimeSpan(23, 55, 0);
         TimeSpan timeCommodityReport = new TimeSpan(13, 28, 0);
 
 
@@ -132,7 +132,7 @@ namespace TOC
             dtCsv.Columns.Add("qty");
             dtCsv.Columns.Add("PositionStatus");
             dtCsv.Columns.Add("PositionType");
-            dtCsv.Columns.Add("ProfitLoss");
+            dtCsv.Columns.Add("ProfitLossPercent");
             bool isPresent = false;
             //bool isSellPresent = false;
             foreach (DataRow sentOrdersRow in mySentOrderdt.Rows)
@@ -150,7 +150,7 @@ namespace TOC
                             row["SellTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
                             row["SellPrice"] = sentOrdersRow["priceStr"];
                             row["qty"] = sentOrdersRow["qty"];
-                            row["PositionStatus"] = enumPositionStatus.Open.ToString();
+                            row["PositionStatus"] = enumPositionStatus.Close.ToString();
                             row["PositionType"] = enumPositionType.Long.ToString();
                         }
                         else if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) != 0 &&
@@ -160,19 +160,19 @@ namespace TOC
                             row["BuyTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
                             row["BuyPrice"] = sentOrdersRow["priceStr"];
                             row["qty"] = sentOrdersRow["qty"];
-                            row["PositionStatus"] = enumPositionStatus.Open.ToString();
+                            row["PositionStatus"] = enumPositionStatus.Close.ToString();
                             row["PositionType"] = enumPositionType.Short.ToString();
                         }
-                        else if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
-                                string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
+                        if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
+                                string.Compare(row["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
                         {
                             if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Long.ToString()) == 0)
                             {
-                                row["ProfitLoss"] = (Convert.ToDouble(row["SellPrice"]) - Convert.ToDouble(row["BuyPrice"])) * Convert.ToInt32(row["qty"]);
+                                row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["SellPrice"]) - Convert.ToDouble(row["BuyPrice"])) * 100 / Convert.ToDouble(row["BuyPrice"])), 2);
                             }
                             else if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Short.ToString()) == 0)
                             {
-                                row["ProfitLoss"] = (Convert.ToDouble(row["BuyPrice"]) - Convert.ToDouble(row["SellPrice"])) * Convert.ToInt32(row["qty"]);
+                                row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["BuyPrice"]) - Convert.ToDouble(row["SellPrice"])) * 100 / Convert.ToDouble(row["SellPrice"])), 2);
                             }
                         }
                     }
@@ -202,23 +202,31 @@ namespace TOC
                     dtCsv.Rows.Add(newdr);
                 }
             }
-
+            teleMessage = "EQUITY REPORT :-\n";
             foreach (DataRow row in dtCsv.Rows)
             {
                 if (string.Compare(row["PositionStatus"].ToString().Trim(), enumPositionStatus.Open.ToString()) == 0)
                 {
                     if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0)
                     {
-                        teleMessage += row["symbol"] + " BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " Qty: " + row["qty"] + " Position: " + row["PositionStatus"] + "\n";
+                        teleMessage += row["symbol"] + ": " + "BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " Position: " + row["PositionStatus"] + "\n";
                     }
                     else
                     {
-                        teleMessage += row["symbol"] + " SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Qty: " + row["qty"] + " Position: " + row["PositionStatus"] + "\n";
+                        teleMessage += row["symbol"] + ": " + "SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Position: " + row["PositionStatus"] + "\n";
                     }
                 }
                 else
                 {
-                    teleMessage += row["symbol"] + " BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Qty: " + row["qty"] + " Profit/Loss: " + row["ProfitLoss"] + "\n";
+                    double percentage = Convert.ToDouble(row["ProfitLossPercent"]);
+                    if (percentage > 0)
+                    {
+                        teleMessage += row["symbol"] + ": " + "BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Profit: " + row["ProfitLossPercent"] + "%\n";
+                    }
+                    else
+                    {
+                        teleMessage += row["symbol"] + ": " + "BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Loss: " + row["ProfitLossPercent"] + "%\n";
+                    }
                 }
 
             }
@@ -410,7 +418,7 @@ namespace TOC
                             if (row["tradeType"] != null && row["symbol"] != null && row["priceStr"] != null)
                             {
                                 //Telegram message to be sent...
-                                teleMessage = "TREND SIGNAL\n" +
+                                teleMessage = "TREND ALERT:-\n" +
                                                 row["tradeType"].ToString() + " " + row["symbol"].ToString() + " AT " + Math.Round(Convert.ToDouble(row["priceStr"]), 2) + "\n" +
                                                 "TARGET OPEN\n" +
                                                 "STOP LOSS " + Math.Round(Convert.ToDouble(row["trailingStoplossStr"]), 2) + "\n\n" +

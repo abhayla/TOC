@@ -22,6 +22,5 @@
         <asp:Button ID="btnEquityReport" runat="server" Text="Equity Report" OnClick="btnEquityReport_Click" />
         <br />
     </form>
-
 </body>
 </html>
