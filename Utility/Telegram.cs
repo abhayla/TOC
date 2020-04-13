@@ -14,7 +14,7 @@ namespace TOC
         private static string botToken = "823309371:AAFDRExv8PiPpAUSWK8g88lCD2v_EJ_eIqs";
 
 
-        private static string[] groups = { "@Puneites", "@Free_Zerodha_Angel_Upstox_Acct", "@AngelBroking_SMC_Upstox_Zerodha" };
+        //private static string[] groups = { "@Puneites", "@Free_Zerodha_Angel_Upstox_Acct", "@AngelBroking_SMC_Upstox_Zerodha" };
         //List<string> groupIds = new List<string>(groups);
         private static bool isInternetConnected()
         {
@@ -29,27 +29,17 @@ namespace TOC
                 return false;
             }
         }
-        public static void SendTelegramMessage(string message)
+        public static void SendTelegramMessage(string message, string[] rowValues)
         {
+
             string urlString = "https://api.telegram.org/bot{0}/sendMessage?chat_id={1}&text={2}";
             if (isInternetConnected())
             {
-                foreach (var groupId in groups)
+                foreach (var groupId in rowValues)
                 {
-                    //string.Format()
-                    string urlString1 = String.Format(urlString, botToken, groupId, message);
+                    string urlString1 = String.Format(urlString, botToken, groupId.Trim(), message);
                     WebRequest request = WebRequest.Create(urlString1);
                     Stream rs = request.GetResponse().GetResponseStream();
-                    //StreamReader reader = new StreamReader(rs);
-                    //string line = "";
-                    //StringBuilder sb = new StringBuilder();
-                    //while (line != null)
-                    //{
-                    //    line = reader.ReadLine();
-                    //    if (line != null)
-                    //        sb.Append(line);
-                    //}
-                    //string response = sb.ToString();
                 }
             }
         }

@@ -13,6 +13,15 @@
         </div>
         <br />
         <asp:Button ID="btnReadOrders" runat="server" Text="Read Orders" OnClick="btnReadOrders_Click" />
+        <br />
+        <br />
+        <div>
+            <asp:Label ID="Label1" runat="server" Text="Group and Channels: "></asp:Label><asp:Label ID="lblGroupsChannels" runat="server"></asp:Label>
+        </div>
+        <br />
+        <asp:Button ID="btnEquityReport" runat="server" Text="Equity Report" OnClick="btnEquityReport_Click" />
+        <br />
     </form>
+
 </body>
 </html>

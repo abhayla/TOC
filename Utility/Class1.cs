@@ -6,19 +6,26 @@ using System.Threading.Tasks;
 
 namespace TOC
 {
-    public enum TransactionType
+    enum enumPositionStatus
     {
-        Buy,
-        Sell
+        Open, Close
     }
-    public enum ContractType
+    enum enumPositionType
+    {
+        Long, Short
+    }
+    enum enumTransactionType
+    {
+        BUY, SELL
+    }
+    enum enumContractType
     {
         CE,
         PE,
         FUT,
         EQ
     }
-    public enum LotSize
+    enum enumLotSize
     {
         Nifty=75,
         BankNifty=20
