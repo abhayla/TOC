@@ -172,7 +172,7 @@ namespace TOC
                     datarow["CE" + "askQty"] = row.CE.askQty.ToString();
                     datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
                     datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
-                    datarow["Contract"] = ContractType.CE.ToString();
+                    datarow["Contract"] = enumContractType.CE.ToString();
                 }
 
                 if (row.PE != null)
@@ -196,7 +196,7 @@ namespace TOC
                     datarow["PE" + "askQty"] = row.PE.askQty.ToString();
                     datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
                     datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
-                    datarow["Contract"] = ContractType.PE.ToString();
+                    datarow["Contract"] = enumContractType.PE.ToString();
                 }
 
                 result.Rows.Add(datarow);
@@ -344,10 +344,10 @@ namespace TOC
                     //Add CE Buy row
                     datarow = dt.NewRow();
                     datarow["Stock"] = row.CE.underlying.ToString();
-                    datarow["Contract"] = ContractType.CE.ToString();
-                    datarow["TransactionType"] = TransactionType.Buy.ToString();
+                    datarow["Contract"] = enumContractType.CE.ToString();
+                    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
+                    datarow["LotSize"] = Convert.ToInt32(enumLotSize.BankNifty).ToString();
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
 
@@ -360,10 +360,10 @@ namespace TOC
                     //Add CE Sell row
                     datarow = dt.NewRow();
                     datarow["Stock"] = row.CE.underlying.ToString();
-                    datarow["Contract"] = ContractType.CE.ToString();
-                    datarow["TransactionType"] = TransactionType.Sell.ToString();
+                    datarow["Contract"] = enumContractType.CE.ToString();
+                    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
+                    datarow["LotSize"] = Convert.ToInt32(enumLotSize.BankNifty).ToString();
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
 
@@ -379,10 +379,10 @@ namespace TOC
                     //Add PE Buy row
                     datarow = dt.NewRow();
                     datarow["Stock"] = row.PE.underlying.ToString();
-                    datarow["Contract"] = ContractType.PE.ToString();
-                    datarow["TransactionType"] = TransactionType.Buy.ToString();
+                    datarow["Contract"] = enumContractType.PE.ToString();
+                    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
+                    datarow["LotSize"] = Convert.ToInt32(enumLotSize.BankNifty).ToString();
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
 
@@ -395,10 +395,10 @@ namespace TOC
                     //Add PE Sell row
                     datarow = dt.NewRow();
                     datarow["Stock"] = row.PE.underlying.ToString();
-                    datarow["Contract"] = ContractType.PE.ToString();
-                    datarow["TransactionType"] = TransactionType.Sell.ToString();
+                    datarow["Contract"] = enumContractType.PE.ToString();
+                    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = Convert.ToInt32(LotSize.BankNifty).ToString();
+                    datarow["LotSize"] = Convert.ToInt32(enumLotSize.BankNifty).ToString();
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
 
