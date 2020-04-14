@@ -30,6 +30,10 @@ namespace TOC
         Nifty=75,
         BankNifty=20
     }
+    enum enumExchange
+    {
+        NSE, BSE, MCX
+    }
 
     public class OptionChainColumns
     {

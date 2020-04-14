@@ -17,7 +17,8 @@ namespace TOC
         private static string MY_ORDERS_FILE_NAME = "myorders.csv";
         private static string GROUPS_AND_CHANNELS = "groupschannels.csv";
         private static string ORDERS_FILE_PATH = "C:\\autotrader\\data\\order\\" + ORDERS_FILE_NAME;
-        private static string MY_ORDERS_FILE_PATH = FOLDER_PATH + MY_ORDERS_FILE_NAME;
+        private static string MY_ORDERS_FILE_PATH = "c:\\inetpub\\wwwroot\\sendorders\\" + MY_ORDERS_FILE_NAME;
+        //private static string MY_ORDERS_FILE_PATH = "C:\\Abhay\\SFDC\\Git\\Others\\TOC\\TOC\\" + MY_ORDERS_FILE_NAME;
         private static string GROUPS_AND_CHANNELS_FILE_PATH = FOLDER_PATH + GROUPS_AND_CHANNELS;
         private static string FileWatcherPath = @"C:\autotrader\data\order\";
         DataTable oldOrdersdt = new DataTable();
@@ -29,14 +30,16 @@ namespace TOC
         System.Threading.Timer m_timer = null;
         List<String> files = new List<string>();
         private string[] strGroupsChannelsList;
-        //TimeSpan timeStartClosePosition = new TimeSpan(15, 0, 0);
-        //TimeSpan timeClosePosition = new TimeSpan(15, 15, 0);
-        //TimeSpan timeEquityReport = new TimeSpan(15, 35, 0);
-        //TimeSpan timeCommodityReport = new TimeSpan(23, 59, 0);
-        TimeSpan timeStartClosePosition = new TimeSpan(13, 25, 0);
-        TimeSpan timeClosePosition = new TimeSpan(13, 26, 0);
-        TimeSpan timeEquityReport = new TimeSpan(23, 55, 0);
-        TimeSpan timeCommodityReport = new TimeSpan(13, 28, 0);
+        TimeSpan timePreTradingStarting = new TimeSpan(8, 58, 0);
+        TimeSpan timeTradingStarting = new TimeSpan(9, 13, 0);
+        TimeSpan timeStartClosePosition = new TimeSpan(15, 0, 0);
+        TimeSpan timeClosePosition = new TimeSpan(15, 15, 0);
+        TimeSpan timeEquityReport = new TimeSpan(15, 35, 0);
+        TimeSpan timeCommodityReport = new TimeSpan(23, 59, 0);
+        //TimeSpan timeStartClosePosition = new TimeSpan(13, 25, 0);
+        //TimeSpan timeClosePosition = new TimeSpan(13, 26, 0);
+        //TimeSpan timeEquityReport = new TimeSpan(23, 55, 0);
+        //TimeSpan timeCommodityReport = new TimeSpan(13, 28, 0);
 
 
         protected void Page_Load(object sender, EventArgs e)
@@ -88,7 +91,14 @@ namespace TOC
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             TimeSpan addOneMinute = new TimeSpan(0, 1, 0);
-
+            if (e.SignalTime.TimeOfDay > timePreTradingStarting && e.SignalTime.TimeOfDay < timePreTradingStarting.Add(addOneMinute))
+            {
+                PreTradingStarting();
+            }
+            if (e.SignalTime.TimeOfDay > timeTradingStarting && e.SignalTime.TimeOfDay < timeTradingStarting.Add(addOneMinute))
+            {
+                TradingStarting();
+            }
             if (e.SignalTime.TimeOfDay > timeStartClosePosition && e.SignalTime.TimeOfDay < timeStartClosePosition.Add(addOneMinute))
             {
                 StartClosePosition();
@@ -108,15 +118,56 @@ namespace TOC
             //throw new NotImplementedException();
         }
 
+        private void PreTradingStarting()
+        {
+            string teleMessage = string.Empty;
+            teleMessage = "PRE-TRADING OF MARKETS IS STARTING. BEST OF LUCK...\n";
+            if (strGroupsChannelsList == null)
+            {
+                strGroupsChannelsList = ReadGroupsChannelsCsvFile();
+            }
+            Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
+        }
+
+        private void TradingStarting()
+        {
+            string teleMessage = string.Empty;
+            teleMessage = "STOCK MARKETS ARE OPEN FOR TRADING NOW.. BEST OF LUCK...\n";
+            if (strGroupsChannelsList == null)
+            {
+                strGroupsChannelsList = ReadGroupsChannelsCsvFile();
+            }
+            Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
+        }
+
         private void CommodityReport()
         {
             string teleMessage = string.Empty;
-            //teleMessage = "PLEASE CLOSE YOUR INTRADAY PROSITIONS NOW (OR CONVERT TO DELIVERY)\n" +
-            // "Some brokers charge addtional fees for closing your open intraday positions.";
-            //Telegram.SendTelegramMessage(teleMessage, rowValues);
+            string exhange = enumExchange.MCX.ToString();
+            teleMessage = "COMMODITY REPORT :-\n";
+            teleMessage += GetReport(exhange);
+
+            if (strGroupsChannelsList == null)
+            {
+                strGroupsChannelsList = ReadGroupsChannelsCsvFile();
+            }
+            Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
         }
 
         private void EquityReport()
+        {
+            string teleMessage = string.Empty;
+            string exhange = enumExchange.NSE.ToString();
+            teleMessage = "EQUITY REPORT :-\n";
+            teleMessage += GetReport(exhange);
+
+            if (strGroupsChannelsList == null)
+            {
+                strGroupsChannelsList = ReadGroupsChannelsCsvFile();
+            }
+            Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
+        }
+        private string GetReport(string exhange)
         {
             string teleMessage = string.Empty;
             DataTable mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile());
@@ -137,46 +188,49 @@ namespace TOC
             //bool isSellPresent = false;
             foreach (DataRow sentOrdersRow in mySentOrderdt.Rows)
             {
-                foreach (DataRow row in dtCsv.Rows)
+                if (sentOrdersRow["exchange"].ToString().Equals(exhange))
                 {
-                    if (string.Compare(row["symbol"].ToString().Trim(), sentOrdersRow["symbol"].ToString().Trim()) == 0)
+                    foreach (DataRow row in dtCsv.Rows)
                     {
-                        isPresent = true;
-                        if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
-                            string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) != 0)
+                        if (string.Compare(row["symbol"].ToString().Trim(), sentOrdersRow["symbol"].ToString().Trim()) == 0)
                         {
-                            //DataRow newdr = dtCsv.NewRow();
-                            row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
-                            row["SellTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
-                            row["SellPrice"] = sentOrdersRow["priceStr"];
-                            row["qty"] = sentOrdersRow["qty"];
-                            row["PositionStatus"] = enumPositionStatus.Close.ToString();
-                            row["PositionType"] = enumPositionType.Long.ToString();
-                        }
-                        else if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) != 0 &&
-                                string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
-                        {
-                            row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
-                            row["BuyTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
-                            row["BuyPrice"] = sentOrdersRow["priceStr"];
-                            row["qty"] = sentOrdersRow["qty"];
-                            row["PositionStatus"] = enumPositionStatus.Close.ToString();
-                            row["PositionType"] = enumPositionType.Short.ToString();
-                        }
-                        if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
-                                string.Compare(row["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
-                        {
-                            if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Long.ToString()) == 0)
+                            isPresent = true;
+                            if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
+                                string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) != 0)
                             {
-                                row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["SellPrice"]) - Convert.ToDouble(row["BuyPrice"])) * 100 / Convert.ToDouble(row["BuyPrice"])), 2);
+                                //DataRow newdr = dtCsv.NewRow();
+                                row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
+                                row["SellTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
+                                row["SellPrice"] = sentOrdersRow["priceStr"];
+                                row["qty"] = sentOrdersRow["qty"];
+                                row["PositionStatus"] = enumPositionStatus.Close.ToString();
+                                row["PositionType"] = enumPositionType.Long.ToString();
                             }
-                            else if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Short.ToString()) == 0)
+                            else if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) != 0 &&
+                                    string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
                             {
-                                row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["BuyPrice"]) - Convert.ToDouble(row["SellPrice"])) * 100 / Convert.ToDouble(row["SellPrice"])), 2);
+                                row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
+                                row["BuyTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
+                                row["BuyPrice"] = sentOrdersRow["priceStr"];
+                                row["qty"] = sentOrdersRow["qty"];
+                                row["PositionStatus"] = enumPositionStatus.Close.ToString();
+                                row["PositionType"] = enumPositionType.Short.ToString();
+                            }
+                            if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
+                                    string.Compare(row["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
+                            {
+                                if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Long.ToString()) == 0)
+                                {
+                                    row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["SellPrice"]) - Convert.ToDouble(row["BuyPrice"])) * 100 / Convert.ToDouble(row["BuyPrice"])), 2);
+                                }
+                                else if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Short.ToString()) == 0)
+                                {
+                                    row["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(row["BuyPrice"]) - Convert.ToDouble(row["SellPrice"])) * 100 / Convert.ToDouble(row["SellPrice"])), 2);
+                                }
                             }
                         }
+                        continue;
                     }
-                    continue;
                 }
                 if (!isPresent)
                 {
@@ -202,7 +256,7 @@ namespace TOC
                     dtCsv.Rows.Add(newdr);
                 }
             }
-            teleMessage = "EQUITY REPORT :-\n";
+
             foreach (DataRow row in dtCsv.Rows)
             {
                 if (string.Compare(row["PositionStatus"].ToString().Trim(), enumPositionStatus.Open.ToString()) == 0)
@@ -228,13 +282,8 @@ namespace TOC
                         teleMessage += row["symbol"] + ": " + "BuyPrice: " + Math.Round(Convert.ToDouble(row["BuyPrice"]), 2) + " SellPrice: " + Math.Round(Convert.ToDouble(row["SellPrice"]), 2) + " Loss: " + row["ProfitLossPercent"] + "%\n";
                     }
                 }
-
             }
-            if (strGroupsChannelsList == null)
-            {
-                strGroupsChannelsList = ReadGroupsChannelsCsvFile();
-            }
-            Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
+            return teleMessage;
         }
 
         private void ClosePosition()
