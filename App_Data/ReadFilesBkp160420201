@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,8 +7,6 @@ using System.Threading;
 using System.Data;
 using System.IO;
 using System.Timers;
-//using System.Security.AccessControl;
-//using System.Security.Principal;
 
 namespace TOC
 {
@@ -17,27 +15,23 @@ namespace TOC
         private static string FOLDER_PATH = "C:\\Myfiles\\";
         private static string ORDERS_FILE_NAME = "orders.csv";
         private static string MY_ORDERS_FILE_NAME = "myorders.csv";
-        private static string LOG_FILE_NAME = "LogFile.csv";
         private static string GROUPS_AND_CHANNELS = "groupschannels.csv";
         private static string ORDERS_FILE_PATH = "C:\\autotrader\\data\\order\\" + ORDERS_FILE_NAME;
-        //private static string MY_ORDERS_FILE_PATH = "C:\\inetpub\\wwwroot\\sendorders\\";
-        private static string MY_ORDERS_FILE_PATH1 = "C:\\Abhay\\SFDC\\Git\\Others\\TOC\\TOC\\";
-        private static string MY_ORDERS_FILE_PATH2 = "C:\\autotrader\\data\\order\\";
-        private static string MY_ORDERS_FILE_PATH3 = "C:\\Myfiles\\";
-        private static string MY_ORDERS_FILE_PATH4 = "C:\\inetpub\\wwwroot\\sendorders\\";
+        private static string MY_ORDERS_FILE_PATH = "c:\\inetpub\\wwwroot\\sendorders\\" + MY_ORDERS_FILE_NAME;
+        //private static string MY_ORDERS_FILE_PATH = "C:\\Abhay\\SFDC\\Git\\Others\\TOC\\TOC\\" + MY_ORDERS_FILE_NAME;
         private static string GROUPS_AND_CHANNELS_FILE_PATH = FOLDER_PATH + GROUPS_AND_CHANNELS;
         private static string FileWatcherPath = @"C:\autotrader\data\order\";
-        //DataTable oldOrdersdt = new DataTable();
-        //DataTable newOrdersdt = new DataTable();
-        //DataTable alreadySentCallsdt = new DataTable();
+        DataTable oldOrdersdt = new DataTable();
+        DataTable newOrdersdt = new DataTable();
+        DataTable alreadySentCallsdt = new DataTable();
         private static System.Timers.Timer aTimer;
         private int TimeoutMillis = 5000; //1000 is 1 sec
         private int TimerInterval = 60000; //60 seconds
         System.Threading.Timer m_timer = null;
         List<String> files = new List<string>();
         private string[] strGroupsChannelsList;
-        TimeSpan timePreTradingStarting = new TimeSpan(8, 59, 0);
-        TimeSpan timeTradingStarting = new TimeSpan(9, 14, 0);
+        TimeSpan timePreTradingStarting = new TimeSpan(8, 58, 0);
+        TimeSpan timeTradingStarting = new TimeSpan(9, 13, 0);
         TimeSpan timeStartClosePosition = new TimeSpan(15, 0, 0);
         TimeSpan timeClosePosition = new TimeSpan(15, 15, 0);
         TimeSpan timeEquityReport = new TimeSpan(15, 35, 0);
@@ -46,15 +40,12 @@ namespace TOC
         //TimeSpan timeClosePosition = new TimeSpan(13, 26, 0);
         //TimeSpan timeEquityReport = new TimeSpan(23, 55, 0);
         //TimeSpan timeCommodityReport = new TimeSpan(13, 28, 0);
-        DataTable logdt = new DataTable();
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
-                //Page.LoadComplete += Page_LoadComplete;
-                AddLogColumns(logdt);
-
                 var wh = new AutoResetEvent(false);
                 var fileSystemWatcher = new FileSystemWatcher();
                 fileSystemWatcher.Path = FileWatcherPath;
@@ -95,19 +86,12 @@ namespace TOC
                 // Start the timer
                 aTimer.Enabled = true;
             }
-
-            if (logdt.Columns.Count == 0)
-            {
-                AddLogColumns(logdt);
-            }
         }
 
-        private void AddLogColumns(DataTable logdt)
+        private void CreateErrorLog()
         {
-            logdt.Columns.Add("DateTime");
-            logdt.Columns.Add("Activity");
-            logdt.Columns.Add("ExceptionName");
-            logdt.Columns.Add("ExceptionDesc");
+            DataTable errorLogdt = new DataTable();
+
         }
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
@@ -142,7 +126,7 @@ namespace TOC
         private void PreTradingStarting()
         {
             string teleMessage = string.Empty;
-            teleMessage = "PRE-TRADING OF MARKETS IS STARTING.\n";
+            teleMessage = "PRE-TRADING OF MARKETS IS STARTING. BEST OF LUCK...\n";
             if (strGroupsChannelsList == null)
             {
                 strGroupsChannelsList = ReadGroupsChannelsCsvFile();
@@ -153,7 +137,7 @@ namespace TOC
         private void TradingStarting()
         {
             string teleMessage = string.Empty;
-            teleMessage = "STOCK MARKETS ARE OPEN FOR TRADING NOW.\n";
+            teleMessage = "STOCK MARKETS ARE OPEN FOR TRADING NOW.. BEST OF LUCK...\n";
             if (strGroupsChannelsList == null)
             {
                 strGroupsChannelsList = ReadGroupsChannelsCsvFile();
@@ -191,24 +175,7 @@ namespace TOC
         private string GetReport(string exhange)
         {
             string teleMessage = string.Empty;
-            DataTable mySentOrderdt = new DataTable();
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH1))
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH1 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH2))
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH2 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH3))
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH3 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH4))
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH4 + MY_ORDERS_FILE_NAME));
-            }
-
+            DataTable mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile());
 
             DataTable dtCsv = new DataTable();
             dtCsv.Columns.Add("symbol");
@@ -234,8 +201,7 @@ namespace TOC
                         {
                             isPresent = true;
                             if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
-                                string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) != 0 &&
-                                string.Compare(sentOrdersRow["TradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
+                                string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) != 0)
                             {
                                 //DataRow newdr = dtCsv.NewRow();
                                 row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
@@ -246,8 +212,7 @@ namespace TOC
                                 row["PositionType"] = enumPositionType.Long.ToString();
                             }
                             else if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) != 0 &&
-                                    string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0 &&
-                                    string.Compare(sentOrdersRow["TradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0)
+                                    string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
                             {
                                 row["symbol"] = sentOrdersRow["symbol"].ToString().Trim();
                                 row["BuyTradeType"] = sentOrdersRow["TradeType"].ToString().Trim();
@@ -257,7 +222,7 @@ namespace TOC
                                 row["PositionType"] = enumPositionType.Short.ToString();
                             }
                             if (string.Compare(row["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
-                                string.Compare(row["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
+                                    string.Compare(row["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
                             {
                                 if (string.Compare(row["PositionType"].ToString().Trim(), enumPositionType.Long.ToString()) == 0)
                                 {
@@ -364,20 +329,11 @@ namespace TOC
             mutex.WaitOne();
             backup.AddRange(files);
             files.Clear();
+            mutex.ReleaseMutex();
 
             foreach (string file in backup)
             {
                 FindNewOrders();
-            }
-
-            mutex.ReleaseMutex();
-
-            ViewState["LogTable"] = logdt;
-            ShowLog();
-
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH3))
-            {
-                WriteDataTable(logdt, MY_ORDERS_FILE_PATH3 + LOG_FILE_NAME);
             }
         }
 
@@ -403,185 +359,53 @@ namespace TOC
 
         private void FindNewOrders()
         {
-            DataTable currentOrdersdt = RemoveBlankRows(ReadOrdersCsvFile());
-            logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "FindNewOrders", "ReadOrdersCsvFile", "Row count: " + currentOrdersdt.Rows.Count);
-
-            DataTable mySentOrderdt = new DataTable();
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH1) && mySentOrderdt.Rows.Count == 0)
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH1 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH2) && mySentOrderdt.Rows.Count == 0)
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH2 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH3) && mySentOrderdt.Rows.Count == 0)
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH3 + MY_ORDERS_FILE_NAME));
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH4) && mySentOrderdt.Rows.Count == 0)
-            {
-                mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile(MY_ORDERS_FILE_PATH4 + MY_ORDERS_FILE_NAME));
-            }
-
-            logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "FindNewOrders", "ReadMyOrdersCsvFile", "Row count: " + mySentOrderdt.Rows.Count);
-            //newOrdersdt = currentOrdersdt.Clone();
-
-            DataTable addtoSentOrderdt = currentOrdersdt.Clone();
-            string teleMessage = string.Empty;
+            DataTable currentOrdersdt = ReadOrdersCsvFile();
+            newOrdersdt = currentOrdersdt.Clone();
+            alreadySentCallsdt = currentOrdersdt.Clone();
 
             //compare new file data with old file data to find new orders in the file
-            foreach (DataRow currentOrdersRow in currentOrdersdt.Rows)
+            foreach (DataRow newrow in currentOrdersdt.Rows)
             {
-                //set the flag to false for each new order
-                bool isMessageNotAlreadySent = true;
-
-                if (string.Compare(currentOrdersRow["AT_PLACE_ORDER_CMD"].ToString().Trim(), "PLACE_ORDER") == 0 &&
-                currentOrdersRow["symbol"].ToString().Length > 1 &&
-                ((string.Compare(currentOrdersRow["tradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0) ||
-                (string.Compare(currentOrdersRow["tradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)))
+                bool isRowExistinFile = false;
+                foreach (DataRow oldrow in oldOrdersdt.Rows)
                 {
-                    foreach (DataRow SentOrderRow in mySentOrderdt.Rows)
+                    if (string.Compare(oldrow["AT_PLACE_ORDER_CMD"].ToString().Trim(), newrow["AT_PLACE_ORDER_CMD"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["id"].ToString().Trim(), newrow["id"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["symbol"].ToString().Trim(), newrow["symbol"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["tradeType"].ToString().Trim(), newrow["tradeType"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["productType"].ToString().Trim(), newrow["productType"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["orderType"].ToString().Trim(), newrow["orderType"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["qty"].ToString().Trim(), newrow["qty"].ToString().Trim()) == 0 &&
+                        string.Compare(oldrow["priceStr"].ToString().Trim(), newrow["priceStr"].ToString().Trim()) == 0)
                     {
-                        if (string.Compare(currentOrdersRow["AT_PLACE_ORDER_CMD"].ToString().Trim(), SentOrderRow["AT_PLACE_ORDER_CMD"].ToString().Trim()) == 0 &&
-                            string.Compare(currentOrdersRow["symbol"].ToString().Trim(), SentOrderRow["symbol"].ToString().Trim()) == 0 &&
-                            string.Compare(currentOrdersRow["tradeType"].ToString().Trim(), SentOrderRow["tradeType"].ToString().Trim()) == 0 &&
-                            string.Compare(currentOrdersRow["priceStr"].ToString().Trim(), SentOrderRow["priceStr"].ToString().Trim()) == 0)
+                        isRowExistinFile = true;
+                    }
+                }
+                if (isRowExistinFile == false)
+                {
+                    bool isThisMessageSent = false;
+                    foreach (DataRow row in newOrdersdt.Rows)
+                    {
+                        if (string.Compare(row["AT_PLACE_ORDER_CMD"].ToString(), newrow["AT_PLACE_ORDER_CMD"].ToString()) == 0 &&
+                        string.Compare(row["symbol"].ToString(), newrow["symbol"].ToString()) == 0 &&
+                        newrow["symbol"].ToString().Length > 1 &&
+                        row["symbol"].ToString().Length > 1 &&
+                        string.Compare(row["tradeType"].ToString(), newrow["tradeType"].ToString()) == 0)
                         {
-                            isMessageNotAlreadySent = false;
+                            isThisMessageSent = true;
                         }
                     }
-                }
-                else
-                {
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "FindNewOrders", "currentOrdersRow else condition", "Row details: " + mySentOrderdt);
-                }
-
-                if (isMessageNotAlreadySent)
-                {
-                    if (currentOrdersRow["tradeType"] != null &&
-                        currentOrdersRow["symbol"] != null &&
-                        currentOrdersRow["targetStr"] != null &&
-                        currentOrdersRow["stoplossStr"] != null &&
-                        currentOrdersRow["trailingStoplossStr"] != null &&
-                        currentOrdersRow["priceStr"] != null)
+                    if (isThisMessageSent == false)
                     {
-                        //Telegram message to be sent...
-                        teleMessage = "TREND ALERT:-\n" +
-                                        currentOrdersRow["tradeType"].ToString() + " " + currentOrdersRow["symbol"].ToString() + " AT " + Math.Round(Convert.ToDouble(currentOrdersRow["priceStr"]), 1) + "\n" +
-                                        "TARGET " + Math.Round(Convert.ToDouble(currentOrdersRow["targetStr"]), 1) + "\n" +
-                                        "STOP LOSS " + Math.Round(Convert.ToDouble(currentOrdersRow["stoplossStr"]), 1) + "\n" +
-                                        "TRAILING SL " + Math.Round(Convert.ToDouble(currentOrdersRow["trailingStoplossStr"]), 1) + " POINTS";
-
-                        //Send telegram message
-                        Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
-
-                        //Add sent messages to the list
-                        addtoSentOrderdt.Rows.Add(currentOrdersRow.ItemArray);
-                    }
-                    else
-                    {
-                        logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "FindNewOrders", "isMessageNotAlreadySent is false", "Row details: " + mySentOrderdt);
+                        newOrdersdt.Rows.Add(newrow.ItemArray);
                     }
                 }
             }
+            oldOrdersdt = currentOrdersdt.Copy();
 
-            mySentOrderdt.Merge(addtoSentOrderdt);
-            mySentOrderdt.AcceptChanges();
-            //string filePath = MY_ORDERS_FILE_PATH;
-
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH1))
+            if (newOrdersdt.Rows.Count > 0)
             {
-                WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH1 + MY_ORDERS_FILE_NAME);
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH2))
-            {
-                WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH2 + MY_ORDERS_FILE_NAME);
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH3))
-            {
-                WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH3 + MY_ORDERS_FILE_NAME);
-            }
-            if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH4))
-            {
-                WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH4 + MY_ORDERS_FILE_NAME);
-            }
-            //if (hasWriteAccessToFolder(MY_ORDERS_FILE_PATH4))
-            //{
-            //    WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH4 + MY_ORDERS_FILE_NAME);
-            //}
-            //WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH1 + MY_ORDERS_FILE_NAME);
-            //WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH2 + MY_ORDERS_FILE_NAME);
-            //WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH3 + MY_ORDERS_FILE_NAME);
-            //WriteDataTable(mySentOrderdt, MY_ORDERS_FILE_PATH4 + MY_ORDERS_FILE_NAME);
-        }
-
-        private bool hasWriteAccessToFolder(string folderPath)
-        {
-            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
-                return false;
-            try
-            {
-                // Attempt to get a list of security permissions from the folder. 
-                // This will raise an exception if the path is read only or do not have access to view the permissions. 
-                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(folderPath);
-                //logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "hasWriteAccessToFolder ", "Have folder access ", "Folder Path: " + folderPath);
-                return true;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "hasWriteAccessToFolder ", "Exception ", ex.Message + "Folder Path: " + folderPath);
-                return false;
-            }
-        }
-
-        //public static bool HasFolderWritePermission(string folderPath)
-        //{
-        //    if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
-        //        return false;
-        //    try
-        //    {
-        //        DirectorySecurity security = Directory.GetAccessControl(folderPath);
-        //        SecurityIdentifier users = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
-        //        foreach (AuthorizationRule rule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
-        //        {
-        //            if (rule.IdentityReference == users)
-        //            {
-        //                FileSystemAccessRule rights = ((FileSystemAccessRule)rule);
-        //                if (rights.AccessControlType == AccessControlType.Allow)
-        //                {
-        //                    if (rights.FileSystemRights == (rights.FileSystemRights | FileSystemRights.Modify)) return true;
-        //                }
-        //            }
-        //        }
-        //        return false;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        public void WriteDataTable(DataTable sourceTable, string filePath)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(filePath))
-                {
-                    IEnumerable<String> items = null;
-                    foreach (DataRow row in sourceTable.Rows)
-                    {
-                        items = row.ItemArray.Select(o => QuoteValue(o?.ToString() ?? String.Empty));
-                        writer.WriteLine(String.Join(",", items));
-                    }
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "WriteDataTable", "Write to file", "filePath: " + filePath);
-                    writer.Flush();
-                    writer.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "WriteDataTable", "Exception", ex.Message);
+                PrepareTelegramMessage(newOrdersdt);
             }
         }
 
@@ -598,12 +422,103 @@ namespace TOC
                 {
                     withoutBlankRowsdt.Rows.Add(row.ItemArray);
                 }
-                else
-                {
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "RemoveBlankRows", "Blank Row", row);
-                }
             }
             return withoutBlankRowsdt;
+        }
+
+        private void PrepareTelegramMessage(DataTable newOrdersdt)
+        {
+            DataTable mySentOrderdt = RemoveBlankRows(ReadMyOrdersCsvFile());
+            string teleMessage = string.Empty;
+
+            foreach (DataRow row in newOrdersdt.Rows)
+            {
+                //set the flag to false for each new order
+                bool isMessageNotAlreadySent = true;
+
+                if (string.Compare(row["AT_PLACE_ORDER_CMD"].ToString().Trim(), "PLACE_ORDER") == 0 &&
+                row["symbol"].ToString().Length > 1 &&
+                ((string.Compare(row["tradeType"].ToString().Trim(), "BUY") == 0) ||
+                (string.Compare(row["tradeType"].ToString().Trim(), "SELL") == 0)))
+                {
+                    foreach (DataRow sentRow in alreadySentCallsdt.Rows)
+                    {
+                        if (string.Compare(row["AT_PLACE_ORDER_CMD"].ToString().Trim(), sentRow["AT_PLACE_ORDER_CMD"].ToString().Trim()) == 0 &&
+                        string.Compare(row["symbol"].ToString().Trim(), sentRow["symbol"].ToString().Trim()) == 0 &&
+                        string.Compare(row["tradeType"].ToString().Trim(), sentRow["tradeType"].ToString().Trim()) == 0 &&
+                        string.Compare(row["priceStr"].ToString().Trim(), sentRow["priceStr"].ToString().Trim()) == 0)
+                        {
+                            isMessageNotAlreadySent = false;
+                        }
+                    }
+
+                    if (isMessageNotAlreadySent)
+                    {
+
+                        bool isOrderPresentinFile = false;
+                        foreach (DataRow sentOrdersRow in mySentOrderdt.Rows)
+                        {
+                            if (string.Compare(row["AT_PLACE_ORDER_CMD"].ToString().Trim(), sentOrdersRow["AT_PLACE_ORDER_CMD"].ToString().Trim()) == 0 &&
+                            string.Compare(row["symbol"].ToString().Trim(), sentOrdersRow["symbol"].ToString().Trim()) == 0 &&
+                            string.Compare(row["tradeType"].ToString().Trim(), sentOrdersRow["tradeType"].ToString().Trim()) == 0 &&
+                            string.Compare(row["priceStr"].ToString().Trim(), sentOrdersRow["priceStr"].ToString().Trim()) == 0)
+                            {
+                                isOrderPresentinFile = true;
+                            }
+                        }
+
+                        if (!isOrderPresentinFile)
+                        {
+                            if (row["tradeType"] != null && row["symbol"] != null && row["priceStr"] != null)
+                            {
+                                //Telegram message to be sent...
+                                teleMessage = "TREND ALERT:-\n" +
+                                                row["tradeType"].ToString() + " " + row["symbol"].ToString() + " AT " + Math.Round(Convert.ToDouble(row["priceStr"]), 2) + "\n" +
+                                                "TARGET OPEN\n" +
+                                                "STOP LOSS " + Math.Round(Convert.ToDouble(row["trailingStoplossStr"]), 2) + "\n\n" +
+                                                "Call only for learning purposes";
+
+                                //Send telegram message
+                                Telegram.SendTelegramMessage(teleMessage, strGroupsChannelsList);
+
+                                //Add sent messages to the list
+                                alreadySentCallsdt.Rows.Add(row.ItemArray);
+                            }
+                        }
+                    }
+                }
+            }
+            mySentOrderdt.Merge(alreadySentCallsdt);
+            mySentOrderdt.AcceptChanges();
+            using (StreamWriter writer = new StreamWriter(MY_ORDERS_FILE_PATH))
+            {
+                WriteDataTable(mySentOrderdt, writer, true);
+                writer.Close();
+            }
+
+        }
+
+        public static void WriteDataTable(DataTable sourceTable, TextWriter writer, bool includeHeaders)
+        {
+            //if (includeHeaders)
+            //{
+            //    IEnumerable<String> headerValues = sourceTable.Columns
+            //        .OfType<DataColumn>()
+            //        .Select(column => QuoteValue(column.ColumnName));
+            //    writer.WriteLine(String.Join(",", headerValues));
+            //}
+
+            IEnumerable<String> items = null;
+
+            foreach (DataRow row in sourceTable.Rows)
+            {
+                items = row.ItemArray.Select(o => QuoteValue(o?.ToString() ?? String.Empty));
+                //items = row.ItemArray.se
+                writer.WriteLine(String.Join(",", items));
+                //writer.WriteLine(items);
+            }
+
+            writer.Flush();
         }
 
         private static string QuoteValue(string value)
@@ -631,33 +546,32 @@ namespace TOC
                         }
                     }
                     sr.Close();
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadGroupsChannelsCsvFile", "Reader", "Path: " + GROUPS_AND_CHANNELS_FILE_PATH);
                 }
             }
             catch (Exception ex)
             {
-                logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadGroupsChannelsCsvFile", "Exception", ex.Message);
+
             }
             return rowValues;
         }
 
-        public DataTable ReadMyOrdersCsvFile(string filePath)
+        public DataTable ReadMyOrdersCsvFile()
         {
-            DataTable dtCsv = AddColumns();
+            DataTable dtCsv = alreadySentCallsdt.Clone();
             string Fulltext;
             try
             {
-                using (StreamReader sr = new StreamReader(filePath))
+                using (StreamReader sr = new StreamReader(MY_ORDERS_FILE_PATH))
                 {
                     while (!sr.EndOfStream)
                     {
                         Fulltext = sr.ReadToEnd().ToString(); //read full file text  
                         string[] rows = Fulltext.Split('\n'); //split full file text into rows 
 
-                        //if (dtCsv.Columns.Count == 0)
-                        //{
-                        //    dtCsv = AddColumns();
-                        //}
+                        if (dtCsv.Columns.Count == 0)
+                        {
+                            dtCsv = AddColumns();
+                        }
 
                         for (int i = 0; i < rows.Count(); i++)
                         {
@@ -672,13 +586,12 @@ namespace TOC
                             }
                         }
                     }
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadMyOrdersCsvFile", "Reader", "Path: " + filePath);
                     sr.Close();
                 }
             }
             catch (Exception ex)
             {
-                logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadMyOrdersCsvFile", "Exception", ex.Message);
+
             }
             return dtCsv;
         }
@@ -726,36 +639,34 @@ namespace TOC
                     while (!sr.EndOfStream)
                     {
                         Fulltext = sr.ReadToEnd().ToString(); //read full file text  
-                        string[] rows = Fulltext.Split('\n'); //split full file text into rows
+                        string[] rows = Fulltext.Split('\n'); //split full file text into rows  
 
-                        dtCsv = AddColumns();
-
-                        //dtCsv.Columns.Add("AT_PLACE_ORDER_CMD");
-                        //dtCsv.Columns.Add("id");
-                        //dtCsv.Columns.Add("symbol");
-                        //dtCsv.Columns.Add("tradeType");
-                        //dtCsv.Columns.Add("productType");
-                        //dtCsv.Columns.Add("orderType");
-                        //dtCsv.Columns.Add("qty");
-                        //dtCsv.Columns.Add("priceStr");
-                        //dtCsv.Columns.Add("triggerPriceStr");
-                        //dtCsv.Columns.Add("disclosedQuantity");
-                        //dtCsv.Columns.Add("exchange");
-                        //dtCsv.Columns.Add("instrument");
-                        //dtCsv.Columns.Add("optionType");
-                        //dtCsv.Columns.Add("strikePriceStr");
-                        //dtCsv.Columns.Add("expiry");
-                        //dtCsv.Columns.Add("clientId");
-                        //dtCsv.Columns.Add("validity");
-                        //dtCsv.Columns.Add("traderType");
-                        //dtCsv.Columns.Add("marketProtectionPctStr");
-                        //dtCsv.Columns.Add("strategyId");
-                        //dtCsv.Columns.Add("publishTime");
-                        //dtCsv.Columns.Add("commentsStr");
-                        //dtCsv.Columns.Add("variety");
-                        //dtCsv.Columns.Add("targetStr");
-                        //dtCsv.Columns.Add("stoplossStr");
-                        //dtCsv.Columns.Add("trailingStoplossStr");
+                        dtCsv.Columns.Add("AT_PLACE_ORDER_CMD");
+                        dtCsv.Columns.Add("id");
+                        dtCsv.Columns.Add("symbol");
+                        dtCsv.Columns.Add("tradeType");
+                        dtCsv.Columns.Add("productType");
+                        dtCsv.Columns.Add("orderType");
+                        dtCsv.Columns.Add("qty");
+                        dtCsv.Columns.Add("priceStr");
+                        dtCsv.Columns.Add("triggerPriceStr");
+                        dtCsv.Columns.Add("disclosedQuantity");
+                        dtCsv.Columns.Add("exchange");
+                        dtCsv.Columns.Add("instrument");
+                        dtCsv.Columns.Add("optionType");
+                        dtCsv.Columns.Add("strikePriceStr");
+                        dtCsv.Columns.Add("expiry");
+                        dtCsv.Columns.Add("clientId");
+                        dtCsv.Columns.Add("validity");
+                        dtCsv.Columns.Add("traderType");
+                        dtCsv.Columns.Add("marketProtectionPctStr");
+                        dtCsv.Columns.Add("strategyId");
+                        dtCsv.Columns.Add("publishTime");
+                        dtCsv.Columns.Add("commentsStr");
+                        dtCsv.Columns.Add("variety");
+                        dtCsv.Columns.Add("targetStr");
+                        dtCsv.Columns.Add("stoplossStr");
+                        dtCsv.Columns.Add("trailingStoplossStr");
 
                         for (int i = 0; i < rows.Count(); i++)
                         {
@@ -770,12 +681,11 @@ namespace TOC
                             }
                         }
                     }
-                    logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadOrdersCsvFile", "Reader", "Path: " + ORDERS_FILE_PATH);
                 }
             }
             catch (Exception ex)
             {
-                logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "ReadOrdersCsvFile", "Exception", ex.Message);
+
             }
             return dtCsv;
         }
@@ -783,26 +693,6 @@ namespace TOC
         protected void btnEquityReport_Click(object sender, EventArgs e)
         {
             EquityReport();
-        }
-
-        protected void btnShowLogs_Click(object sender, EventArgs e)
-        {
-            ShowLog();
-        }
-
-        private void Page_LoadComplete(object sender, EventArgs e)
-        {
-            ShowLog();
-        }
-
-        private void ShowLog()
-        {
-            if (ViewState["LogTable"] != null)
-            {
-                logdt = (DataTable)ViewState["LogTable"];
-            }
-            gvLog.DataSource = logdt;
-            gvLog.DataBind();
         }
     }
 }

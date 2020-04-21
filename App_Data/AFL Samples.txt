@@ -1,0 +1,5 @@
+﻿//Get latest price
+//Liveprice = GetRTData("Last");
+
+//Plot latest price on the chart
+//PlotText(" "+LastValue(C),BarCount,LastValue(C),2);

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ReadFiles.aspx.cs" Inherits="TOC.ReadFiles" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ReadFiles.aspx.cs" Inherits="TOC.ReadFiles" EnableViewState="true" ViewStateMode="Enabled" %>
 
 <!DOCTYPE html>
 
@@ -21,6 +21,16 @@
         <br />
         <asp:Button ID="btnEquityReport" runat="server" Text="Equity Report" OnClick="btnEquityReport_Click" />
         <br />
+        <br />
+        <asp:TextBox ID="txtMessage" runat="server" Height="29px" Width="361px"></asp:TextBox>
+        <br />
+        <br />
+        <asp:Button ID="btnShowLogs" runat="server" Text="Show Logs" OnClick="btnShowLogs_Click" />
+        <asp:TextBox ID="txtResult" runat="server"></asp:TextBox>
+        <br />
+        <div>
+            <asp:GridView ID="gvLog" runat="server"></asp:GridView>
+        </div>
     </form>
 </body>
 </html>
