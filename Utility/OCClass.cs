@@ -21,7 +21,7 @@ namespace TOC
                 public string expiryDate { get; set; }
                 public string underlying { get; set; }
                 public string identifier { get; set; }
-                public int openInterest { get; set; }
+                public double openInterest { get; set; }
                 public int changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }
@@ -43,7 +43,7 @@ namespace TOC
                 public string expiryDate { get; set; }
                 public string underlying { get; set; }
                 public string identifier { get; set; }
-                public int openInterest { get; set; }
+                public double openInterest { get; set; }
                 public int changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }
@@ -101,7 +101,7 @@ namespace TOC
                 public string expiryDate { get; set; }
                 public string underlying { get; set; }
                 public string identifier { get; set; }
-                public int openInterest { get; set; }
+                public double openInterest { get; set; }
                 public int changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }
@@ -123,7 +123,7 @@ namespace TOC
                 public string expiryDate { get; set; }
                 public string underlying { get; set; }
                 public string identifier { get; set; }
-                public int openInterest { get; set; }
+                public double openInterest { get; set; }
                 public int changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }

@@ -21,7 +21,7 @@ namespace TOC
     {
         //private const string NSEIndiaWebsiteURL = "https://www1.nseindia.com";
         //private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
-        string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
+        string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
         //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=BANKNIFTY&instrument=OPTIDX&date=-&segmentLink=17";
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         Records recordsObject = new Records();
