@@ -11,7 +11,7 @@ namespace TOC
 {
 
 
-    public partial class OptionChain
+    public partial class StrategyBuilder
     {
 
         /// <summary>
@@ -24,6 +24,15 @@ namespace TOC
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
+        /// lblOCType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOCType;
+
+        /// <summary>
         /// rblOCType control.
         /// </summary>
         /// <remarks>
@@ -33,75 +42,39 @@ namespace TOC
         protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
-        /// btnRefresh control.
+        /// lblLotSize control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnRefresh;
+        protected global::System.Web.UI.WebControls.Label lblLotSize;
 
         /// <summary>
-        /// btnShowCalculation control.
+        /// lblLotSizeValue control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnShowCalculation;
+        protected global::System.Web.UI.WebControls.Label lblLotSizeValue;
 
         /// <summary>
-        /// btnGetButterflySpread control.
+        /// gvStrategy control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnGetButterflySpread;
+        protected global::System.Web.UI.WebControls.GridView gvStrategy;
 
         /// <summary>
-        /// ddlExpiryDates control.
+        /// btnAddRows control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
-
-        /// <summary>
-        /// divOptionChain control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOptionChain;
-
-        /// <summary>
-        /// gvOptionChain control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvOptionChain;
-
-        /// <summary>
-        /// divButterflySpread control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divButterflySpread;
-
-        /// <summary>
-        /// tblButterflySpread control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblButterflySpread;
+        protected global::System.Web.UI.WebControls.Button btnAddRows;
     }
 }

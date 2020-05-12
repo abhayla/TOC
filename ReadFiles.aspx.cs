@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Timers;
 using System.Security.Authentication.ExtendedProtection;
+using System.Globalization;
 //using System.Security.AccessControl;
 //using System.Security.Principal;
 
@@ -18,6 +19,9 @@ namespace TOC
         private static string ORDERS_FILE_NAME = "orders.csv";
         private static string MY_ORDERS_FILE_NAME = "myorders.csv";
         private static string ORDER_TRACKER_FILE_NAME = "OrderTracker.csv";
+        private static string ORDER_TRACKER_WEEKLY_FILE_NAME = "OrderTrackerWeekly.csv";
+        private static string ORDER_TRACKER_MONTHLY_FILE_NAME = "OrderTrackerMonthly.csv";
+        private static string ORDER_TRACKER_YEARLY_FILE_NAME = "OrderTrackerYearly.csv";
         private static string LOG_FILE_NAME = "LogFile.csv";
         private static string GROUPS_AND_CHANNELS = "groupschannels.csv";
         private static string ORDERS_FILE_PATH = "C:\\autotrader\\data\\order\\" + ORDERS_FILE_NAME;
@@ -28,13 +32,13 @@ namespace TOC
         private static string GROUPS_AND_CHANNELS_FILE_PATH = MYFILES_FOLDER_PATH + GROUPS_AND_CHANNELS;
         private static string FileWatcherPath = @"C:\autotrader\data\order\";
         private static System.Timers.Timer aTimer;
-        private int TimeoutMillis = 10000; //1000 is 1 sec
+        private int TimeoutMillis = 5000; //1000 is 1 sec
         private int TimerInterval = 60000; //60 seconds
         System.Threading.Timer m_timer = null;
         List<String> files = new List<string>();
         private string[] strGroupsChannelsList;
         private string[] strExceptionChannelsList = { "@Puneites" };
-        private string[] strCommodityList = { "@CommodityTalk" };
+        private string[] strCommodityList = { "@Zerodha_Upstox_CommodityTalk" };
         TimeSpan timePreTradingStarting = new TimeSpan(8, 59, 0);
         TimeSpan timeTradingStarting = new TimeSpan(9, 14, 0);
         TimeSpan timeStartClosePosition = new TimeSpan(15, 0, 0);
@@ -58,6 +62,7 @@ namespace TOC
         //TimeSpan timeEquityClose = new TimeSpan(23, 59, 0);
         //TimeSpan timeCommodityOpen = new TimeSpan(0, 0, 0);
         //TimeSpan timeCommodityClose = new TimeSpan(23, 59, 0);
+
 
         DataTable logdt = new DataTable();
 
@@ -303,6 +308,7 @@ namespace TOC
             dtCsv.Columns.Add("qty");
             dtCsv.Columns.Add("PositionStatus");
             dtCsv.Columns.Add("PositionType");
+            dtCsv.Columns.Add("ProfitLoss");
             dtCsv.Columns.Add("ProfitLossPercent");
             return dtCsv;
         }
@@ -356,21 +362,19 @@ namespace TOC
                 if (string.Compare(orderTrackerRow["symbol"].ToString().Trim(), myOrdersRow["symbol"].ToString().Trim()) == 0)
                 {
                     isPresent = true;
-                    orderTrackerRow["symbol"] = myOrdersRow["symbol"].ToString().Trim();
-                    orderTrackerRow["qty"] = myOrdersRow["qty"];
-                    orderTrackerRow["PositionStatus"] = enumPositionStatus.Close.ToString();
+                    //orderTrackerRow["symbol"] = myOrdersRow["symbol"].ToString().Trim();
 
                     if (string.Compare(orderTrackerRow["BuyTradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0 &&
                         string.Compare(orderTrackerRow["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) != 0 &&
                         string.Compare(myOrdersRow["TradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0)
                     {
-
                         orderTrackerRow["SellTradeType"] = myOrdersRow["TradeType"].ToString().Trim();
                         orderTrackerRow["SellPrice"] = myOrdersRow["priceStr"];
                         orderTrackerRow["SellDate"] = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
-                        //orderTrackerRow["qty"] = myOrdersRow["qty"];
+                        orderTrackerRow["qty"] = myOrdersRow["qty"];
+                        orderTrackerRow["ProfitLoss"] = Math.Round(Convert.ToDouble(orderTrackerRow["SellPrice"]) - Convert.ToDouble(orderTrackerRow["BuyPrice"]), 2);
                         orderTrackerRow["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(orderTrackerRow["SellPrice"]) - Convert.ToDouble(orderTrackerRow["BuyPrice"])) * 100 / Convert.ToDouble(orderTrackerRow["BuyPrice"])), 2);
-                        //orderTrackerRow["PositionStatus"] = enumPositionStatus.Close.ToString();
+                        orderTrackerRow["PositionStatus"] = enumPositionStatus.Close.ToString();
                         lastOrderdr.ItemArray = orderTrackerRow.ItemArray.Clone() as object[];
                         isPresent = false;
 
@@ -379,11 +383,13 @@ namespace TOC
                             string.Compare(orderTrackerRow["SellTradeType"].ToString().Trim(), enumTransactionType.SELL.ToString()) == 0 &&
                             string.Compare(myOrdersRow["TradeType"].ToString().Trim(), enumTransactionType.BUY.ToString()) == 0)
                     {
-                        //orderTrackerRow["symbol"] = myOrdersRow["symbol"].ToString().Trim();
                         orderTrackerRow["BuyTradeType"] = myOrdersRow["TradeType"].ToString().Trim();
                         orderTrackerRow["BuyPrice"] = myOrdersRow["priceStr"];
                         orderTrackerRow["BuyDate"] = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+                        orderTrackerRow["qty"] = myOrdersRow["qty"];
+                        orderTrackerRow["ProfitLoss"] = Math.Round(Convert.ToDouble(orderTrackerRow["SellPrice"]) - Convert.ToDouble(orderTrackerRow["BuyPrice"]), 2);
                         orderTrackerRow["ProfitLossPercent"] = Math.Round(((Convert.ToDouble(orderTrackerRow["SellPrice"]) - Convert.ToDouble(orderTrackerRow["BuyPrice"])) * 100 / Convert.ToDouble(orderTrackerRow["SellPrice"])), 2);
+                        orderTrackerRow["PositionStatus"] = enumPositionStatus.Close.ToString();
                         lastOrderdr.ItemArray = orderTrackerRow.ItemArray.Clone() as object[];
                         isPresent = false;
                     }
@@ -435,7 +441,14 @@ namespace TOC
 
                 foreach (DataRow orderTrackerRow in orderTrackerdt.Rows)
                 {
-                    if (string.Compare(orderTrackerRow["exchange"].ToString().Trim(), exhange) == 0)
+                    DateTime buyDate = DateTime.ParseExact(orderTrackerRow["BuyDate"].ToString(), "MM-dd-yyyy HH:mm:ss", null);
+                    DateTime sellDate = DateTime.ParseExact(orderTrackerRow["SellDate"].ToString(), "MM-dd-yyyy HH:mm:ss", null);
+
+                    //Send report only for given exchage
+                    //Report to include only those rows which have Buy or Sell date as today date.
+                    if (string.Compare(orderTrackerRow["exchange"].ToString().Trim(), exhange) == 0 &&
+                        (DateTime.Now.Date.ToString().Equals(buyDate.Date.ToString()) || 
+                        DateTime.Now.Date.ToString().Equals(sellDate.Date.ToString())))
                     {
                         if (string.Compare(orderTrackerRow["PositionStatus"].ToString().Trim(), enumPositionStatus.Open.ToString()) == 0)
                         {
@@ -668,7 +681,6 @@ namespace TOC
 
                                             teleMessage += "Buy Price: " + Math.Round(Convert.ToDouble(lastOrderdr["BuyPrice"].ToString()), 1) + "\n" +
                                             "Sell Price: " + Math.Round(Convert.ToDouble(lastOrderdr["SellPrice"].ToString()), 1) + "\n";
-                                            PL = Math.Round(Convert.ToDouble(lastOrderdr["BuyPrice"].ToString()) - Convert.ToDouble(lastOrderdr["SellPrice"].ToString()), 1);
                                         }
                                         else
                                         {
@@ -676,18 +688,23 @@ namespace TOC
 
                                             teleMessage += "Sell Price: " + Math.Round(Convert.ToDouble(lastOrderdr["SellPrice"].ToString()), 1) + "\n" +
                                             "Buy Price: " + Math.Round(Convert.ToDouble(lastOrderdr["BuyPrice"].ToString()), 1) + "\n";
+                                        }
 
-                                            PL = Math.Round(Convert.ToDouble(lastOrderdr["SellPrice"].ToString()) - Convert.ToDouble(lastOrderdr["BuyPrice"].ToString()), 1);
+                                        if (Convert.ToDouble(lastOrderdr["ProfitLoss"]) > 0)
+                                        {
+                                            teleMessage += "Profit : " + lastOrderdr["ProfitLoss"].ToString() + " points \n";
+                                        }
+                                        else
+                                        {
+                                            teleMessage += "Loss : " + lastOrderdr["ProfitLoss"].ToString() + " points \n";
                                         }
 
                                         if (Convert.ToDouble(lastOrderdr["ProfitLossPercent"]) > 0)
                                         {
-                                            teleMessage += "Profit : " + PL.ToString() + " points \n";
                                             teleMessage += "Profit %: " + lastOrderdr["ProfitLossPercent"].ToString() + "%";
                                         }
                                         else
                                         {
-                                            teleMessage += "Loss : " + PL.ToString() + " points \n";
                                             teleMessage += "Loss %: " + lastOrderdr["ProfitLossPercent"].ToString() + "%";
                                         }
                                     }

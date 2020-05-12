@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TOC
 {
+    enum enumOptionChainType
+    {
+        NIFTY, BANKNIFTY, NIFTYIT
+    }
     enum enumPositionStatus
     {
         Open, Close
@@ -27,8 +31,8 @@ namespace TOC
     }
     enum enumLotSize
     {
-        Nifty=75,
-        BankNifty=20
+        Nifty = 75,
+        BankNifty = 20
     }
     enum enumExchange
     {

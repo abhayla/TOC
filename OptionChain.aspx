@@ -9,6 +9,10 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <asp:RadioButtonList ID="rblOCType" RepeatDirection="Horizontal" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblOCType_SelectedIndexChanged">
+                <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY" Selected="True"></asp:ListItem>
+                <asp:ListItem Text="NIFTY" Value="NIFTY"></asp:ListItem>
+            </asp:RadioButtonList>
             <asp:Button ID="btnRefresh" runat="server" Text="Refresh Data" OnClick="btnRefresh_Click" />
             <asp:Button ID="btnShowCalculation" runat="server" Text="Show Calculation" OnClick="btnShowCalculation_Click" />
             <asp:Button ID="btnGetButterflySpread" runat="server" Text="Get Butterfly Spread" OnClick="btnGetButterflySpread_Click" />

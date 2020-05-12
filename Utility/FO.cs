@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace TOC.Utility
+namespace TOC
 {
     public class FO
     {
@@ -23,11 +23,11 @@ namespace TOC.Utility
         public static double PutBuy(double strikePrice, double premiumPaid, double closingPrice)
         {
             double result = 0;
-            if (closingPrice <= strikePrice)
+            if (closingPrice < strikePrice)
             {
-                result = -premiumPaid + strikePrice - closingPrice;
+                result = strikePrice - closingPrice - premiumPaid;
             }
-            else if (closingPrice > strikePrice)
+            else if (closingPrice >= strikePrice)
             {
                 result = -premiumPaid;
             }

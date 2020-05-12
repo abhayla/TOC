@@ -21,7 +21,7 @@ namespace TOC
     {
         //private const string NSEIndiaWebsiteURL = "https://www1.nseindia.com";
         //private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
-        string mainurl = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
+        private const string url = "https://www.nseindia.com/api/option-chain-indices?symbol=";
         //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=BANKNIFTY&instrument=OPTIDX&date=-&segmentLink=17";
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         Records recordsObject = new Records();
@@ -33,6 +33,9 @@ namespace TOC
         int diffStrikePrice = 0;
         int iStrategyCount = 1;
 
+        TimeSpan timeGapForNewOC = new TimeSpan(0, 5, 0);
+        TimeSpan timeLastOCFetched = new TimeSpan(0, 0, 0);
+
         DataTable dtOCCalculation = new DataTable();
         int iCalColumnPercentage = 5;
         double iUpperStrikePriceRange = 0.0;
@@ -41,22 +44,10 @@ namespace TOC
         {
             try
             {
-                FetchOC();
-                //DataTable dt = toDataTable(filteredObject);
-                DataTable dt = toDataTable(recordsObject);
-
-                string selectQuery = "(ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
-
-                DataRow[] drs = dt.Select(selectQuery, "StrikePrice ASC");
-                //make a new "results" datatable via clone to keep structure
-                DataTable dtData = dt.Clone();
-                //Import the Rows
-                foreach (DataRow d in drs)
+                if (!Page.IsPostBack)
                 {
-                    dtData.ImportRow(d);
+                    GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
                 }
-
-                FillOCGridview(dtData);
             }
             catch (Exception ex)
             {
@@ -65,15 +56,79 @@ namespace TOC
                 throw;
             }
         }
-        private void FetchOC()
+
+        private void GetOCForGivenOption(string ocType, string expityDate)
         {
-            JObject jObject = DownloadJSONDataFromURL(mainurl);
-            recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-            filteredObject = JsonConvert.DeserializeObject<Filtered>(jObject["filtered"].ToString());
-            currentPrice = recordsObject.underlyingValue;
-            FillExpiryDates();
-            UpdateStrikePriceDetails();
+            FetchOC(ocType);
+            string selectQuery = string.Empty;
+
+            //DataTable dt = toDataTable(filteredObject);
+            DataTable dt = toDataTable(recordsObject);
+
+            if (!expityDate.Trim().Equals(string.Empty))
+            {
+                selectQuery = "(ExpiryDate = #" + expityDate + "#)";
+            }
+            else
+            {
+                selectQuery = "(ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
+            }
+
+            DataRow[] drs = dt.Select(selectQuery, "StrikePrice ASC");
+
+            //make a new "results" datatable via clone to keep structure
+            DataTable dtData = dt.Clone();
+
+            //Import the Rows
+            foreach (DataRow d in drs)
+            {
+                dtData.ImportRow(d);
+            }
+            FillOCGridview(dtData);
         }
+
+        private void FetchOC(string ocType)
+        {
+            //if (IsTimeGapPassed())
+            //{
+            string mainurl = url + ocType;
+
+            JObject jObject = DownloadJSONDataFromURL(mainurl);
+
+            if (jObject != null)
+            {
+                recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                //ViewState.Add("records", recordsObject);
+
+                filteredObject = JsonConvert.DeserializeObject<Filtered>(jObject["filtered"].ToString());
+                //ViewState.Add("filtered", filteredObject);
+
+                currentPrice = recordsObject.underlyingValue;
+                FillExpiryDates();
+                UpdateStrikePriceDetails();
+            }
+            //}
+            //else
+            //{
+            //    filteredObject = (Filtered)ViewState["filteredNifty"];
+            //    recordsObject = (Records)ViewState["recordsNifty"];
+            //}
+        }
+
+        private bool IsTimeGapPassed()
+        {
+            if (timeLastOCFetched.Add(timeGapForNewOC) > DateTime.Now.TimeOfDay)
+            {
+                return true;
+            }
+            else
+            {
+                timeLastOCFetched = DateTime.Now.TimeOfDay;
+                return false;
+            }
+
+        }
+
         private void FillExpiryDates()
         {
             List<string> expiryDates = recordsObject.expiryDates;
@@ -204,27 +259,35 @@ namespace TOC
 
             return result;
         }
+
         private JObject DownloadJSONDataFromURL(string webResourceURL)
         {
-            string stockWatchJSONString = string.Empty;
-
-            using (var webClient = new WebClient())
+            JObject jObject = new JObject();
+            try
             {
-                // Set headers to download the data
-                webClient.Headers.Add("Accept: text/html, application/xhtml+xml, */*");
-                webClient.Headers.Add("User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+                using (var webClient = new WebClient())
+                {
+                    // Set headers to download the data
+                    webClient.Headers.Add("Accept: text/html, application/xhtml+xml, */*");
+                    webClient.Headers.Add("User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
+                    //webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)");
 
-                // Download the data
-                stockWatchJSONString = webClient.DownloadString(webResourceURL);
+                    // Download the data
+                    string stockWatchJSONString = webClient.DownloadString(webResourceURL);
 
-                //DataTable dt = toDataTable(stockWatchJSONString);
+                    //DataTable dt = toDataTable(stockWatchJSONString);
 
-                // Serialise it into a JObject
-                JObject jObject = JObject.Parse(stockWatchJSONString);
-
-                return jObject;
+                    // Serialise it into a JObject
+                    jObject = JObject.Parse(stockWatchJSONString);
+                }
             }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return jObject;
         }
+
         private static DataTable addDataTableColumns(DataTable result)
         {
             Records.Datum.CE1 ce = new Records.Datum.CE1();
@@ -274,20 +337,25 @@ namespace TOC
 
             return result;
         }
+
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
             btnRefresh.Text = "Refreshing...";
-            FetchOC();
-            DataTable dt = toDataTable(recordsObject);
-            //gvOptionChain.Visible = true;
-            FillOCGridview(dt);
+            //FetchOC();
+            //DataTable dt = toDataTable(recordsObject);
+            ////gvOptionChain.Visible = true;
+            //FillOCGridview(dt);
+            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
             btnRefresh.Text = "Refresh Data";
         }
+
         private void FillOCGridview(DataTable dt)
         {
+            dt.Select("", "StrikePrice ASC");
             gvOptionChain.DataSource = dt;
             gvOptionChain.DataBind();
         }
+
         private void FillBFSpread(DataTable dt)
         {
             GridView gridView = new GridView();
@@ -295,12 +363,16 @@ namespace TOC
             gridView.DataBind();
             divButterflySpread.Controls.Add(gridView);
         }
+
         protected void btnGetButterflySpread_Click(object sender, EventArgs e)
         {
-            FetchOC();
+            //FetchOC();
+            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+
             CreateButterflySpreadStrategyTable();
             //Telegram.SendTelegramMessage("Hello Everyone!");
         }
+
         private List<int> GetStrikePrices()
         {
             List<int> strikePrices = recordsObject.strikePrices;
@@ -315,6 +387,7 @@ namespace TOC
             }
             return filteredStrikePrices;
         }
+
         private DataTable AddColumnstoStrategyTable(DataTable dt)
         {
             dt.Columns.Add("Stock");
@@ -333,6 +406,7 @@ namespace TOC
             }
             return dt;
         }
+
         private DataTable AddRowstoStrategyTable(DataTable dt)
         {
             List<int> strikePrices = GetStrikePrices();
@@ -353,7 +427,7 @@ namespace TOC
 
                     foreach (var item in strikePrices)
                     {
-                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.CallBuy(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
+                        datarow[dt.Columns[item.ToString()].ColumnName] = FO.CallBuy(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
                     }
                     dt.Rows.Add(datarow);
 
@@ -369,7 +443,7 @@ namespace TOC
 
                     foreach (var item in strikePrices)
                     {
-                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.CallSell(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
+                        datarow[dt.Columns[item.ToString()].ColumnName] = FO.CallSell(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
                     }
                     dt.Rows.Add(datarow);
                 }
@@ -388,7 +462,7 @@ namespace TOC
 
                     foreach (var item in strikePrices)
                     {
-                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.PutBuy(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
+                        datarow[dt.Columns[item.ToString()].ColumnName] = FO.PutBuy(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
                     }
                     dt.Rows.Add(datarow);
 
@@ -405,13 +479,14 @@ namespace TOC
 
                     foreach (var item in strikePrices)
                     {
-                        datarow[dt.Columns[item.ToString()].ColumnName] = Utility.FO.PutSell(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
+                        datarow[dt.Columns[item.ToString()].ColumnName] = FO.PutSell(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
                     }
                     dt.Rows.Add(datarow);
                 }
             }
             return dt;
         }
+
         private void CreateButterflySpreadStrategyTable()
         {
             dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
@@ -492,16 +567,21 @@ namespace TOC
                 }
             }
         }
+
         private void UpdateStrikePriceDetails()
         {
             List<int> prices = recordsObject.strikePrices;
-            diffStrikePrice = (prices[1] - prices[0]);
-            currentStrikePrice = ((int)Math.Round(currentPrice / diffStrikePrice)) * diffStrikePrice; ;
-            lowerStrikePrice = currentStrikePrice - diffStrikePrice;
-            higherStrikePrice = currentStrikePrice + diffStrikePrice;
-            iLowerStrikePriceRange = currentStrikePrice - diffStrikePrice * iCalColumnPercentage;
-            iUpperStrikePriceRange = currentStrikePrice + diffStrikePrice * iCalColumnPercentage;
+            if (prices.Count > 2)
+            {
+                diffStrikePrice = (prices[1] - prices[0]);
+                currentStrikePrice = ((int)Math.Round(currentPrice / diffStrikePrice)) * diffStrikePrice; ;
+                lowerStrikePrice = currentStrikePrice - diffStrikePrice;
+                higherStrikePrice = currentStrikePrice + diffStrikePrice;
+                iLowerStrikePriceRange = currentStrikePrice - diffStrikePrice * iCalColumnPercentage;
+                iUpperStrikePriceRange = currentStrikePrice + diffStrikePrice * iCalColumnPercentage;
+            }
         }
+
         protected void gvData_RowDataBound(object sender, GridViewRowEventArgs e)
         {
 
@@ -525,6 +605,11 @@ namespace TOC
 
             gvOptionChain.Visible = false;
             FillBFSpread(dtData);
+        }
+
+        protected void rblOCType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
         }
     }
 }

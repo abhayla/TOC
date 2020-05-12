@@ -125,6 +125,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
+    <Content Include="DynamicMenu.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="OptionChain.aspx" />
@@ -137,6 +138,8 @@
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\HelperFunctions.js" />
+    <Content Include="Scripts\myscript.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -209,6 +212,7 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\Zerodha\zerodha-margin-calculator.js" />
+    <Content Include="StrategyBuilder.aspx" />
     <Content Include="TelegramMessage.aspx" />
     <Content Include="WebData.aspx" />
     <Content Include="Scripts\index.js.flow" />
@@ -285,6 +289,13 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DynamicMenu.aspx.cs">
+      <DependentUpon>DynamicMenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DynamicMenu.aspx.designer.cs">
+      <DependentUpon>DynamicMenu.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -317,6 +328,13 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="StrategyBuilder.aspx.cs">
+      <DependentUpon>StrategyBuilder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StrategyBuilder.aspx.designer.cs">
+      <DependentUpon>StrategyBuilder.aspx</DependentUpon>
+    </Compile>
     <Compile Include="TelegramMessage.aspx.cs">
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -328,6 +346,7 @@
     <Compile Include="Utility\OCClass.cs" />
     <Compile Include="Utility\FO.cs" />
     <Compile Include="Utility\Telegram.cs" />
+    <Compile Include="Utility\Utility.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
