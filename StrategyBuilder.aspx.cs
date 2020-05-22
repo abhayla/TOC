@@ -24,11 +24,16 @@ namespace TOC
         private static int CONTRACT_TYP_COL_INDEX = 1;
         private static int TRANSTYP_COL_INDEX = 2;
         private static int SP_COL_INDEX = 3;
-        private static int PREMINUM_COL_INDEX = 4;
-        private static int LOTS_COL_INDEX = 5;
-        private static int SELECTED_SP_COL_INDEX = 16;
-        private static int LOWER_SP_COL_START_INDEX = 6;
-        private static int HIGHER_SP_COL_END_INDEX = 26;
+        private static int CMP_COL_INDEX = 4;
+        private static int PREMINUM_COL_INDEX = 5;
+        private static int LOTS_COL_INDEX = 6;
+        private static int SELECTED_SP_COL_INDEX = 17;
+        private static int LOWER_SP_COL_START_INDEX = 7;
+        private static int HIGHER_SP_COL_END_INDEX = 27;
+
+        private static int MAX_ROWS_ALLOWED = 15;
+
+        Records recordsObject = new Records();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,21 +41,30 @@ namespace TOC
             {
                 DataTable dataTable = AddColumns();
                 AddBlankRows(dataTable, 5);
+                MySession.Current.StrategyBuilderDt = dataTable;
+                FillExpiryDates(ddlExpiryDates);
                 GridviewDataBind(dataTable);
             }
         }
 
         private void AddBlankRows(DataTable dataTable, int iRowCount)
         {
-            for (int iCount = 0; iCount < iRowCount; iCount++)
+            int rowstoadd = 0;
+            if (dataTable.Rows.Count + iRowCount < MAX_ROWS_ALLOWED)
+                rowstoadd = iRowCount;
+            if (dataTable.Rows.Count + iRowCount >= MAX_ROWS_ALLOWED)
+                rowstoadd = MAX_ROWS_ALLOWED - dataTable.Rows.Count;
+
+            for (int iCount = 0; iCount < rowstoadd; iCount++)
             {
-                dataTable.Rows.Add(false, "CE", "BUY", "8500", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+                dataTable.Rows.Add(false, "CE", "BUY", OCHelper.DefaultSP(rblOCType.SelectedValue), "", "", "1",
+                    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
         }
 
         protected void rblOCType_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            FillExpiryDates(ddlExpiryDates);
         }
 
         private void GridviewDataBind(DataTable dataTable)
@@ -71,30 +85,146 @@ namespace TOC
             if (rblOCType.SelectedValue.Equals(BANKNIFTY))
                 columnDiff = BANKNIFTY_COL_DIFF;
 
-
             //Assign header value to the center column
             dataTable.Columns[SELECTED_SP_COL_INDEX].ColumnName = avgOfSP.ToString();
-            gvStrategy.Columns[SELECTED_SP_COL_INDEX].HeaderText = dataTable.Columns[SELECTED_SP_COL_INDEX].ColumnName;
-
-            //Assign value to the left columns from the center
             for (int icount = SELECTED_SP_COL_INDEX - 1; icount >= LOWER_SP_COL_START_INDEX; icount--)
             {
-                dataTable.Columns[icount].ColumnName = Math.Round(Convert.ToDouble(avgOfSP - (SELECTED_SP_COL_INDEX - icount) * columnDiff), 0).ToString();
-                gvStrategy.Columns[icount].HeaderText = dataTable.Columns[icount].ColumnName;
+                dataTable.Columns[icount].ColumnName =
+                    Math.Round(Convert.ToDouble(avgOfSP - (SELECTED_SP_COL_INDEX - icount) * columnDiff), 0).ToString();
             }
-
             //Assign value to the right columns from the center
             for (int icount = SELECTED_SP_COL_INDEX + 1; icount <= HIGHER_SP_COL_END_INDEX; icount++)
             {
-                dataTable.Columns[icount].ColumnName = Math.Round(Convert.ToDouble(avgOfSP + (icount - SELECTED_SP_COL_INDEX) * columnDiff), 0).ToString();
-                gvStrategy.Columns[icount].HeaderText = dataTable.Columns[icount].ColumnName;
+                dataTable.Columns[icount].ColumnName =
+                    Math.Round(Convert.ToDouble(avgOfSP + (icount - SELECTED_SP_COL_INDEX) * columnDiff), 0).ToString();
             }
 
+            int lotsSize = 0;
+            if (rblOCType.SelectedValue.Equals(NIFTY))
+                lotsSize = NIFTY_LOT_SIZE;
+            if (rblOCType.SelectedValue.Equals(BANKNIFTY))
+                lotsSize = BANKNIFTY_LOT_SIZE;
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                //Get latest premium value from the OC
+                if (row[CONTRACT_TYP_COL_INDEX].ToString().Equals(enumContractType.CE.ToString()))
+                {
+                    Records.Datum.CE1 cE1 = OCHelper.GetCE(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue,
+                        Convert.ToInt32(row[SP_COL_INDEX]));
+                    if (cE1 != null)
+                        row[CMP_COL_INDEX] = cE1.lastPrice.ToString();
+                    else
+                        row[CMP_COL_INDEX] = "0";
+
+                }
+
+                if (row[CONTRACT_TYP_COL_INDEX].ToString().Equals(enumContractType.PE.ToString()))
+                {
+                    Records.Datum.PE1 pE1 = OCHelper.GetPE(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue,
+                        Convert.ToInt32(row[SP_COL_INDEX]));
+                    if (pE1 != null)
+                        row[CMP_COL_INDEX] = pE1.lastPrice.ToString();
+                    else
+                        row[CMP_COL_INDEX] = "0";
+                }
+
+                for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
+                {
+                    row[icount] = Convert.ToString(Convert.ToInt32(row[LOTS_COL_INDEX]) * lotsSize *
+                                CalculateExpiryValue(row[CONTRACT_TYP_COL_INDEX].ToString(),
+                                row[TRANSTYP_COL_INDEX].ToString(),
+                                Convert.ToDouble(row[SP_COL_INDEX]),
+                                Convert.ToDouble(row[CMP_COL_INDEX]),
+                                Convert.ToDouble(dataTable.Columns[icount].ColumnName)));
+                }
+            }
+
+            MySession.Current.StrategyBuilderDt = dataTable;
             gvStrategy.DataSource = dataTable;
             gvStrategy.DataBind();
         }
 
-        protected double CalculateExpiryValue(string contractType, string transactionType, double strikePrice, double premiumPaid, double expiryPrice)
+        protected void gvStrategy_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            DataTable dataTable = MySession.Current.StrategyBuilderDt;
+
+            //Logic for header rows
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                e.Row.Cells[SELECTED_SP_COL_INDEX].Text = dataTable.Columns[SELECTED_SP_COL_INDEX].ColumnName;
+                //gvStrategy.Columns[SELECTED_SP_COL_INDEX].HeaderText = dataTable.Columns[SELECTED_SP_COL_INDEX].ColumnName;
+
+                //Assign value to the left columns from the center
+                for (int icount = SELECTED_SP_COL_INDEX - 1; icount >= LOWER_SP_COL_START_INDEX; icount--)
+                {
+                    e.Row.Cells[icount].Text = dataTable.Columns[icount].ColumnName;
+                    //gvStrategy.Columns[icount].HeaderText = dataTable.Columns[icount].ColumnName;
+                }
+
+                //Assign value to the right columns from the center
+                for (int icount = SELECTED_SP_COL_INDEX + 1; icount <= HIGHER_SP_COL_END_INDEX; icount++)
+                {
+                    e.Row.Cells[icount].Text = dataTable.Columns[icount].ColumnName;
+                    //gvStrategy.Columns[icount].HeaderText = dataTable.Columns[icount].ColumnName;
+                }
+            }
+
+            //Logic for nomal rows
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                CheckBox chkDelete = e.Row.FindControl("chkDelete") as CheckBox;
+                DropDownList ddlContractType = e.Row.FindControl("ddlContractType") as DropDownList;
+                DropDownList ddlTransactionType = e.Row.FindControl("ddlTransactionType") as DropDownList;
+                DropDownList ddlStrikePrice = e.Row.FindControl("ddlStrikePrice") as DropDownList;
+                TextBox txtPremium = e.Row.FindControl("txtPremium") as TextBox;
+                DropDownList ddlLots = e.Row.FindControl("ddlLots") as DropDownList;
+                e.Row.Cells[CMP_COL_INDEX].Text = dataTable.Rows[e.Row.RowIndex][CMP_COL_INDEX].ToString();
+                chkDelete.Checked = Convert.ToBoolean(dataTable.Rows[e.Row.RowIndex][DELETE_COL_INDEX]);
+                FillStrikePrice(ddlStrikePrice);
+                Utility.SelectDataInCombo(ddlContractType, dataTable.Rows[e.Row.RowIndex][CONTRACT_TYP_COL_INDEX].ToString());
+                Utility.SelectDataInCombo(ddlTransactionType, dataTable.Rows[e.Row.RowIndex][TRANSTYP_COL_INDEX].ToString());
+                Utility.SelectDataInCombo(ddlStrikePrice, dataTable.Rows[e.Row.RowIndex][SP_COL_INDEX].ToString());
+
+                txtPremium.Text = dataTable.Rows[e.Row.RowIndex][PREMINUM_COL_INDEX].ToString();
+                Utility.SelectDataInCombo(ddlLots, dataTable.Rows[e.Row.RowIndex][LOTS_COL_INDEX].ToString());
+
+                for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
+                {
+                    e.Row.Cells[icount].Text = dataTable.Rows[e.Row.RowIndex][icount].ToString();
+                }
+
+                //Add attributes
+                int rowindex = e.Row.RowIndex + 1;
+                ddlContractType.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" +
+                    rowindex + "','" + rblOCType.ClientID + "');");
+                ddlTransactionType.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" +
+                    rowindex + "','" + rblOCType.ClientID + "');");
+                ddlStrikePrice.Attributes.Add("onchange", "SetGridviewHeaderValues('"
+                    + gvStrategy.ClientID + "'), CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','"
+                    + rblOCType.ClientID + "');");
+                txtPremium.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '"
+                    + rowindex + "','" + rblOCType.ClientID + "');");
+            }
+
+            if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                int sum = 0;
+                for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
+                {
+                    sum = 0;
+                    for (int irowcount = 0; irowcount < dataTable.Rows.Count; irowcount++)
+                    {
+                        sum += Convert.ToInt32(dataTable.Rows[irowcount][icount]);
+                        //e.Row.Cells[icount].Text += dataTable.Rows[irowcount][icount];
+                    }
+                    e.Row.Cells[icount].Text = sum.ToString();
+                }
+            }
+        }
+
+        protected double CalculateExpiryValue(string contractType, string transactionType, double strikePrice,
+            double premiumPaid, double expiryPrice)
         {
             double result = 0;
             if (contractType == enumContractType.PE.ToString() && transactionType == enumTransactionType.BUY.ToString())
@@ -115,47 +245,21 @@ namespace TOC
             return result;
         }
 
-        protected void gvStrategy_RowDataBound(object sender, GridViewRowEventArgs e)
+        private void FillExpiryDates(DropDownList ddlExpDt)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
+            List<string> expiryDates = OCHelper.GetOCExpList(rblOCType.SelectedValue);
+            foreach (string item in expiryDates)
             {
-                DropDownList ddlContractType = e.Row.FindControl("ddlContractType") as DropDownList;
-                DropDownList ddlTransactionType = e.Row.FindControl("ddlTransactionType") as DropDownList;
-                DropDownList ddlStrikePrice = e.Row.FindControl("ddlStrikePrice") as DropDownList;
-                TextBox txtPremium = e.Row.FindControl("txtPremium") as TextBox;
-                TextBox txtLots = e.Row.FindControl("txtLots") as TextBox;
-                //Utility.SelectDataInCombo(ddlContractType,);
+                ddlExpDt.Items.Add(item);
+            }
+        }
 
-                //If blank then fill one lot
-                if (txtPremium.Text.Trim().Length <= 0)
-                {
-                    txtPremium.Text = "1";
-                }
-
-                //If blank then fill one lot
-                if (txtLots.Text.Trim().Length <= 0)
-                {
-                    txtLots.Text = "1";
-                }
-
-                int rowindex = e.Row.RowIndex + 1;
-                ddlContractType.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','" + rblOCType.ClientID + "');");
-                ddlTransactionType.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','" + rblOCType.ClientID + "');");
-                ddlStrikePrice.Attributes.Add("onchange", "SetGridviewHeaderValues('" + gvStrategy.ClientID + "'), CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','" + rblOCType.ClientID + "');");
-                txtPremium.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','" + rblOCType.ClientID + "');");
-
-                int lotsSize = 0;
-                if (rblOCType.SelectedValue.Equals(NIFTY))
-                    lotsSize = NIFTY_LOT_SIZE;
-                if (rblOCType.SelectedValue.Equals(BANKNIFTY))
-                    lotsSize = BANKNIFTY_LOT_SIZE;
-
-
-
-                for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
-                {
-                    e.Row.Cells[icount].Text = Convert.ToString(Convert.ToInt32(txtLots.Text) * lotsSize * CalculateExpiryValue(ddlContractType.SelectedValue, ddlTransactionType.SelectedValue, Convert.ToDouble(ddlStrikePrice.SelectedValue), Convert.ToDouble(txtPremium.Text), Convert.ToDouble(gvStrategy.Columns[icount].HeaderText)));
-                }
+        private void FillStrikePrice(DropDownList ddlSP)
+        {
+            List<int> expiryDates = OCHelper.GetOCSPList(rblOCType.SelectedValue);
+            foreach (int item in expiryDates)
+            {
+                ddlSP.Items.Add(item.ToString());
             }
         }
 
@@ -166,8 +270,9 @@ namespace TOC
             dataTable.Columns.Add("Contract Type");
             dataTable.Columns.Add("Transaction Type");
             dataTable.Columns.Add("Strike Price");
-            dataTable.Columns.Add("Lots");
+            dataTable.Columns.Add("CMP");
             dataTable.Columns.Add("Premium");
+            dataTable.Columns.Add("Lots");
             dataTable.Columns.Add("11");
             dataTable.Columns.Add("12");
             dataTable.Columns.Add("13");
@@ -195,7 +300,8 @@ namespace TOC
         protected void btnAddRows_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
-            AddBlankRows(dataTable, 5);
+            AddBlankRows(dataTable, 2);
+            MySession.Current.StrategyBuilderDt = dataTable;
             GridviewDataBind(dataTable);
         }
 
@@ -210,12 +316,20 @@ namespace TOC
                 DropDownList ddlTransactionType = gvRow.Cells[TRANSTYP_COL_INDEX].FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = gvRow.Cells[SP_COL_INDEX].FindControl("ddlStrikePrice") as DropDownList;
                 TextBox txtPremium = gvRow.Cells[PREMINUM_COL_INDEX].FindControl("txtPremium") as TextBox;
-                TextBox txtLots = gvRow.Cells[LOTS_COL_INDEX].FindControl("txtLots") as TextBox;
+                DropDownList ddlLots = gvRow.Cells[LOTS_COL_INDEX].FindControl("ddlLots") as DropDownList;
 
-                dataTable.Rows.Add(chkDelete.Checked, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue, ddlStrikePrice.SelectedValue, txtPremium.Text, txtLots.Text, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
-
+                dataTable.Rows.Add(chkDelete.Checked, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue,
+                    ddlStrikePrice.SelectedValue, "", txtPremium.Text, ddlLots.SelectedValue, "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
             return dataTable;
+        }
+
+        protected void btnUpdateCMP_Click(object sender, EventArgs e)
+        {
+            DataTable dataTable = SaveGridviewData();
+            MySession.Current.StrategyBuilderDt = dataTable;
+            GridviewDataBind(dataTable);
         }
     }
 }

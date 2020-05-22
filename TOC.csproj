@@ -116,6 +116,8 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\AFL Samples.txt" />
+    <Content Include="ButterflySpread.aspx" />
+    <Content Include="CompareOptions.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -129,11 +131,13 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="OptionChain.aspx" />
+    <Content Include="PositionsTracker.aspx" />
     <Content Include="ReadFiles.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\BasketOrders.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -275,6 +279,20 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="ButterflySpread.aspx.cs">
+      <DependentUpon>ButterflySpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ButterflySpread.aspx.designer.cs">
+      <DependentUpon>ButterflySpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CompareOptions.aspx.cs">
+      <DependentUpon>CompareOptions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CompareOptions.aspx.designer.cs">
+      <DependentUpon>CompareOptions.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -306,6 +324,13 @@
     <Compile Include="OptionChain.aspx.designer.cs">
       <DependentUpon>OptionChain.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PositionsTracker.aspx.cs">
+      <DependentUpon>PositionsTracker.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PositionsTracker.aspx.designer.cs">
+      <DependentUpon>PositionsTracker.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadFiles.aspx.cs">
       <DependentUpon>ReadFiles.aspx</DependentUpon>
@@ -335,6 +360,7 @@
     <Compile Include="StrategyBuilder.aspx.designer.cs">
       <DependentUpon>StrategyBuilder.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Strategy\Butterfly.cs" />
     <Compile Include="TelegramMessage.aspx.cs">
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -343,8 +369,10 @@
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utility\Class1.cs" />
+    <Compile Include="Utility\MySession.cs" />
     <Compile Include="Utility\OCClass.cs" />
     <Compile Include="Utility\FO.cs" />
+    <Compile Include="Utility\OCHelper.cs" />
     <Compile Include="Utility\Telegram.cs" />
     <Compile Include="Utility\Utility.cs" />
     <Compile Include="ViewSwitcher.ascx.cs">

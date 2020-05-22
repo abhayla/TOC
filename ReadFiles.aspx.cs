@@ -148,7 +148,7 @@ namespace TOC
                 Mutex mutex = new Mutex(false, "FSW");
                 mutex.WaitOne();
 
-                TimeSpan addOneMinute = new TimeSpan(0, 0, 19);
+                TimeSpan addOneMinute = new TimeSpan(0, 0, 30);
                 if (e.SignalTime.TimeOfDay > timePreTradingStarting && e.SignalTime.TimeOfDay < timePreTradingStarting.Add(addOneMinute))
                 {
                     PreTradingStarting();
@@ -591,7 +591,7 @@ namespace TOC
         {
             try
             {
-                double PL = 0.0;
+                //double PL = 0.0;
                 DataTable currentOrdersdt = RemoveOrdersBlankRows(ReadOrdersCsvFile());
                 logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "FindNewOrders", "ReadOrdersCsvFile", "Row count: " + currentOrdersdt.Rows.Count);
 

@@ -11,26 +11,23 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <table>
-                <tr>
-                    <td>
-                        <asp:Label ID="lblOCType" runat="server" Text="OC Type"></asp:Label>
-                        <asp:RadioButtonList ID="rblOCType" RepeatDirection="Horizontal" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblOCType_SelectedIndexChanged">
-                            <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY"></asp:ListItem>
-                            <asp:ListItem Text="NIFTY" Value="NIFTY" Selected="True"></asp:ListItem>
-                        </asp:RadioButtonList>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblLotSize" runat="server" Text="Lot Size"></asp:Label>
-                        <asp:Label ID="lblLotSizeValue" runat="server" Text="75"></asp:Label>
-                    </td>
-                </tr>
-            </table>
+            <asp:RadioButtonList ID="rblOCType" RepeatDirection="Horizontal" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblOCType_SelectedIndexChanged">
+                <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY"></asp:ListItem>
+                <asp:ListItem Text="NIFTY" Value="NIFTY" Selected="True"></asp:ListItem>
+            </asp:RadioButtonList>
         </div>
+        <br />
         <div>
-            <asp:GridView ID="gvStrategy" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvStrategy_RowDataBound">
+            <asp:Label ID="lblLotSize" runat="server" Text="Lot Size"></asp:Label>
+            <asp:Label ID="lblLotSizeValue" runat="server" Text="75"></asp:Label>
+            <asp:DropDownList runat="server" ID="ddlExpiryDates">
+            </asp:DropDownList>
+        </div>
+        <br />
+        <div>
+            <asp:GridView ID="gvStrategy" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvStrategy_RowDataBound" ShowHeader="true" ShowFooter="true">
                 <Columns>
-                    <asp:TemplateField HeaderText="Delete">
+                    <asp:TemplateField HeaderText="Select">
                         <ItemTemplate>
                             <asp:CheckBox runat="server" ID="chkDelete" />
                         </ItemTemplate>
@@ -53,22 +50,32 @@
                             </asp:DropDownList>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Strike Price" ItemStyle-Width="50">
+                    <asp:TemplateField HeaderText="Strike Price" ItemStyle-Width="80">
                         <ItemTemplate>
-                            <asp:DropDownList runat="server" ID="ddlStrikePrice" Width="50">
-                                <asp:ListItem Text="8500" Value="8500"></asp:ListItem>
-                                <asp:ListItem Text="8600" Value="8600"></asp:ListItem>
+                            <asp:DropDownList runat="server" ID="ddlStrikePrice" Width="80">
                             </asp:DropDownList>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Premium" ItemStyle-Width="50">
+                    <asp:BoundField HeaderText="CMP" ItemStyle-Width="50" />
+                    <asp:TemplateField HeaderText="Premium Paid" ItemStyle-Width="50">
                         <ItemTemplate>
                             <asp:TextBox runat="server" ID="txtPremium" Width="50"></asp:TextBox>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Lots" ItemStyle-Width="50">
+                    <asp:TemplateField HeaderText="Lots" ItemStyle-Width="40">
                         <ItemTemplate>
-                            <asp:TextBox runat="server" ID="txtLots" Width="50"></asp:TextBox>
+                            <asp:DropDownList runat="server" ID="ddlLots" Width="40">
+                                <asp:ListItem Text="1" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                                <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                                <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                                <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                                <asp:ListItem Text="6" Value="6"></asp:ListItem>
+                                <asp:ListItem Text="7" Value="7"></asp:ListItem>
+                                <asp:ListItem Text="8" Value="8"></asp:ListItem>
+                                <asp:ListItem Text="9" Value="9"></asp:ListItem>
+                                <asp:ListItem Text="10" Value="10"></asp:ListItem>
+                            </asp:DropDownList>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:BoundField ItemStyle-Width="50" />
@@ -95,7 +102,8 @@
                 </Columns>
             </asp:GridView>
             <br />
-            <asp:Button runat="server" Text="Add more rows" ID="btnAddRows" OnClick="btnAddRows_Click" />
+            <asp:Button runat="server" Text="Add row" ID="btnAddRows" OnClick="btnAddRows_Click" />
+            <asp:Button runat="server" Text="Update CMP" ID="btnUpdateCMP" OnClick="btnUpdateCMP_Click" />
         </div>
     </form>
 </body>

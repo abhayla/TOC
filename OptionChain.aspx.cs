@@ -4,8 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Net;
-using System.Net.Http;
+
 using System.IO;
 using System.Threading;
 using System.Text;
@@ -21,7 +20,7 @@ namespace TOC
     {
         //private const string NSEIndiaWebsiteURL = "https://www1.nseindia.com";
         //private const string mainurl = NSEIndiaWebsiteURL + "/live_market/dynaContent/live_watch/stock_watch/niftyStockWatch.json";
-        private const string url = "https://www.nseindia.com/api/option-chain-indices?symbol=";
+
         //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=BANKNIFTY&instrument=OPTIDX&date=-&segmentLink=17";
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
         Records recordsObject = new Records();
@@ -31,7 +30,7 @@ namespace TOC
         double lowerStrikePrice = 0.0;
         double currentStrikePrice = 0.0;
         int diffStrikePrice = 0;
-        int iStrategyCount = 1;
+        int iStrategyCount = 2;
 
         TimeSpan timeGapForNewOC = new TimeSpan(0, 5, 0);
         TimeSpan timeLastOCFetched = new TimeSpan(0, 0, 0);
@@ -40,13 +39,15 @@ namespace TOC
         int iCalColumnPercentage = 5;
         double iUpperStrikePriceRange = 0.0;
         double iLowerStrikePriceRange = 0.0;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
                 if (!Page.IsPostBack)
                 {
-                    GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+                    DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+                    FillOCGridview(dtData);
                 }
             }
             catch (Exception ex)
@@ -57,7 +58,7 @@ namespace TOC
             }
         }
 
-        private void GetOCForGivenOption(string ocType, string expityDate)
+        private DataTable GetOCForGivenOption(string ocType, string expityDate)
         {
             FetchOC(ocType);
             string selectQuery = string.Empty;
@@ -84,35 +85,17 @@ namespace TOC
             {
                 dtData.ImportRow(d);
             }
-            FillOCGridview(dtData);
+
+            return dtData;
+
         }
 
         private void FetchOC(string ocType)
         {
-            //if (IsTimeGapPassed())
-            //{
-            string mainurl = url + ocType;
-
-            JObject jObject = DownloadJSONDataFromURL(mainurl);
-
-            if (jObject != null)
-            {
-                recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-                //ViewState.Add("records", recordsObject);
-
-                filteredObject = JsonConvert.DeserializeObject<Filtered>(jObject["filtered"].ToString());
-                //ViewState.Add("filtered", filteredObject);
-
-                currentPrice = recordsObject.underlyingValue;
-                FillExpiryDates();
-                UpdateStrikePriceDetails();
-            }
-            //}
-            //else
-            //{
-            //    filteredObject = (Filtered)ViewState["filteredNifty"];
-            //    recordsObject = (Records)ViewState["recordsNifty"];
-            //}
+            recordsObject = OCHelper.GetOC(ocType);
+            currentPrice = recordsObject.underlyingValue;
+            FillExpiryDates(ddlExpiryDates);
+            UpdateStrikePriceDetails();
         }
 
         private bool IsTimeGapPassed()
@@ -126,10 +109,9 @@ namespace TOC
                 timeLastOCFetched = DateTime.Now.TimeOfDay;
                 return false;
             }
-
         }
 
-        private void FillExpiryDates()
+        private void FillExpiryDates(DropDownList ddlExpiryDates)
         {
             List<string> expiryDates = recordsObject.expiryDates;
             foreach (string item in expiryDates)
@@ -137,6 +119,7 @@ namespace TOC
                 ddlExpiryDates.Items.Add(item);
             }
         }
+
         private static DataTable toDataTable(Filtered filteredObject)
         {
             var result = new DataTable();
@@ -260,33 +243,7 @@ namespace TOC
             return result;
         }
 
-        private JObject DownloadJSONDataFromURL(string webResourceURL)
-        {
-            JObject jObject = new JObject();
-            try
-            {
-                using (var webClient = new WebClient())
-                {
-                    // Set headers to download the data
-                    webClient.Headers.Add("Accept: text/html, application/xhtml+xml, */*");
-                    webClient.Headers.Add("User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)");
-                    //webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)");
 
-                    // Download the data
-                    string stockWatchJSONString = webClient.DownloadString(webResourceURL);
-
-                    //DataTable dt = toDataTable(stockWatchJSONString);
-
-                    // Serialise it into a JObject
-                    jObject = JObject.Parse(stockWatchJSONString);
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            return jObject;
-        }
 
         private static DataTable addDataTableColumns(DataTable result)
         {
@@ -341,11 +298,8 @@ namespace TOC
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
             btnRefresh.Text = "Refreshing...";
-            //FetchOC();
-            //DataTable dt = toDataTable(recordsObject);
-            ////gvOptionChain.Visible = true;
-            //FillOCGridview(dt);
-            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+            DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+            FillOCGridview(dtData);
             btnRefresh.Text = "Refresh Data";
         }
 
@@ -367,8 +321,8 @@ namespace TOC
         protected void btnGetButterflySpread_Click(object sender, EventArgs e)
         {
             //FetchOC();
-            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
-
+            DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+            FillOCGridview(dtData);
             CreateButterflySpreadStrategyTable();
             //Telegram.SendTelegramMessage("Hello Everyone!");
         }
@@ -609,7 +563,8 @@ namespace TOC
 
         protected void rblOCType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+            DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+            FillOCGridview(dtData);
         }
     }
 }

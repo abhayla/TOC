@@ -12,11 +12,12 @@ var DELETE_COL_INDEX = 0;
 var CONTRACT_TYP_COL_INDEX = 1;
 var TRANSTYP_COL_INDEX = 2;
 var SP_COL_INDEX = 3;
-var PREMINUM_COL_INDEX = 4;
-var LOTS_COL_INDEX = 5;
-var SELECTED_SP_COL_INDEX = 16;
-var LOWER_SP_COL_START_INDEX = 6;
-var HIGHER_SP_COL_END_INDEX = 26;
+var CMP_COL_INDEX = 4;
+var PREMINUM_COL_INDEX = 5;
+var LOTS_COL_INDEX = 6;
+var SELECTED_SP_COL_INDEX = 17;
+var LOWER_SP_COL_START_INDEX = 7;
+var HIGHER_SP_COL_END_INDEX = 27;
 
 function SetGridviewHeaderValues(gvStrategyId) {
     var gvStrategy = document.getElementById(gvStrategyId);
@@ -78,6 +79,8 @@ function CalculateExpiryValueForAllRowsANDCells(gvStrategyId, rblOCTypeId) {
                 CalculateExpiryValue(contractType, transactionType, strikePrice, premiumPaid, expiryPrice) * lots * lotSize;
         }
     }
+
+    CalculateSumofColumn(gvStrategyId);
 }
 
 function RblOCTypeSelectedValue() {
@@ -108,16 +111,29 @@ function CalcExpValForAllCellsInRow(gvStrategyId, irowcount, rblOCTypeId) {
     if (selectedOCType === BANKNIFTY)
         lotSize = BANKNIFTY_LOT_SIZE;
 
-    //eval(strikePrice);
-    //eval(premiumPaid);
-
-    for (var icellcount = 6; icellcount < gvStrategy.rows[irowcount].cells.length; icellcount++) {
+    for (var icellcount = LOWER_SP_COL_START_INDEX; icellcount < gvStrategy.rows[irowcount].cells.length; icellcount++) {
 
         var expiryPrice = gvStrategy.rows[0].cells[icellcount].innerHTML;
         eval(expiryPrice);
 
         gvStrategy.rows[irowcount].cells[icellcount].innerHTML =
             CalculateExpiryValue(contractType, transactionType, strikePrice, premiumPaid, expiryPrice) * lots * lotSize;
+    }
+
+    CalculateSumofColumn(gvStrategyId);
+}
+
+function CalculateSumofColumn(gvStrategyId) {
+    var gvStrategy = document.getElementById(gvStrategyId);
+    var HEADER_ROW_INDEX = 0;
+    var FOOTER_ROW_INDEX = gvStrategy.rows.length;
+    var sum = 0;
+    for (var icellcount = LOWER_SP_COL_START_INDEX; icellcount < gvStrategy.rows[gvStrategy.rows.length - 1].cells.length; icellcount++) {
+        sum = 0;
+        for (var irowcount = 1; irowcount < gvStrategy.rows.length - 1; irowcount++) {
+            sum += eval(gvStrategy.rows[irowcount].cells[icellcount].innerHTML);
+        }
+        gvStrategy.rows[gvStrategy.rows.length - 1].cells[icellcount].innerHTML = sum;
     }
 }
 

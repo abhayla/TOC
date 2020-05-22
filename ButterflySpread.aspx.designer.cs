@@ -11,7 +11,7 @@ namespace TOC
 {
 
 
-    public partial class StrategyBuilder
+    public partial class ButterflySpread
     {
 
         /// <summary>
@@ -33,22 +33,22 @@ namespace TOC
         protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
-        /// lblLotSize control.
+        /// lblLastPrice control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLotSize;
+        protected global::System.Web.UI.WebControls.Label lblLastPrice;
 
         /// <summary>
-        /// lblLotSizeValue control.
+        /// lblLastFetchedTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLotSizeValue;
+        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
 
         /// <summary>
         /// ddlExpiryDates control.
@@ -60,30 +60,48 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
 
         /// <summary>
-        /// gvStrategy control.
+        /// ddlContractType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvStrategy;
+        protected global::System.Web.UI.WebControls.DropDownList ddlContractType;
 
         /// <summary>
-        /// btnAddRows control.
+        /// btnFetch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddRows;
+        protected global::System.Web.UI.WebControls.Button btnFetch;
 
         /// <summary>
-        /// btnUpdateCMP control.
+        /// lblFilterOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateCMP;
+        protected global::System.Web.UI.WebControls.Label lblFilterOptions;
+
+        /// <summary>
+        /// ddlFilterOptions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilterOptions;
+
+        /// <summary>
+        /// divMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMain;
     }
 }

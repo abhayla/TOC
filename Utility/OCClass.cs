@@ -22,7 +22,7 @@ namespace TOC
                 public string underlying { get; set; }
                 public string identifier { get; set; }
                 public double openInterest { get; set; }
-                public int changeinOpenInterest { get; set; }
+                public double changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }
                 public double impliedVolatility { get; set; }
@@ -44,7 +44,7 @@ namespace TOC
                 public string underlying { get; set; }
                 public string identifier { get; set; }
                 public double openInterest { get; set; }
-                public int changeinOpenInterest { get; set; }
+                public double changeinOpenInterest { get; set; }
                 public double pchangeinOpenInterest { get; set; }
                 public int totalTradedVolume { get; set; }
                 public double impliedVolatility { get; set; }
