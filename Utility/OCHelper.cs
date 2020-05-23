@@ -306,16 +306,6 @@ namespace TOC
             return result;
         }
 
-        //dt.Columns.Add("Stock");
-        //dt.Columns.Add("Identifier");
-        //dt.Columns.Add("Contract");
-        //dt.Columns.Add("TransactionType");
-        //dt.Columns.Add("StrikePrice");
-        //dt.Columns.Add("LotSize");
-        //dt.Columns.Add("Premium");
-        //dt.Columns.Add("ExpiryDate");
-        //BANKNIFTY2052117000PE
-
         public static string FormatTradingSymbol(DataRow dataRow)
         {
             string formattedString = string.Empty;
@@ -407,6 +397,24 @@ namespace TOC
                 return null;
             }
             return jObject;
+        }
+
+        public void FillAllStrikePrice(string ocType, System.Web.UI.WebControls.DropDownList ddlSP)
+        {
+            List<int> expiryDates = OCHelper.GetOCSPList(ocType);
+            foreach (int item in expiryDates)
+            {
+                ddlSP.Items.Add(item.ToString());
+            }
+        }
+
+        public void FillAllExpiryDates(string ocType, System.Web.UI.WebControls.DropDownList ddlExpDt)
+        {
+            List<string> expiryDates = OCHelper.GetOCExpList(ocType);
+            foreach (string item in expiryDates)
+            {
+                ddlExpDt.Items.Add(item);
+            }
         }
     }
 }

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TOC
 {
+    enum enumStrategyType
+    {
+        BUTTERFLY
+    }
     enum enumOptionChainType
     {
         NIFTY, BANKNIFTY, NIFTYIT

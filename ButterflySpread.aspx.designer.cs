@@ -96,6 +96,69 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlFilterOptions;
 
         /// <summary>
+        /// lblSPLowerRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPLowerRange;
+
+        /// <summary>
+        /// ddlSPLowerRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPLowerRange;
+
+        /// <summary>
+        /// lblSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPHigherRange;
+
+        /// <summary>
+        /// ddlSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPHigherRange;
+
+        /// <summary>
+        /// lblSPExpiry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPExpiry;
+
+        /// <summary>
+        /// ddlSPExpiry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPExpiry;
+
+        /// <summary>
+        /// btnFilterResults control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnFilterResults;
+
+        /// <summary>
         /// divMain control.
         /// </summary>
         /// <remarks>

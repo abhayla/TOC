@@ -368,7 +368,8 @@
     <Compile Include="TelegramMessage.aspx.designer.cs">
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Utility\Class1.cs" />
+    <Compile Include="Utility\Enum.cs" />
+    <Compile Include="Utility\FilterConditions.cs" />
     <Compile Include="Utility\MySession.cs" />
     <Compile Include="Utility\OCClass.cs" />
     <Compile Include="Utility\FO.cs" />
@@ -436,9 +437,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51128</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44329/</IISUrl>
+          <IISUrl>https://localhost:44319/</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>https://localhost:44329/</IISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44319/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

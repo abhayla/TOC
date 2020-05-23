@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using Telegram.Bot.Requests;
 using TOC.Strategy;
 
 namespace TOC
 {
     public partial class ButterflySpread : System.Web.UI.Page
     {
-        private static int iPercentageRage = 3;
+        private static int iPercentageRage = 2;
+        TimeSpan timeAddGap = new TimeSpan(0, 2, 0);
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -22,6 +21,60 @@ namespace TOC
                 PopulateDataSet(dataSet);
                 lblLastFetchedTime.Text = MySession.Current.RecordsObject.timestamp;
                 lblLastPrice.Text = MySession.Current.RecordsObject.underlyingValue.ToString();
+                PopulateFilterFields();
+            }
+        }
+
+        private void PopulateFilterFields()
+        {
+            PopulateSPHigherRange();
+            PopulateSPLowerRange();
+            PopulateSPExpiry();
+        }
+
+        private void PopulateSPExpiry()
+        {
+            int iUpperStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue + (OCHelper.DefaultSP(rblOCType.SelectedValue) * iPercentageRage / 100));
+            int iLowerStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue - (OCHelper.DefaultSP(rblOCType.SelectedValue) * iPercentageRage / 100));
+
+            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
+
+            foreach (var item in MySession.Current.RecordsObject.strikePrices)
+            {
+                if (item <= iUpperStrikePriceRange && item >= iLowerStrikePriceRange)
+                {
+                    ddlSPExpiry.Items.Add(item.ToString());
+                }
+            }
+        }
+
+        private void PopulateSPHigherRange()
+        {
+            int iUpperStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue + (OCHelper.DefaultSP(rblOCType.SelectedValue) * iPercentageRage / 100));
+
+            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
+
+            foreach (var item in MySession.Current.RecordsObject.strikePrices)
+            {
+                if (item <= iUpperStrikePriceRange && item > MySession.Current.RecordsObject.underlyingValue)
+                {
+                    ddlSPHigherRange.Items.Add(item.ToString());
+                }
+            }
+        }
+
+        private void PopulateSPLowerRange()
+        {
+            int iLowerStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue - (OCHelper.DefaultSP(rblOCType.SelectedValue) * iPercentageRage / 100));
+
+            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
+
+            foreach (var item in MySession.Current.RecordsObject.strikePrices)
+            {
+                if (item >= iLowerStrikePriceRange && item < MySession.Current.RecordsObject.underlyingValue)
+                {
+                    ddlSPLowerRange.Items.Add(item.ToString());
+                }
             }
         }
 
@@ -140,7 +193,7 @@ namespace TOC
                     //e.Row.Height = 10;
                     //Add Zerodha button
                     //e.Row.Cells[e.Row.Cells.Count-1].Controls.Add(btnUpstox);
-                    //e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(new LiteralControl("<p id=\"default-button\"> </p>"));
+                    //e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(new LiteralControl("<span><p id=\"default-button\" onclick=\"ZerodhaBasketOrder('" + clientId + "')\"> </p></span>"));
                     //e.Row.Cells[e.Row.Cells.Count - 1].Text = HttpUtility.HtmlDecode("<p id=\"default-button\"> </p>");
                 }
                 if (e.Row.RowIndex == 2)
@@ -158,6 +211,24 @@ namespace TOC
                     //e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(literalControl);
                 }
             }
+        }
+
+        private FilterConditions SetFilterConditions()
+        {
+            FilterConditions filterConditions = new FilterConditions();
+            filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
+            filterConditions.SPLowerRange = Convert.ToInt32(ddlSPLowerRange.SelectedValue);
+            filterConditions.SPHigherRange = Convert.ToInt32(ddlSPHigherRange.SelectedValue);
+            filterConditions.ContractType = ddlContractType.SelectedValue;
+            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
+            filterConditions.TimeGap = timeAddGap;
+            return filterConditions;
+        }
+
+        protected void btnFilterResults_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
