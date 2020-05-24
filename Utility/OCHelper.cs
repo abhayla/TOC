@@ -31,7 +31,7 @@ namespace TOC
             return lotsSize;
         }
 
-        public static DataTable AddRecordsToDataTable(string ocType, int iPercentageRange)
+        public static DataTable AddRecordsToDataTable(FilterConditions filterConditions)
         {
             DataTable dt = new DataTable();
             dt.Columns.Add("Stock");
@@ -44,15 +44,26 @@ namespace TOC
             dt.Columns.Add("Premium");
             dt.Columns.Add("ExpiryDate");
 
-            Records recordsObject = GetOC(ocType);
+            Records recordsObject = GetOC(filterConditions.OcType);
 
-            int iUpperStrikePriceRange = RoundTo100(recordsObject.underlyingValue + (DefaultSP(ocType) * iPercentageRange / 100));
-            int iLowerStrikePriceRange = RoundTo100(recordsObject.underlyingValue - (DefaultSP(ocType) * iPercentageRange / 100));
+            int iUpperStrikePriceRange = 0;
+            int iLowerStrikePriceRange = 0;
 
-            List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
+            if (filterConditions.PercentageRange > 0)
+            {
+                iUpperStrikePriceRange = RoundTo100(recordsObject.underlyingValue + (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
+                iLowerStrikePriceRange = RoundTo100(recordsObject.underlyingValue - (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
+            }
+            else
+            {
+                iUpperStrikePriceRange = filterConditions.SPHigherRange;
+                iLowerStrikePriceRange = filterConditions.SPLowerRange;
+            }
+
+            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
             List<int> filteredStrikePrices = new List<int>();
 
-            foreach (var item in strikePrices)
+            foreach (var item in MySession.Current.RecordsObject.strikePrices)
             {
                 if (item <= iUpperStrikePriceRange && item >= iLowerStrikePriceRange)
                 {
@@ -65,10 +76,15 @@ namespace TOC
             foreach (var row in recordsObject.data)
             {
                 string formattedDateForTradingSymbol = TradingSymbol_DateFormatter(row.expiryDate);
+
                 if (row.CE != null &&
-                    (row.CE.strikePrice <= iUpperStrikePriceRange && row.CE.strikePrice >= iLowerStrikePriceRange) &&
+                    (row.CE.strikePrice <= iUpperStrikePriceRange &&
+                    row.CE.strikePrice >= iLowerStrikePriceRange) &&
                     (row.CE.strikePrice % 100 == 0)
-                    && row.CE.lastPrice > 0)
+                    && row.CE.lastPrice > 0 &&
+                    row.expiryDate.Equals(filterConditions.ExpiryDate) &&
+                    (filterConditions.ContractType.Equals(enumContractType.CE.ToString()) ||
+                    filterConditions.ContractType.Equals("ALL")))
                 {
                     //Add CE Buy row
                     datarow = dt.NewRow();
@@ -77,7 +93,7 @@ namespace TOC
                     datarow["Contract"] = enumContractType.CE.ToString();
                     datarow["TransactionType"] = enumTransactionType.BUY.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = GetLotSize(ocType);
+                    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate;
                     datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
@@ -95,7 +111,7 @@ namespace TOC
                     datarow["Contract"] = enumContractType.CE.ToString();
                     datarow["TransactionType"] = enumTransactionType.SELL.ToString();
                     datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["LotSize"] = GetLotSize(ocType);
+                    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
                     datarow["Premium"] = row.CE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.CE.expiryDate;
                     datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
@@ -110,7 +126,10 @@ namespace TOC
                 if (row.PE != null &&
                     (row.PE.strikePrice <= iUpperStrikePriceRange && row.PE.strikePrice >= iLowerStrikePriceRange) &&
                     (row.PE.strikePrice % 100 == 0) &&
-                    row.PE.lastPrice > 0)
+                    row.PE.lastPrice > 0 &&
+                    row.expiryDate.Equals(filterConditions.ExpiryDate) &&
+                    (filterConditions.ContractType.Equals(enumContractType.PE.ToString()) ||
+                    filterConditions.ContractType.Equals("ALL")))
                 {
                     //Add PE Buy row
                     datarow = dt.NewRow();
@@ -119,7 +138,7 @@ namespace TOC
                     datarow["Contract"] = enumContractType.PE.ToString();
                     datarow["TransactionType"] = enumTransactionType.BUY.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = GetLotSize(ocType);
+                    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate;
                     datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
@@ -137,7 +156,7 @@ namespace TOC
                     datarow["Contract"] = enumContractType.PE.ToString();
                     datarow["TransactionType"] = enumTransactionType.SELL.ToString();
                     datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["LotSize"] = GetLotSize(ocType);
+                    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
                     datarow["Premium"] = row.PE.lastPrice.ToString();
                     datarow["ExpiryDate"] = row.PE.expiryDate;
                     datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
@@ -317,7 +336,7 @@ namespace TOC
             dtResult.Columns.Add("Trading Symbol");
             dtResult.Columns.Add("CE/PE");
             dtResult.Columns.Add("Buy/Sell");
-            dtResult.Columns.Add("Strike Price");
+            dtResult.Columns.Add("StrikePrice");
             dtResult.Columns.Add("Qty");
             dtResult.Columns.Add("Premium");
             dtResult.Columns.Add("Profit/Loss");

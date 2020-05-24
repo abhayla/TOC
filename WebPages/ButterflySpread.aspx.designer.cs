@@ -24,6 +24,33 @@ namespace TOC
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
+        /// lblStart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblStart;
+
+        /// <summary>
+        /// lblEnd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEnd;
+
+        /// <summary>
+        /// lblDifference control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDifference;
+
+        /// <summary>
         /// rblOCType control.
         /// </summary>
         /// <remarks>
@@ -69,15 +96,6 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlContractType;
 
         /// <summary>
-        /// btnFetch control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFetch;
-
-        /// <summary>
         /// lblFilterOptions control.
         /// </summary>
         /// <remarks>
@@ -114,24 +132,6 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlSPLowerRange;
 
         /// <summary>
-        /// lblSPHigherRange control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSPHigherRange;
-
-        /// <summary>
-        /// ddlSPHigherRange control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSPHigherRange;
-
-        /// <summary>
         /// lblSPExpiry control.
         /// </summary>
         /// <remarks>
@@ -148,6 +148,24 @@ namespace TOC
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlSPExpiry;
+
+        /// <summary>
+        /// lblSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPHigherRange;
+
+        /// <summary>
+        /// ddlSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPHigherRange;
 
         /// <summary>
         /// btnFilterResults control.

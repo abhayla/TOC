@@ -6,9 +6,22 @@ using System.Threading.Tasks;
 
 namespace TOC
 {
+    enum enumResultColumns
+    {
+        Trading_Symbol,
+        CE_PE,
+        Buy_Sell,
+        Strike_Price,
+        Qty,
+        Premium,
+        Profit_Loss
+    }
     enum enumStrategyType
     {
-        BUTTERFLY
+        BUTTERFLY,
+        SHORT_STRADDLE,
+        IRON_CONDOR
+
     }
     enum enumOptionChainType
     {

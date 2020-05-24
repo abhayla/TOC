@@ -116,8 +116,8 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\AFL Samples.txt" />
-    <Content Include="ButterflySpread.aspx" />
-    <Content Include="CompareOptions.aspx" />
+    <Content Include="WebPages\ButterflySpread.aspx" />
+    <Content Include="WebPages\CompareOptions.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -279,18 +279,18 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="ButterflySpread.aspx.cs">
+    <Compile Include="WebPages\ButterflySpread.aspx.cs">
       <DependentUpon>ButterflySpread.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ButterflySpread.aspx.designer.cs">
+    <Compile Include="WebPages\ButterflySpread.aspx.designer.cs">
       <DependentUpon>ButterflySpread.aspx</DependentUpon>
     </Compile>
-    <Compile Include="CompareOptions.aspx.cs">
+    <Compile Include="WebPages\CompareOptions.aspx.cs">
       <DependentUpon>CompareOptions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="CompareOptions.aspx.designer.cs">
+    <Compile Include="WebPages\CompareOptions.aspx.designer.cs">
       <DependentUpon>CompareOptions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Contact.aspx.cs">
