@@ -1,10 +1,10 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ButterflySpread.aspx.cs" Inherits="TOC.ButterflySpread" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Spreads.aspx.cs" Inherits="TOC.Spreads" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>Spreads</title>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -28,7 +28,6 @@
                 <asp:ListItem Text="CE" Value="CE"></asp:ListItem>
                 <asp:ListItem Text="PE" Value="PE"></asp:ListItem>
             </asp:DropDownList>
-            <%--<asp:Button runat="server" Text="Fetch" ID="btnFetch" OnClick="btnFetch_Click" />--%>
         </div>
         <div>
             <asp:Label runat="server" Text="Filter Options" ID="lblFilterOptions"></asp:Label>
@@ -39,10 +38,10 @@
             <asp:Label runat="server" ID="lblSPLowerRange" Text="Lower Range"></asp:Label>
             <asp:DropDownList runat="server" ID="ddlSPLowerRange">
             </asp:DropDownList>
-            <asp:Label runat="server" ID="lblSPExpiry" Text="Expected Expiry"></asp:Label>
+            <%--<asp:Label runat="server" ID="lblSPExpiry" Text="Expected Expiry"></asp:Label>
             <asp:DropDownList runat="server" ID="ddlSPExpiry">
                 <asp:ListItem Text="NONE" Value="NONE" Selected="True"></asp:ListItem>
-            </asp:DropDownList>
+            </asp:DropDownList>--%>
             <asp:Label runat="server" ID="lblSPHigherRange" Text="Higher Range"></asp:Label>
             <asp:DropDownList runat="server" ID="ddlSPHigherRange">
             </asp:DropDownList>

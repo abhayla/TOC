@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data;
 
 namespace TOC.Strategy
 {
     public class Butterfly
     {
-        public static DataTable GetBestButterflySpreadStrategy(FilterConditions filterConditions)
-        {
-            DataTable dataTable = new DataTable();
-            Records recordsObject = MySession.Current.RecordsObject;
-            DataSet dataSet = GetButterflySpreadStrategies(filterConditions);
+        //public static DataTable GetBestButterflySpreadStrategy(FilterConditions filterConditions)
+        //{
+        //    DataTable dataTable = new DataTable();
+        //    Records recordsObject = MySession.Current.RecordsObject;
+        //    DataSet dataSet = GetButterflySpreadStrategies(filterConditions);
 
-            return dataTable;
-        }
+        //    return dataTable;
+        //}
 
         public static DataSet GetButterflySpreadStrategies(FilterConditions filterConditions)
         {

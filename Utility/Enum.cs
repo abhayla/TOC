@@ -19,6 +19,7 @@ namespace TOC
     enum enumStrategyType
     {
         BUTTERFLY,
+        SPREADS,
         SHORT_STRADDLE,
         IRON_CONDOR
 
