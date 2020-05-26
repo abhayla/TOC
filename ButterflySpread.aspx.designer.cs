@@ -11,124 +11,169 @@ namespace TOC
 {
 
 
-    public partial class ReadFiles
+    public partial class ButterflySpread
     {
 
         /// <summary>
-        /// form1 control.
+        /// lblStart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Label lblStart;
 
         /// <summary>
-        /// gvFileData control.
+        /// lblEnd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvFileData;
+        protected global::System.Web.UI.WebControls.Label lblEnd;
 
         /// <summary>
-        /// btnReadOrders control.
+        /// lblDifference control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnReadOrders;
+        protected global::System.Web.UI.WebControls.Label lblDifference;
 
         /// <summary>
-        /// btnSyncOrders control.
+        /// rblOCType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSyncOrders;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
-        /// lblSendTelegramMessages control.
+        /// lblLastPrice control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSendTelegramMessages;
+        protected global::System.Web.UI.WebControls.Label lblLastPrice;
 
         /// <summary>
-        /// chkSendTelegramMessages control.
+        /// lblLastFetchedTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkSendTelegramMessages;
+        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
 
         /// <summary>
-        /// Label1 control.
+        /// ddlExpiryDates control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
 
         /// <summary>
-        /// lblGroupsChannels control.
+        /// ddlContractType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblGroupsChannels;
+        protected global::System.Web.UI.WebControls.DropDownList ddlContractType;
 
         /// <summary>
-        /// btnEquityReport control.
+        /// lblFilterOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnEquityReport;
+        protected global::System.Web.UI.WebControls.Label lblFilterOptions;
 
         /// <summary>
-        /// txtMessage control.
+        /// ddlFilterOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMessage;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilterOptions;
 
         /// <summary>
-        /// btnShowLogs control.
+        /// lblSPLowerRange control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnShowLogs;
+        protected global::System.Web.UI.WebControls.Label lblSPLowerRange;
 
         /// <summary>
-        /// txtResult control.
+        /// ddlSPLowerRange control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtResult;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPLowerRange;
 
         /// <summary>
-        /// gvLog control.
+        /// lblSPExpiry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLog;
+        protected global::System.Web.UI.WebControls.Label lblSPExpiry;
+
+        /// <summary>
+        /// ddlSPExpiry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPExpiry;
+
+        /// <summary>
+        /// lblSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPHigherRange;
+
+        /// <summary>
+        /// ddlSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPHigherRange;
+
+        /// <summary>
+        /// btnFilterResults control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnFilterResults;
+
+        /// <summary>
+        /// divMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMain;
     }
 }

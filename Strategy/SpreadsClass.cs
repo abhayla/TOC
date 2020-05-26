@@ -84,9 +84,9 @@ namespace TOC.Strategy
             //for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
             //{
 
-            for (int iHigher = iLowestSP + diffStrikePrice; iHigher <= iHighestSP; iHigher += +diffStrikePrice)
+            for (int iHigher = iHighestSP ; iHigher > iLowestSP; iHigher -= diffStrikePrice)//int iHigher = iLowestSP + diffStrikePrice; iHigher <= iHighestSP; iHigher += +diffStrikePrice
             {
-                for (int iLower = iLowestSP; iLower < iHigher; iLower += diffStrikePrice)
+                for (int iLower = iHigher - diffStrikePrice; iLower >= iLowestSP; iLower -= diffStrikePrice) //int iLower = iLowestSP; iLower < iHigher; iLower += diffStrikePrice
                 {
                     //iMiddleSPIterator = iMiddle;
                     //iHighterSPIterator = iHigher;

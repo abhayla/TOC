@@ -6,63 +6,204 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <title><%: Page.Title %> - Options of Options</title>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
 
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <%--<webopt:BundleReference runat="server" Path="~/Content/css" />--%>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <style>
+        /* navigation style */
+        #nav {
+            height: 30px;
+            font: 12px Geneva, Arial, Helvetica, sans-serif;
+            background: #000000;
+            border: 1px solid #30A097;
+            border-radius: 3px;
+            min-width: 500px;
+            margin-left: 0px;
+            padding-left: 0px;
+        }
+
+            #nav li {
+                list-style: none;
+                display: block;
+                float: left;
+                height: 31px;
+                position: relative;
+                border-right: 1px solid #52BDB5;
+            }
+
+                #nav li a {
+                    padding: 0px 10px 0px 10px;
+                    margin: 0px 0;
+                    line-height: 31px;
+                    text-decoration: none;
+                    border-right: 1px solid #389E96;
+                    height: 31px;
+                    color: #FFF;
+                    text-shadow: 1px 1px 1px #66696B;
+                }
+
+            #nav ul {
+                background: #f2f5f6;
+                padding: 0px;
+                border-bottom: 1px solid #DDDDDD;
+                border-right: 1px solid #DDDDDD;
+                border-left: 1px solid #DDDDDD;
+                border-radius: 0px 0px 3px 3px;
+                box-shadow: 2px 2px 3px #ECECEC;
+                -webkit-box-shadow: 2px 2px 3px #ECECEC;
+                -moz-box-shadow: 2px 2px 3px #ECECEC;
+                width: 250px;
+            }
+
+            #nav .site-name, #nav .site-name:hover {
+                padding-left: 0px;
+                padding-right: 10px;
+                color: #FFF;
+                text-shadow: 1px 1px 1px #66696B;
+                font: italic 20px/38px Georgia, "Times New Roman", Times, serif;
+                background: url(menu/images/saaraan.png) no-repeat 10px 5px;
+                width: 160px;
+                border-right: 1px solid #52BDB5;
+            }
+
+                #nav .site-name a {
+                    width: 129px;
+                    overflow: hidden;
+                }
+
+            #nav li:hover {
+                background: #3BA39B;
+                z-index: 10;
+            }
+
+            #nav li a {
+                display: block;
+                z-index: 10;
+            }
+
+            #nav ul li {
+                border-right: none;
+                border-bottom: 1px solid #DDDDDD;
+                width: 250px;
+                height: 30px;
+                z-index: 10;
+            }
+
+                #nav ul li a {
+                    border-right: none;
+                    color: #400080;
+                    text-shadow: 1px 1px 1px #FFF;
+                    border-bottom: 1px solid #FFFFFF;
+                    z-index: 10;
+                }
+
+                #nav ul li:hover {
+                    background: #DFEEF0;
+                }
+
+                #nav ul li:last-child {
+                    border-bottom: none;
+                }
+
+                    #nav ul li:last-child a {
+                        border-bottom: none;
+                    }
+            /* Sub menus */
+            #nav ul {
+                display: none;
+                visibility: hidden;
+                position: absolute;
+                top: 31px;
+            }
+
+                /* Third-level menus */
+                #nav ul ul {
+                    top: 0px;
+                    left: 250px;
+                    display: none;
+                    visibility: hidden;
+                    border: 1px solid #DDDDDD;
+                }
+                    /* Fourth-level menus */
+                    #nav ul ul ul {
+                        top: 0px;
+                        left: 250px;
+                        display: none;
+                        visibility: hidden;
+                        border: 1px solid #DDDDDD;
+                    }
+
+                #nav ul li {
+                    display: block;
+                    visibility: visible;
+                }
+
+            #nav li:hover > ul {
+                display: block;
+                visibility: visible;
+            }
+    </style>
+    <!--[if IE 7]>
+    <style>
+    #nav{
+    	margin-left:0px
+    }
+    #nav ul{
+    	left:-40px;
+    }
+    #nav ul ul{
+    	left:130px;
+    }
+    #nav ul ul ul{
+    	left:130px;
+    }
+    </style>
+    <![endif]-->
+    <script type="text/javascript" src="/menu/js/jquery-1.9.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#nav li").hover(
+                function () {
+                    $(this).children('ul').hide();
+                    $(this).children('ul').slideDown('fast');
+                },
+                function () {
+                    $('ul', this).slideUp('fast');
+                });
+        });
+    </script>
 
 </head>
 <body>
     <form runat="server">
-        <asp:ScriptManager runat="server">
-            <Scripts>
-                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
-                <%--Framework Scripts--%>
-                <asp:ScriptReference Name="MsAjaxBundle" />
-                <asp:ScriptReference Name="jquery" />
-                <asp:ScriptReference Name="bootstrap" />
-                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
-                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
-                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
-                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
-                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
-                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
-                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
-                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
-                <asp:ScriptReference Name="WebFormsBundle" />
-                <%--Site Scripts--%>
-            </Scripts>
-        </asp:ScriptManager>
-
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" runat="server" href="~/">Application name</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a runat="server" href="~/">Home</a></li>
-                        <li><a runat="server" href="~/About">About</a></li>
-                        <li><a runat="server" href="~/Contact">Contact</a></li>
+        <div>
+            <ul id="nav">
+                <li><a href="OptionChain.aspx">Option Chain</a></li>
+                <li><a href="StrategyBuilder.aspx">Strategy Builder</a></li>
+                <li><a href="PositionsTracker.aspx">Position Tracker</a></li>
+                <li><a href="CompareOptions.aspx">Compare Options</a></li>
+                <li><a href="#">Option Strategies</a>
+                    <ul>
+                        <li><a href="ButterflySpread.aspx">Butterfly Spread</a></li>
+                        <li><a href="IronCondor.aspx">Iron Condor</a></li>
+                        <li><a href="Spreads.aspx">Spreads</a></li>
                     </ul>
-                </div>
-            </div>
+                </li>
+                <li><a href="ReadFiles.aspx">Read Files</a></li>
+            </ul>
         </div>
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
             <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - My ASP.NET Application</p>
+                <p>&copy; <%: DateTime.Now.Year %> - Options of Options</p>
             </footer>
         </div>
 
