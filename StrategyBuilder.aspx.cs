@@ -21,17 +21,21 @@ namespace TOC
 
         //Gridview columns
         private static int DELETE_COL_INDEX = 0;
-        private static int CONTRACT_TYP_COL_INDEX = 1;
-        private static int TRANSTYP_COL_INDEX = 2;
-        private static int SP_COL_INDEX = 3;
-        private static int CMP_COL_INDEX = 4;
-        private static int PREMINUM_COL_INDEX = 5;
-        private static int LOTS_COL_INDEX = 6;
-        private static int SELECTED_SP_COL_INDEX = 17;
-        private static int LOWER_SP_COL_START_INDEX = 7;
-        private static int HIGHER_SP_COL_END_INDEX = 27;
+        private static int EXP_DATE_COL_INDEX = 1;
+        private static int CONTRACT_TYP_COL_INDEX = 2;
+        private static int TRANSTYP_COL_INDEX = 3;
+        private static int SP_COL_INDEX = 4;
+        private static int CMP_COL_INDEX = 5;
+        private static int PREMINUM_COL_INDEX = 6;
+        private static int LOTS_COL_INDEX = 7;
+        private static int SELECTED_SP_COL_INDEX = 18;
+        private static int LOWER_SP_COL_START_INDEX = 8;
+        private static int HIGHER_SP_COL_END_INDEX = 28;
 
         private static int MAX_ROWS_ALLOWED = 15;
+
+        private static string SB_FILE_NAME = "StrategyBuilder.csv";
+        private static string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
 
         Records recordsObject = new Records();
 
@@ -39,10 +43,10 @@ namespace TOC
         {
             if (!IsPostBack)
             {
-                DataTable dataTable = AddColumns();
-                AddBlankRows(dataTable, 5);
+                DataTable dataTable = FileClass.ReadCsvFile(MYFILES_FOLDER_PATH + SB_FILE_NAME);
+                //AddBlankRows(dataTable, 2);
                 MySession.Current.StrategyBuilderDt = dataTable;
-                FillExpiryDates(ddlExpiryDates);
+                //FillExpiryDates(ddlExpiryDates);
                 GridviewDataBind(dataTable);
             }
         }
@@ -57,14 +61,14 @@ namespace TOC
 
             for (int iCount = 0; iCount < rowstoadd; iCount++)
             {
-                dataTable.Rows.Add(false, "CE", "BUY", OCHelper.DefaultSP(rblOCType.SelectedValue), "", "", "1",
+                dataTable.Rows.Add(false, "", "CE", "BUY", OCHelper.DefaultSP(rblOCType.SelectedValue), "", "", "1",
                     "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
         }
 
         protected void rblOCType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FillExpiryDates(ddlExpiryDates);
+            //FillExpiryDates(ddlExpiryDates);
         }
 
         private void GridviewDataBind(DataTable dataTable)
@@ -110,7 +114,7 @@ namespace TOC
                 //Get latest premium value from the OC
                 if (row[CONTRACT_TYP_COL_INDEX].ToString().Equals(enumContractType.CE.ToString()))
                 {
-                    Records.Datum.CE1 cE1 = OCHelper.GetCE(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue,
+                    Records.Datum.CE1 cE1 = OCHelper.GetCE(rblOCType.SelectedValue, row[EXP_DATE_COL_INDEX].ToString(),
                         Convert.ToInt32(row[SP_COL_INDEX]));
                     if (cE1 != null)
                         row[CMP_COL_INDEX] = cE1.lastPrice.ToString();
@@ -121,7 +125,7 @@ namespace TOC
 
                 if (row[CONTRACT_TYP_COL_INDEX].ToString().Equals(enumContractType.PE.ToString()))
                 {
-                    Records.Datum.PE1 pE1 = OCHelper.GetPE(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue,
+                    Records.Datum.PE1 pE1 = OCHelper.GetPE(rblOCType.SelectedValue, row[EXP_DATE_COL_INDEX].ToString(),
                         Convert.ToInt32(row[SP_COL_INDEX]));
                     if (pE1 != null)
                         row[CMP_COL_INDEX] = pE1.lastPrice.ToString();
@@ -174,6 +178,7 @@ namespace TOC
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 CheckBox chkDelete = e.Row.FindControl("chkDelete") as CheckBox;
+                DropDownList ddlExpiryDates = e.Row.FindControl("ddlExpiryDates") as DropDownList;
                 DropDownList ddlContractType = e.Row.FindControl("ddlContractType") as DropDownList;
                 DropDownList ddlTransactionType = e.Row.FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = e.Row.FindControl("ddlStrikePrice") as DropDownList;
@@ -181,7 +186,9 @@ namespace TOC
                 DropDownList ddlLots = e.Row.FindControl("ddlLots") as DropDownList;
                 e.Row.Cells[CMP_COL_INDEX].Text = dataTable.Rows[e.Row.RowIndex][CMP_COL_INDEX].ToString();
                 chkDelete.Checked = Convert.ToBoolean(dataTable.Rows[e.Row.RowIndex][DELETE_COL_INDEX]);
+                FillExpiryDates(ddlExpiryDates);
                 FillStrikePrice(ddlStrikePrice);
+                Utility.SelectDataInCombo(ddlExpiryDates, dataTable.Rows[e.Row.RowIndex][EXP_DATE_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlContractType, dataTable.Rows[e.Row.RowIndex][CONTRACT_TYP_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlTransactionType, dataTable.Rows[e.Row.RowIndex][TRANSTYP_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlStrikePrice, dataTable.Rows[e.Row.RowIndex][SP_COL_INDEX].ToString());
@@ -263,40 +270,6 @@ namespace TOC
             }
         }
 
-        private DataTable AddColumns()
-        {
-            DataTable dataTable = new DataTable();
-            dataTable.Columns.Add("Delete");
-            dataTable.Columns.Add("Contract Type");
-            dataTable.Columns.Add("Transaction Type");
-            dataTable.Columns.Add("Strike Price");
-            dataTable.Columns.Add("CMP");
-            dataTable.Columns.Add("Premium");
-            dataTable.Columns.Add("Lots");
-            dataTable.Columns.Add("11");
-            dataTable.Columns.Add("12");
-            dataTable.Columns.Add("13");
-            dataTable.Columns.Add("14");
-            dataTable.Columns.Add("15");
-            dataTable.Columns.Add("16");
-            dataTable.Columns.Add("17");
-            dataTable.Columns.Add("18");
-            dataTable.Columns.Add("19");
-            dataTable.Columns.Add("20");
-            dataTable.Columns.Add("1");
-            dataTable.Columns.Add("21");
-            dataTable.Columns.Add("22");
-            dataTable.Columns.Add("23");
-            dataTable.Columns.Add("24");
-            dataTable.Columns.Add("25");
-            dataTable.Columns.Add("26");
-            dataTable.Columns.Add("27");
-            dataTable.Columns.Add("28");
-            dataTable.Columns.Add("29");
-            dataTable.Columns.Add("30");
-            return dataTable;
-        }
-
         protected void btnAddRows_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
@@ -307,18 +280,19 @@ namespace TOC
 
         private DataTable SaveGridviewData()
         {
-            DataTable dataTable = AddColumns();
+            DataTable dataTable = FileClass.AddColumns();
 
             foreach (GridViewRow gvRow in gvStrategy.Rows)
             {
                 CheckBox chkDelete = gvRow.Cells[DELETE_COL_INDEX].FindControl("chkDelete") as CheckBox;
+                DropDownList ddlExpiryDates = gvRow.Cells[EXP_DATE_COL_INDEX].FindControl("ddlExpiryDates") as DropDownList;
                 DropDownList ddlContractType = gvRow.Cells[CONTRACT_TYP_COL_INDEX].FindControl("ddlContractType") as DropDownList;
                 DropDownList ddlTransactionType = gvRow.Cells[TRANSTYP_COL_INDEX].FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = gvRow.Cells[SP_COL_INDEX].FindControl("ddlStrikePrice") as DropDownList;
                 TextBox txtPremium = gvRow.Cells[PREMINUM_COL_INDEX].FindControl("txtPremium") as TextBox;
                 DropDownList ddlLots = gvRow.Cells[LOTS_COL_INDEX].FindControl("ddlLots") as DropDownList;
 
-                dataTable.Rows.Add(chkDelete.Checked, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue,
+                dataTable.Rows.Add(chkDelete.Checked, ddlExpiryDates.SelectedValue, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue,
                     ddlStrikePrice.SelectedValue, "", txtPremium.Text, ddlLots.SelectedValue, "", "", "", "", "", "", "",
                     "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
@@ -330,6 +304,29 @@ namespace TOC
             DataTable dataTable = SaveGridviewData();
             MySession.Current.StrategyBuilderDt = dataTable;
             GridviewDataBind(dataTable);
+        }
+
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            DataTable dataTable = SaveGridviewData();
+            FileClass.WriteDataTable(dataTable, MYFILES_FOLDER_PATH + SB_FILE_NAME);
+            MySession.Current.StrategyBuilderDt = dataTable;
+            GridviewDataBind(dataTable);
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            DataTable dataTable = SaveGridviewData();
+            DataTable newDataTable = dataTable.Clone();
+            foreach (DataRow row in dataTable.Rows)
+            {
+                if (!Convert.ToBoolean(row[DELETE_COL_INDEX]))
+                {
+                    newDataTable.Rows.Add(row.ItemArray);
+                }
+            }
+            MySession.Current.StrategyBuilderDt = newDataTable;
+            GridviewDataBind(newDataTable);
         }
     }
 }

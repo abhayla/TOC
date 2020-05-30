@@ -190,10 +190,18 @@
                 <li><a href="CompareOptions.aspx">Compare Options</a></li>
                 <li><a href="#">Option Strategies</a>
                     <ul>
-                        <li><a href="ButterflySpread.aspx">Butterfly Spread</a></li>
-                        <li><a href="IronCondor.aspx">Iron Condor</a></li>
-                        <li><a href="Spreads.aspx">Spreads</a></li>
+                        <li><a href="FilterAll.aspx">Filter All</a></li>
+                        <li><a href="#">Bullish</a>
+                        <li><a href="#">Bearish</a>
+                        <li><a href="#">Sideways >></a>
+                            <ul>
+                                <li><a href="ButterflySpread.aspx">Butterfly Spread</a></li>
+                                <li><a href="IronCondor.aspx">Iron Condor</a></li>
+                                <li><a href="Spreads.aspx">Spreads</a></li>
+                            </ul>
+                        </li>
                     </ul>
+
                 </li>
                 <li><a href="ReadFiles.aspx">Read Files</a></li>
             </ul>

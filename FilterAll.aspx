@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Iron Condor" Language="C#" AutoEventWireup="true" CodeBehind="IronCondor.aspx.cs" Inherits="TOC.IronCondor" MasterPageFile="~/Site.Master" %>
+﻿<%@ Page Title="Filter All" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FilterAll.aspx.cs" Inherits="TOC.FilterAll" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
@@ -21,6 +21,7 @@
             <asp:ListItem Text="CE" Value="CE"></asp:ListItem>
             <asp:ListItem Text="PE" Value="PE"></asp:ListItem>
         </asp:DropDownList>
+        <%--<asp:Button runat="server" Text="Fetch" ID="btnFetch" OnClick="btnFetch_Click" />--%>
     </div>
     <div>
         <asp:Label runat="server" Text="Filter Options" ID="lblFilterOptions"></asp:Label>
@@ -31,10 +32,10 @@
         <asp:Label runat="server" ID="lblSPLowerRange" Text="Lower Range"></asp:Label>
         <asp:DropDownList runat="server" ID="ddlSPLowerRange">
         </asp:DropDownList>
-        <%--<asp:Label runat="server" ID="lblSPExpiry" Text="Expected Expiry"></asp:Label>
-            <asp:DropDownList runat="server" ID="ddlSPExpiry">
-                <asp:ListItem Text="NONE" Value="NONE" Selected="True"></asp:ListItem>
-            </asp:DropDownList>--%>
+        <asp:Label runat="server" ID="lblSPExpiry" Text="Expected Expiry"></asp:Label>
+        <asp:DropDownList runat="server" ID="ddlSPExpiry">
+            <asp:ListItem Text="NONE" Value="NONE" Selected="True"></asp:ListItem>
+        </asp:DropDownList>
         <asp:Label runat="server" ID="lblSPHigherRange" Text="Higher Range"></asp:Label>
         <asp:DropDownList runat="server" ID="ddlSPHigherRange">
         </asp:DropDownList>

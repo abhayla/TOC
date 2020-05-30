@@ -11,8 +11,8 @@
     <div>
         <asp:Label ID="lblLotSize" runat="server" Text="Lot Size"></asp:Label>
         <asp:Label ID="lblLotSizeValue" runat="server" Text="75"></asp:Label>
-        <asp:DropDownList runat="server" ID="ddlExpiryDates">
-        </asp:DropDownList>
+        <%--<asp:DropDownList runat="server" ID="ddlExpiryDates">
+        </asp:DropDownList>--%>
     </div>
     <br />
     <div>
@@ -21,6 +21,12 @@
                 <asp:TemplateField HeaderText="Select">
                     <ItemTemplate>
                         <asp:CheckBox runat="server" ID="chkDelete" />
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="Expiry Date" ItemStyle-Width="105">
+                    <ItemTemplate>
+                        <asp:DropDownList runat="server" ID="ddlExpiryDates" Width="105">
+                        </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Contract Type" ItemStyle-Width="50">
@@ -33,9 +39,9 @@
                         </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Transaction Type" ItemStyle-Width="50">
+                <asp:TemplateField HeaderText="Transaction Type" ItemStyle-Width="70">
                     <ItemTemplate>
-                        <asp:DropDownList runat="server" ID="ddlTransactionType" Width="50">
+                        <asp:DropDownList runat="server" ID="ddlTransactionType" Width="70">
                             <asp:ListItem Text="BUY" Value="BUY"></asp:ListItem>
                             <asp:ListItem Text="SELL" Value="SELL"></asp:ListItem>
                         </asp:DropDownList>
@@ -93,7 +99,9 @@
             </Columns>
         </asp:GridView>
         <br />
+        <asp:Button runat="server" Text="Delete" ID="btnDelete" OnClick="btnDelete_Click" />
         <asp:Button runat="server" Text="Add row" ID="btnAddRows" OnClick="btnAddRows_Click" />
         <asp:Button runat="server" Text="Update CMP" ID="btnUpdateCMP" OnClick="btnUpdateCMP_Click" />
+        <asp:Button runat="server" Text="Save" ID="btnSave" OnClick="btnSave_Click" />
     </div>
 </asp:Content>

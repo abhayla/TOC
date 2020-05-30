@@ -435,5 +435,178 @@ namespace TOC
                 ddlExpDt.Items.Add(item);
             }
         }
+
+        private static DataTable toDataTable(Filtered filteredObject)
+        {
+            var result = new DataTable();
+
+            result = addDataTableColumns(result);
+
+            foreach (var row in filteredObject.data)
+            {
+                var datarow = result.NewRow();
+                if (row.CE != null)
+                {
+                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
+                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
+                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
+                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
+                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
+                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
+                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
+                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
+                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
+                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
+                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
+                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
+                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
+                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
+                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
+                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
+                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
+                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
+                }
+
+                if (row.PE != null)
+                {
+                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
+                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
+                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
+                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
+                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
+                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
+                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
+                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
+                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
+                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
+                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
+                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
+                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
+                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
+                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
+                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
+                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
+                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
+                }
+
+                result.Rows.Add(datarow);
+            }
+
+            return result;
+        }
+        public static DataTable toDataTable(Records recordsObject)
+        {
+            var result = new DataTable();
+
+            result = addDataTableColumns(result);
+
+            foreach (var row in recordsObject.data)
+            {
+                var datarow = result.NewRow();
+                if (row.CE != null)
+                {
+                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
+                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
+                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
+                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
+                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
+                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
+                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
+                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
+                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
+                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
+                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
+                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
+                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
+                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
+                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
+                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
+                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
+                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
+                    datarow["Contract"] = enumContractType.CE.ToString();
+                }
+
+                if (row.PE != null)
+                {
+                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
+                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
+                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
+                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
+                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
+                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
+                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
+                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
+                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
+                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
+                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
+                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
+                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
+                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
+                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
+                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
+                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
+                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
+                    datarow["Contract"] = enumContractType.PE.ToString();
+                }
+
+                result.Rows.Add(datarow);
+            }
+
+            return result;
+        }
+
+        private static DataTable addDataTableColumns(DataTable result)
+        {
+            Records.Datum.CE1 ce = new Records.Datum.CE1();
+
+            result.Columns.Add("CE" + "expiryDate");
+            result.Columns.Add("CE" + "underlying");
+            result.Columns.Add("CE" + "identifier");
+            result.Columns.Add("CE" + "pchangeinOpenInterest");
+            result.Columns.Add("CE" + "impliedVolatility");
+            result.Columns.Add("CE" + "totalBuyQuantity");
+            result.Columns.Add("CE" + "totalSellQuantity");
+            result.Columns.Add("CE" + "underlyingValue");
+            result.Columns.Add("CE" + "pChange");
+            result.Columns.Add("Contract");
+            result.Columns.Add("CE" + "openInterest");
+            result.Columns.Add("CE" + "changeinOpenInterest");
+            result.Columns.Add("CE" + "totalTradedVolume");
+            result.Columns.Add("CE" + "lastPrice");
+            result.Columns.Add("CE" + "change");
+            result.Columns.Add("CE" + "bidQty");
+            result.Columns.Add("CE" + "bidprice");
+            result.Columns.Add("CE" + "askPrice");
+            result.Columns.Add("CE" + "askQty");
+            result.Columns.Add("StrikePrice");
+
+            Records.Datum.PE1 pe = new Records.Datum.PE1();
+            //result.Columns.Add("strikePrice");
+            result.Columns.Add("PE" + "bidQty");
+            result.Columns.Add("PE" + "bidprice");
+            result.Columns.Add("PE" + "askPrice");
+            result.Columns.Add("PE" + "askQty");
+            result.Columns.Add("PE" + "change");
+            result.Columns.Add("PE" + "lastPrice");
+            result.Columns.Add("PE" + "totalTradedVolume");
+            result.Columns.Add("PE" + "changeinOpenInterest");
+            result.Columns.Add("PE" + "pchangeinOpenInterest");
+
+            result.Columns.Add("PE" + "pChange");
+            result.Columns.Add("ExpiryDate");
+            result.Columns.Add("PE" + "underlying");
+            result.Columns.Add("PE" + "identifier");
+            result.Columns.Add("PE" + "openInterest");
+            result.Columns.Add("PE" + "impliedVolatility");
+            result.Columns.Add("PE" + "totalBuyQuantity");
+            result.Columns.Add("PE" + "totalSellQuantity");
+            result.Columns.Add("PE" + "underlyingValue");
+
+            return result;
+        }
     }
 }

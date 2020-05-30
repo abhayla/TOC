@@ -23,8 +23,8 @@ namespace TOC
 
         //string mainurl = "https://www1.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=BANKNIFTY&instrument=OPTIDX&date=-&segmentLink=17";
         //string mainurl = "https://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=-&date=-&segmentLink=17&symbolCount=2&segmentLink=17";
-        Records recordsObject = new Records();
-        Filtered filteredObject = new Filtered();
+        //Records recordsObject = new Records();
+        //Filtered filteredObject = new Filtered();
         double currentPrice = 0.0;
         double higherStrikePrice = 0.0;
         double lowerStrikePrice = 0.0;
@@ -64,7 +64,7 @@ namespace TOC
             string selectQuery = string.Empty;
 
             //DataTable dt = toDataTable(filteredObject);
-            DataTable dt = toDataTable(recordsObject);
+            DataTable dt = OCHelper.toDataTable(MySession.Current.RecordsObject);
 
             if (!expityDate.Trim().Equals(string.Empty))
             {
@@ -92,208 +92,194 @@ namespace TOC
 
         private void FetchOC(string ocType)
         {
-            recordsObject = OCHelper.GetOC(ocType);
-            currentPrice = recordsObject.underlyingValue;
+            MySession.Current.RecordsObject = OCHelper.GetOC(ocType);
+            currentPrice = MySession.Current.RecordsObject.underlyingValue;
             FillExpiryDates(ddlExpiryDates);
             UpdateStrikePriceDetails();
         }
 
-        private bool IsTimeGapPassed()
-        {
-            if (timeLastOCFetched.Add(timeGapForNewOC) > DateTime.Now.TimeOfDay)
-            {
-                return true;
-            }
-            else
-            {
-                timeLastOCFetched = DateTime.Now.TimeOfDay;
-                return false;
-            }
-        }
-
         private void FillExpiryDates(DropDownList ddlExpiryDates)
         {
-            List<string> expiryDates = recordsObject.expiryDates;
+            List<string> expiryDates = MySession.Current.RecordsObject.expiryDates;
             foreach (string item in expiryDates)
             {
                 ddlExpiryDates.Items.Add(item);
             }
         }
 
-        private static DataTable toDataTable(Filtered filteredObject)
-        {
-            var result = new DataTable();
+        //private static DataTable toDataTable(Filtered filteredObject)
+        //{
+        //    var result = new DataTable();
 
-            result = addDataTableColumns(result);
+        //    result = addDataTableColumns(result);
 
-            foreach (var row in filteredObject.data)
-            {
-                var datarow = result.NewRow();
-                if (row.CE != null)
-                {
-                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
-                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
-                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
-                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
-                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
-                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
-                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
-                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
-                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
-                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
-                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
-                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
-                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
-                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
-                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
-                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
-                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
-                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
-                }
+        //    foreach (var row in filteredObject.data)
+        //    {
+        //        var datarow = result.NewRow();
+        //        if (row.CE != null)
+        //        {
+        //            datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+        //            datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
+        //            datarow["CE" + "underlying"] = row.CE.underlying.ToString();
+        //            datarow["CE" + "identifier"] = row.CE.identifier.ToString();
+        //            datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
+        //            datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
+        //            datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
+        //            datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
+        //            datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
+        //            datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
+        //            datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
+        //            datarow["CE" + "pChange"] = row.CE.pChange.ToString();
+        //            datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
+        //            datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
+        //            datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
+        //            datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
+        //            datarow["CE" + "askQty"] = row.CE.askQty.ToString();
+        //            datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
+        //            datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
+        //        }
 
-                if (row.PE != null)
-                {
-                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
-                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
-                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
-                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
-                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
-                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
-                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
-                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
-                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
-                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
-                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
-                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
-                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
-                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
-                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
-                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
-                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
-                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
-                }
+        //        if (row.PE != null)
+        //        {
+        //            datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+        //            datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
+        //            datarow["PE" + "underlying"] = row.PE.underlying.ToString();
+        //            datarow["PE" + "identifier"] = row.PE.identifier.ToString();
+        //            datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
+        //            datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
+        //            datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
+        //            datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
+        //            datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
+        //            datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
+        //            datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
+        //            datarow["PE" + "pChange"] = row.PE.pChange.ToString();
+        //            datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
+        //            datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
+        //            datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
+        //            datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
+        //            datarow["PE" + "askQty"] = row.PE.askQty.ToString();
+        //            datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
+        //            datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
+        //        }
 
-                result.Rows.Add(datarow);
-            }
+        //        result.Rows.Add(datarow);
+        //    }
 
-            return result;
-        }
-        private static DataTable toDataTable(Records recordsObject)
-        {
-            var result = new DataTable();
+        //    return result;
+        //}
 
-            result = addDataTableColumns(result);
+        //private static DataTable toDataTable(Records recordsObject)
+        //{
+        //    var result = new DataTable();
 
-            foreach (var row in recordsObject.data)
-            {
-                var datarow = result.NewRow();
-                if (row.CE != null)
-                {
-                    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
-                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
-                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
-                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
-                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
-                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
-                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
-                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
-                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
-                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
-                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
-                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
-                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
-                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
-                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
-                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
-                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
-                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
-                    datarow["Contract"] = enumContractType.CE.ToString();
-                }
+        //    result = addDataTableColumns(result);
 
-                if (row.PE != null)
-                {
-                    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
-                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
-                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
-                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
-                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
-                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
-                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
-                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
-                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
-                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
-                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
-                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
-                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
-                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
-                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
-                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
-                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
-                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
-                    datarow["Contract"] = enumContractType.PE.ToString();
-                }
+        //    foreach (var row in recordsObject.data)
+        //    {
+        //        var datarow = result.NewRow();
+        //        if (row.CE != null)
+        //        {
+        //            datarow["StrikePrice"] = row.CE.strikePrice.ToString();
+        //            datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
+        //            datarow["CE" + "underlying"] = row.CE.underlying.ToString();
+        //            datarow["CE" + "identifier"] = row.CE.identifier.ToString();
+        //            datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
+        //            datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
+        //            datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
+        //            datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
+        //            datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
+        //            datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
+        //            datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
+        //            datarow["CE" + "pChange"] = row.CE.pChange.ToString();
+        //            datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
+        //            datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
+        //            datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
+        //            datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
+        //            datarow["CE" + "askQty"] = row.CE.askQty.ToString();
+        //            datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
+        //            datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
+        //            datarow["Contract"] = enumContractType.CE.ToString();
+        //        }
 
-                result.Rows.Add(datarow);
-            }
+        //        if (row.PE != null)
+        //        {
+        //            datarow["StrikePrice"] = row.PE.strikePrice.ToString();
+        //            datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
+        //            datarow["PE" + "underlying"] = row.PE.underlying.ToString();
+        //            datarow["PE" + "identifier"] = row.PE.identifier.ToString();
+        //            datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
+        //            datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
+        //            datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
+        //            datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
+        //            datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
+        //            datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
+        //            datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
+        //            datarow["PE" + "pChange"] = row.PE.pChange.ToString();
+        //            datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
+        //            datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
+        //            datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
+        //            datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
+        //            datarow["PE" + "askQty"] = row.PE.askQty.ToString();
+        //            datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
+        //            datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
+        //            datarow["Contract"] = enumContractType.PE.ToString();
+        //        }
 
-            return result;
-        }
+        //        result.Rows.Add(datarow);
+        //    }
 
+        //    return result;
+        //}
 
+        //private static DataTable addDataTableColumns(DataTable result)
+        //{
+        //    Records.Datum.CE1 ce = new Records.Datum.CE1();
 
-        private static DataTable addDataTableColumns(DataTable result)
-        {
-            Records.Datum.CE1 ce = new Records.Datum.CE1();
+        //    result.Columns.Add("CE" + "expiryDate");
+        //    result.Columns.Add("CE" + "underlying");
+        //    result.Columns.Add("CE" + "identifier");
+        //    result.Columns.Add("CE" + "pchangeinOpenInterest");
+        //    result.Columns.Add("CE" + "impliedVolatility");
+        //    result.Columns.Add("CE" + "totalBuyQuantity");
+        //    result.Columns.Add("CE" + "totalSellQuantity");
+        //    result.Columns.Add("CE" + "underlyingValue");
+        //    result.Columns.Add("CE" + "pChange");
+        //    result.Columns.Add("Contract");
+        //    result.Columns.Add("CE" + "openInterest");
+        //    result.Columns.Add("CE" + "changeinOpenInterest");
+        //    result.Columns.Add("CE" + "totalTradedVolume");
+        //    result.Columns.Add("CE" + "lastPrice");
+        //    result.Columns.Add("CE" + "change");
+        //    result.Columns.Add("CE" + "bidQty");
+        //    result.Columns.Add("CE" + "bidprice");
+        //    result.Columns.Add("CE" + "askPrice");
+        //    result.Columns.Add("CE" + "askQty");
+        //    result.Columns.Add("StrikePrice");
 
-            result.Columns.Add("CE" + "expiryDate");
-            result.Columns.Add("CE" + "underlying");
-            result.Columns.Add("CE" + "identifier");
-            result.Columns.Add("CE" + "pchangeinOpenInterest");
-            result.Columns.Add("CE" + "impliedVolatility");
-            result.Columns.Add("CE" + "totalBuyQuantity");
-            result.Columns.Add("CE" + "totalSellQuantity");
-            result.Columns.Add("CE" + "underlyingValue");
-            result.Columns.Add("CE" + "pChange");
-            result.Columns.Add("Contract");
-            result.Columns.Add("CE" + "openInterest");
-            result.Columns.Add("CE" + "changeinOpenInterest");
-            result.Columns.Add("CE" + "totalTradedVolume");
-            result.Columns.Add("CE" + "lastPrice");
-            result.Columns.Add("CE" + "change");
-            result.Columns.Add("CE" + "bidQty");
-            result.Columns.Add("CE" + "bidprice");
-            result.Columns.Add("CE" + "askPrice");
-            result.Columns.Add("CE" + "askQty");
-            result.Columns.Add("StrikePrice");
+        //    Records.Datum.PE1 pe = new Records.Datum.PE1();
+        //    //result.Columns.Add("strikePrice");
+        //    result.Columns.Add("PE" + "bidQty");
+        //    result.Columns.Add("PE" + "bidprice");
+        //    result.Columns.Add("PE" + "askPrice");
+        //    result.Columns.Add("PE" + "askQty");
+        //    result.Columns.Add("PE" + "change");
+        //    result.Columns.Add("PE" + "lastPrice");
+        //    result.Columns.Add("PE" + "totalTradedVolume");
+        //    result.Columns.Add("PE" + "changeinOpenInterest");
+        //    result.Columns.Add("PE" + "pchangeinOpenInterest");
 
-            Records.Datum.PE1 pe = new Records.Datum.PE1();
-            //result.Columns.Add("strikePrice");
-            result.Columns.Add("PE" + "bidQty");
-            result.Columns.Add("PE" + "bidprice");
-            result.Columns.Add("PE" + "askPrice");
-            result.Columns.Add("PE" + "askQty");
-            result.Columns.Add("PE" + "change");
-            result.Columns.Add("PE" + "lastPrice");
-            result.Columns.Add("PE" + "totalTradedVolume");
-            result.Columns.Add("PE" + "changeinOpenInterest");
-            result.Columns.Add("PE" + "pchangeinOpenInterest");
+        //    result.Columns.Add("PE" + "pChange");
+        //    result.Columns.Add("ExpiryDate");
+        //    result.Columns.Add("PE" + "underlying");
+        //    result.Columns.Add("PE" + "identifier");
+        //    result.Columns.Add("PE" + "openInterest");
+        //    result.Columns.Add("PE" + "impliedVolatility");
+        //    result.Columns.Add("PE" + "totalBuyQuantity");
+        //    result.Columns.Add("PE" + "totalSellQuantity");
+        //    result.Columns.Add("PE" + "underlyingValue");
 
-            result.Columns.Add("PE" + "pChange");
-            result.Columns.Add("ExpiryDate");
-            result.Columns.Add("PE" + "underlying");
-            result.Columns.Add("PE" + "identifier");
-            result.Columns.Add("PE" + "openInterest");
-            result.Columns.Add("PE" + "impliedVolatility");
-            result.Columns.Add("PE" + "totalBuyQuantity");
-            result.Columns.Add("PE" + "totalSellQuantity");
-            result.Columns.Add("PE" + "underlyingValue");
-
-            return result;
-        }
+        //    return result;
+        //}
 
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -310,26 +296,26 @@ namespace TOC
             gvOptionChain.DataBind();
         }
 
-        private void FillBFSpread(DataTable dt)
-        {
-            GridView gridView = new GridView();
-            gridView.DataSource = dt;
-            gridView.DataBind();
-            divButterflySpread.Controls.Add(gridView);
-        }
+        //private void FillBFSpread(DataTable dt)
+        //{
+        //    GridView gridView = new GridView();
+        //    gridView.DataSource = dt;
+        //    gridView.DataBind();
+        //    divButterflySpread.Controls.Add(gridView);
+        //}
 
-        protected void btnGetButterflySpread_Click(object sender, EventArgs e)
-        {
-            //FetchOC();
-            DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
-            FillOCGridview(dtData);
-            CreateButterflySpreadStrategyTable();
-            //Telegram.SendTelegramMessage("Hello Everyone!");
-        }
+        //protected void btnGetButterflySpread_Click(object sender, EventArgs e)
+        //{
+        //    //FetchOC();
+        //    DataTable dtData = GetOCForGivenOption(rblOCType.SelectedValue, ddlExpiryDates.SelectedValue);
+        //    FillOCGridview(dtData);
+        //    CreateButterflySpreadStrategyTable();
+        //    //Telegram.SendTelegramMessage("Hello Everyone!");
+        //}
 
         private List<int> GetStrikePrices()
         {
-            List<int> strikePrices = recordsObject.strikePrices;
+            List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
             List<int> filteredStrikePrices = new List<int>();
 
             foreach (var item in strikePrices)
@@ -365,7 +351,7 @@ namespace TOC
         {
             List<int> strikePrices = GetStrikePrices();
             DataRow datarow;
-            foreach (var row in recordsObject.data)
+            foreach (var row in MySession.Current.RecordsObject.data)
             {
                 if (row.CE != null && (row.CE.strikePrice <= iUpperStrikePriceRange && row.CE.strikePrice >= iLowerStrikePriceRange))
                 {
@@ -441,90 +427,90 @@ namespace TOC
             return dt;
         }
 
-        private void CreateButterflySpreadStrategyTable()
-        {
-            dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
-            dtOCCalculation = AddRowstoStrategyTable(dtOCCalculation);
+        //private void CreateButterflySpreadStrategyTable()
+        //{
+        //    dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
+        //    dtOCCalculation = AddRowstoStrategyTable(dtOCCalculation);
 
-            DataTable dtButterflySpread = new DataTable();
-            dtButterflySpread.Columns.Add("Stock");
-            dtButterflySpread.Columns.Add("Contract");
-            dtButterflySpread.Columns.Add("TransactionType");
-            dtButterflySpread.Columns.Add("StrikePrice");
-            dtButterflySpread.Columns.Add("LotSize");
-            dtButterflySpread.Columns.Add("Premium");
-            dtButterflySpread.Columns.Add("ProfitLoss");
+        //    DataTable dtButterflySpread = new DataTable();
+        //    dtButterflySpread.Columns.Add("Stock");
+        //    dtButterflySpread.Columns.Add("Contract");
+        //    dtButterflySpread.Columns.Add("TransactionType");
+        //    dtButterflySpread.Columns.Add("StrikePrice");
+        //    dtButterflySpread.Columns.Add("LotSize");
+        //    dtButterflySpread.Columns.Add("Premium");
+        //    dtButterflySpread.Columns.Add("ProfitLoss");
 
-            for (int iCount = 1; iCount <= iStrategyCount; iCount++)
-            {
-                for (int iCEPE = 1; iCEPE <= 2; iCEPE++)
-                {
-                    double iLowerSP = currentStrikePrice - (iCount * diffStrikePrice);
-                    double iHighterSP = currentStrikePrice + (iCount * diffStrikePrice);
-                    string selectQuery = string.Empty;
-                    if (iCEPE == 1)
-                    {
-                        selectQuery = "(Contract = 'CE')" +
-                        " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
-                        " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
-                        " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
-                    }
-                    else if (iCEPE == 2)
-                    {
-                        selectQuery = "(Contract = 'PE')" +
-                        " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
-                        " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
-                        " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
-                    }
+        //    for (int iCount = 1; iCount <= iStrategyCount; iCount++)
+        //    {
+        //        for (int iCEPE = 1; iCEPE <= 2; iCEPE++)
+        //        {
+        //            double iLowerSP = currentStrikePrice - (iCount * diffStrikePrice);
+        //            double iHighterSP = currentStrikePrice + (iCount * diffStrikePrice);
+        //            string selectQuery = string.Empty;
+        //            if (iCEPE == 1)
+        //            {
+        //                selectQuery = "(Contract = 'CE')" +
+        //                " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
+        //                " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
+        //                " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
+        //            }
+        //            else if (iCEPE == 2)
+        //            {
+        //                selectQuery = "(Contract = 'PE')" +
+        //                " AND((StrikePrice = " + (iLowerSP) + " AND TransactionType = 'Buy') OR (StrikePrice = " + currentStrikePrice +
+        //                " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSP) +
+        //                " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
+        //            }
 
-                    DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
-                    //make a new "results" datatable via clone to keep structure
-                    DataTable dtButterflySpreadCEStrategy = dtOCCalculation.Clone();
-                    //Import the Rows
-                    foreach (DataRow d in drs)
-                    {
-                        dtButterflySpreadCEStrategy.ImportRow(d);
-                    }
+        //            DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
+        //            //make a new "results" datatable via clone to keep structure
+        //            DataTable dtButterflySpreadCEStrategy = dtOCCalculation.Clone();
+        //            //Import the Rows
+        //            foreach (DataRow d in drs)
+        //            {
+        //                dtButterflySpreadCEStrategy.ImportRow(d);
+        //            }
 
-                    DataTable dtButterflySpreadCEStrategyResult = dtButterflySpread.Clone();
-                    for (int i = 0; i < dtButterflySpreadCEStrategy.Rows.Count; i++)
-                    {
-                        double sum = 0;
-                        var strikePrice = dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(); //30400
+        //            DataTable dtButterflySpreadCEStrategyResult = dtButterflySpread.Clone();
+        //            for (int i = 0; i < dtButterflySpreadCEStrategy.Rows.Count; i++)
+        //            {
+        //                double sum = 0;
+        //                var strikePrice = dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(); //30400
 
-                        for (int j = 0; j < dtButterflySpreadCEStrategy.Rows.Count; j++)
-                        {
-                            var rowStrikePrice = dtButterflySpreadCEStrategy.Rows[j]["StrikePrice"].ToString(); //30400
-                                                                                                                //var columnStrikePrice = dtButterflySpreadCEStrategy.Rows[j][strikePrice].ToString(); //-255
-                            if (rowStrikePrice == currentStrikePrice.ToString())
-                            {
-                                sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]) * 2;
-                            }
-                            else if (rowStrikePrice == iLowerSP.ToString() || rowStrikePrice == iHighterSP.ToString())
-                            {
-                                sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]);//-255,
-                            }
-                        }
+        //                for (int j = 0; j < dtButterflySpreadCEStrategy.Rows.Count; j++)
+        //                {
+        //                    var rowStrikePrice = dtButterflySpreadCEStrategy.Rows[j]["StrikePrice"].ToString(); //30400
+        //                                                                                                        //var columnStrikePrice = dtButterflySpreadCEStrategy.Rows[j][strikePrice].ToString(); //-255
+        //                    if (rowStrikePrice == currentStrikePrice.ToString())
+        //                    {
+        //                        sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]) * 2;
+        //                    }
+        //                    else if (rowStrikePrice == iLowerSP.ToString() || rowStrikePrice == iHighterSP.ToString())
+        //                    {
+        //                        sum += Convert.ToDouble(dtButterflySpreadCEStrategy.Rows[j][strikePrice]);//-255,
+        //                    }
+        //                }
 
-                        int lotSize = Convert.ToInt32(dtButterflySpreadCEStrategy.Rows[i]["LotSize"]);
-                        dtButterflySpreadCEStrategyResult.Rows.Add(new string[] {
-                        dtButterflySpreadCEStrategy.Rows[i]["Stock"].ToString(),
-                        dtButterflySpreadCEStrategy.Rows[i]["Contract"].ToString(),
-                        dtButterflySpreadCEStrategy.Rows[i]["TransactionType"].ToString(),
-                        dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(),
-                        lotSize.ToString(),
-                        dtButterflySpreadCEStrategy.Rows[i]["Premium"].ToString(),
-                        Math.Round(lotSize*sum,2).ToString()});
-                    }
-                    gvOptionChain.Visible = false;
-                    FillBFSpread(dtButterflySpreadCEStrategyResult);
-                }
-            }
-        }
+        //                int lotSize = Convert.ToInt32(dtButterflySpreadCEStrategy.Rows[i]["LotSize"]);
+        //                dtButterflySpreadCEStrategyResult.Rows.Add(new string[] {
+        //                dtButterflySpreadCEStrategy.Rows[i]["Stock"].ToString(),
+        //                dtButterflySpreadCEStrategy.Rows[i]["Contract"].ToString(),
+        //                dtButterflySpreadCEStrategy.Rows[i]["TransactionType"].ToString(),
+        //                dtButterflySpreadCEStrategy.Rows[i]["StrikePrice"].ToString(),
+        //                lotSize.ToString(),
+        //                dtButterflySpreadCEStrategy.Rows[i]["Premium"].ToString(),
+        //                Math.Round(lotSize*sum,2).ToString()});
+        //            }
+        //            gvOptionChain.Visible = false;
+        //            FillBFSpread(dtButterflySpreadCEStrategyResult);
+        //        }
+        //    }
+        //}
 
         private void UpdateStrikePriceDetails()
         {
-            List<int> prices = recordsObject.strikePrices;
+            List<int> prices = MySession.Current.RecordsObject.strikePrices;
             if (prices.Count > 2)
             {
                 diffStrikePrice = (prices[1] - prices[0]);
@@ -541,25 +527,25 @@ namespace TOC
 
         }
 
-        protected void btnShowCalculation_Click(object sender, EventArgs e)
-        {
-            dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
-            dtOCCalculation = AddRowstoStrategyTable(dtOCCalculation);
+        //protected void btnShowCalculation_Click(object sender, EventArgs e)
+        //{
+        //    dtOCCalculation = AddColumnstoStrategyTable(dtOCCalculation);
+        //    dtOCCalculation = AddRowstoStrategyTable(dtOCCalculation);
 
-            string selectQuery = "(ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
+        //    string selectQuery = "(ExpiryDate = #" + ddlExpiryDates.SelectedValue + "#)";
 
-            DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
-            //make a new "results" datatable via clone to keep structure
-            DataTable dtData = dtOCCalculation.Clone();
-            //Import the Rows
-            foreach (DataRow d in drs)
-            {
-                dtData.ImportRow(d);
-            }
+        //    DataRow[] drs = dtOCCalculation.Select(selectQuery, "StrikePrice ASC");
+        //    //make a new "results" datatable via clone to keep structure
+        //    DataTable dtData = dtOCCalculation.Clone();
+        //    //Import the Rows
+        //    foreach (DataRow d in drs)
+        //    {
+        //        dtData.ImportRow(d);
+        //    }
 
-            gvOptionChain.Visible = false;
-            FillBFSpread(dtData);
-        }
+        //    gvOptionChain.Visible = false;
+        //    FillBFSpread(dtData);
+        //}
 
         protected void rblOCType_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -3,13 +3,13 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
         <asp:RadioButtonList ID="rblOCType" RepeatDirection="Horizontal" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblOCType_SelectedIndexChanged">
-            <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY" Selected="True"></asp:ListItem>
-            <asp:ListItem Text="NIFTY" Value="NIFTY"></asp:ListItem>
+            <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY"></asp:ListItem>
+            <asp:ListItem Text="NIFTY" Value="NIFTY" Selected="True"></asp:ListItem>
         </asp:RadioButtonList>
-        <asp:Button ID="btnRefresh" runat="server" Text="Refresh Data" OnClick="btnRefresh_Click" />
-        <asp:Button ID="btnShowCalculation" runat="server" Text="Show Calculation" OnClick="btnShowCalculation_Click" />
-        <asp:Button ID="btnGetButterflySpread" runat="server" Text="Get Butterfly Spread" OnClick="btnGetButterflySpread_Click" />
         <asp:DropDownList ID="ddlExpiryDates" runat="server"></asp:DropDownList>
+        <asp:Button ID="btnRefresh" runat="server" Text="Refresh Data" OnClick="btnRefresh_Click" />
+        <%--<asp:Button ID="btnShowCalculation" runat="server" Text="Show Calculation" OnClick="btnShowCalculation_Click" />
+        <asp:Button ID="btnGetButterflySpread" runat="server" Text="Get Butterfly Spread" OnClick="btnGetButterflySpread_Click" />--%>
     </div>
     <br />
     <div runat="server" id="divOptionChain">
@@ -41,7 +41,7 @@
             </Columns>
         </asp:GridView>
     </div>
-    <div runat="server" id="divButterflySpread">
+    <%--    <div runat="server" id="divButterflySpread">
         <table runat="server" id="tblButterflySpread">
             <tr>
                 <td>
@@ -49,5 +49,5 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div>--%>
 </asp:Content>

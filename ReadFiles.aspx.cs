@@ -140,6 +140,7 @@ namespace TOC
                 logdt.Rows.Add(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"), "AddLogColumns", "Exception", ex.Message);
             }
         }
+
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             try

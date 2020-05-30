@@ -160,6 +160,7 @@ namespace TOC
             for (int iCount = 0; iCount < dataSet.Tables.Count; iCount++)
             {
                 DataTable dataTable = dataSet.Tables[iCount];
+                //dataTable.DefaultView.Sort = "StrikePrice ASC";
                 dataTable.Columns.Add("Basket Order");
                 GridView gridView = new GridView();
                 gridView.ID = "gv" + iCount;
@@ -177,10 +178,8 @@ namespace TOC
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 string clientId = ((System.Web.UI.Control)sender).ClientID;
+
                 if (e.Row.RowIndex == 0)
-                {
-                }
-                if (e.Row.RowIndex == 1)
                 {
                     //Add Zerodha button
                     e.Row.Cells[e.Row.Cells.Count - 1].Controls.Add(new LiteralControl("<span><button type=\"button\" class=\"btn btn-success\" onclick=\"ZerodhaBasketOrder('" + clientId + "')\">Execute Orders</button></span>"));

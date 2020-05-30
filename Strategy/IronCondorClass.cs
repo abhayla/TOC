@@ -15,19 +15,19 @@ namespace TOC.Strategy
 
             if (filterConditions.ContractType.Equals(enumContractType.CE.ToString()))
             {
-                dataSetCE = CalculateIronCondors(filteredDataTable, enumContractType.CE.ToString(), filterConditions);
+                dataSetCE = CalculateIronCondors(filteredDataTable, filterConditions);
                 dataSet = OCHelper.MergeDataSets(dataSet, dataSetCE);
             }
 
             if (filterConditions.ContractType.Equals(enumContractType.PE.ToString()))
             {
-                dataSetPE = CalculateIronCondors(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
+                dataSetPE = CalculateIronCondors(filteredDataTable, filterConditions);
                 dataSet = OCHelper.MergeDataSets(dataSet, dataSetPE);
             }
 
             if (filterConditions.ContractType.Equals("ALL"))
             {
-                dataSetCE = CalculateIronCondors(filteredDataTable, enumContractType.CE.ToString(), filterConditions);
+                dataSetCE = CalculateIronCondors(filteredDataTable, filterConditions);
                 dataSet = OCHelper.MergeDataSets(dataSet, dataSetCE);
 
                 //dataSetPE = CalculateIronCondors(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
@@ -36,7 +36,7 @@ namespace TOC.Strategy
             return dataSet;
         }
 
-        private static DataSet CalculateIronCondors(DataTable filteredDataTable, string contractType, FilterConditions filterConditions)
+        public static DataSet CalculateIronCondors(DataTable filteredDataTable, FilterConditions filterConditions)
         {
             DataSet dataSet = new DataSet();
             Records recordsObject = MySession.Current.RecordsObject;
@@ -88,7 +88,7 @@ namespace TOC.Strategy
             else
                 ATMStrikePrice = OCHelper.RoundTo100(recordsObject.underlyingValue);
 
-            int maxDiff = iHighestSP - ATMStrikePrice;
+            //int maxDiff = iHighestSP - ATMStrikePrice;
 
             if (filterConditions.SPLowerRange == 0)
             {
@@ -102,7 +102,7 @@ namespace TOC.Strategy
 
             //for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
             //{
-            for (int iHighest = filterConditions.SPHigherRange + diffStrikePrice; iHighest <= iHighestSP; iHighest += +diffStrikePrice)
+            for (int iHighest = filterConditions.SPHigherRange + diffStrikePrice; iHighest <= iHighestSP; iHighest += diffStrikePrice)
             {
                 for (int iHigher = filterConditions.SPHigherRange; iHigher < iHighest; iHigher += diffStrikePrice)
                 {
@@ -131,7 +131,7 @@ namespace TOC.Strategy
                             DataTable dt = filteredDataTable.Clone();
 
                             //Create new datatable with name
-                            DataTable dtResult = new DataTable("dt" + contractType + iLowerst + iLower + iHigher + iHighest);
+                            DataTable dtResult = new DataTable("dt" + iLowerst + iLower + iHigher + iHighest);
                             OCHelper.AddColumnsToOutputGrid(dtResult);
 
                             foreach (DataRow dr in drs)
@@ -149,6 +149,7 @@ namespace TOC.Strategy
 
                                 dt.ImportRow(dr);
                             }
+                            
 
                             for (int i = 0; i < dt.Rows.Count; i++)
                             {
@@ -187,6 +188,7 @@ namespace TOC.Strategy
 
                             if (dtResult.Rows.Count >= 4)
                             {
+                                //dtResult.DefaultView.Sort = "StrikePrice ASC";
                                 dataSet.Tables.Add(dtResult);
                             }
                         }

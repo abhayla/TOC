@@ -116,6 +116,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\AFL Samples.txt" />
+    <Content Include="FilterAll.aspx" />
     <Content Include="TestPage.aspx" />
     <Content Include="ButterflySpread.aspx" />
     <Content Include="CompareOptions.aspx" />
@@ -282,7 +283,15 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="FilterAll.aspx.cs">
+      <DependentUpon>FilterAll.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FilterAll.aspx.designer.cs">
+      <DependentUpon>FilterAll.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Strategy\IronCondorClass.cs" />
+    <Compile Include="Strategy\FilterAll.cs" />
     <Compile Include="Strategy\SpreadsClass.cs" />
     <Compile Include="TestPage.aspx.cs">
       <DependentUpon>TestPage.aspx</DependentUpon>
@@ -395,6 +404,7 @@
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utility\Enum.cs" />
+    <Compile Include="Utility\FileClass.cs" />
     <Compile Include="Utility\FilterConditions.cs" />
     <Compile Include="Utility\MySession.cs" />
     <Compile Include="Utility\OCClass.cs" />

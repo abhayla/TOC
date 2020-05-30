@@ -9,15 +9,15 @@ var BANKNIFTY_COL_DIFF = 200;
 var BANKNIFTY_LOT_SIZE = 20;
 
 var DELETE_COL_INDEX = 0;
-var CONTRACT_TYP_COL_INDEX = 1;
-var TRANSTYP_COL_INDEX = 2;
-var SP_COL_INDEX = 3;
-var CMP_COL_INDEX = 4;
-var PREMINUM_COL_INDEX = 5;
-var LOTS_COL_INDEX = 6;
-var SELECTED_SP_COL_INDEX = 17;
-var LOWER_SP_COL_START_INDEX = 7;
-var HIGHER_SP_COL_END_INDEX = 27;
+var CONTRACT_TYP_COL_INDEX = 2;
+var TRANSTYP_COL_INDEX = 3;
+var SP_COL_INDEX = 4;
+var CMP_COL_INDEX = 5;
+var PREMINUM_COL_INDEX = 6;
+var LOTS_COL_INDEX = 7;
+var SELECTED_SP_COL_INDEX = 18;
+var LOWER_SP_COL_START_INDEX = 8;
+var HIGHER_SP_COL_END_INDEX = 28;
 
 function SetGridviewHeaderValues(gvStrategyId) {
     var gvStrategy = document.getElementById(gvStrategyId);

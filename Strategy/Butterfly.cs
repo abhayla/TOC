@@ -45,7 +45,7 @@ namespace TOC.Strategy
             return dataSet;
         }
 
-        private static DataSet GetButterflySpreadStrategies(DataTable filteredDataTable, string contractType, FilterConditions filterConditions)
+        public static DataSet GetButterflySpreadStrategies(DataTable filteredDataTable, string contractType, FilterConditions filterConditions)
         {
             DataSet dataSet = new DataSet();
             Records recordsObject = MySession.Current.RecordsObject;
@@ -87,16 +87,14 @@ namespace TOC.Strategy
                 iMiddleHigherRange = filterConditions.SPExpiry + 1;
             }
 
-
-
             int currentStrikePrice = OCHelper.RoundTo100(recordsObject.underlyingValue);
             int maxDiff = iHighestSP - currentStrikePrice;
 
-            for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
+            for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle += diffStrikePrice)
             {
-                for (int iLower = iLowestSP; iLower < iMiddle; iLower = iLower + diffStrikePrice)
+                for (int iLower = iMiddle - diffStrikePrice; iLower >= iLowestSP; iLower -= diffStrikePrice) //(int iLower = iLowestSP; iLower < iMiddle; iLower += diffStrikePrice)
                 {
-                    for (int iHigher = iMiddle + diffStrikePrice; iHigher <= iHighestSP; iHigher = iHigher + diffStrikePrice)
+                    for (int iHigher = iHighestSP; iHigher > iMiddle; iHigher -= diffStrikePrice)  //(int iHigher = iMiddle + diffStrikePrice; iHigher <= iHighestSP; iHigher += diffStrikePrice)
                     {
                         iMiddleSPIterator = iMiddle;
                         iHighterSPIterator = iHigher;
