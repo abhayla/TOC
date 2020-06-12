@@ -7,7 +7,9 @@
             <asp:ListItem Text="NIFTY" Value="NIFTY" Selected="True"></asp:ListItem>
         </asp:RadioButtonList>
     </div>
-    <br />
+    <asp:Label runat="server" ID="lblLastFetchedTime" BorderWidth="0"></asp:Label>
+    <asp:Label runat="server" Text="Last Price" BorderWidth="0"></asp:Label>
+    <asp:Label runat="server" ID="lblLastPrice" BorderWidth="0"></asp:Label>
     <div>
         <asp:Label ID="lblLotSize" runat="server" Text="Lot Size"></asp:Label>
         <asp:Label ID="lblLotSizeValue" runat="server" Text="75"></asp:Label>
@@ -54,11 +56,7 @@
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField HeaderText="CMP" ItemStyle-Width="50" />
-                <asp:TemplateField HeaderText="Premium Paid" ItemStyle-Width="50">
-                    <ItemTemplate>
-                        <asp:TextBox runat="server" ID="txtPremium" Width="50"></asp:TextBox>
-                    </ItemTemplate>
-                </asp:TemplateField>
+
                 <asp:TemplateField HeaderText="Lots" ItemStyle-Width="40">
                     <ItemTemplate>
                         <asp:DropDownList runat="server" ID="ddlLots" Width="40">

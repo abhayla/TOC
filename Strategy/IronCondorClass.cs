@@ -119,19 +119,34 @@ namespace TOC.Strategy
                                 continue;
                             }
 
-                            string selectQuery =
+                            string selectQuery = string.Empty;
+
+                            if (!filterConditions.ExpiryDate.Equals(string.Empty))
+                            {
+                                selectQuery =
+                                   "(Contract = 'PE' AND StrikePrice = " + (iLowerst) + " AND TransactionType = 'Buy') OR " +
+                                   "(Contract = 'PE' AND StrikePrice = " + (iLower) + " AND TransactionType = 'Sell') OR " +
+                                   "(Contract = 'CE' AND StrikePrice = " + (iHigher) + " AND TransactionType = 'Sell') OR " +
+                                   "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy') " +
+                                   "AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                            }
+                            else
+                            {
+                                selectQuery =
                                 "(Contract = 'PE' AND StrikePrice = " + (iLowerst) + " AND TransactionType = 'Buy') OR " +
                                 "(Contract = 'PE' AND StrikePrice = " + (iLower) + " AND TransactionType = 'Sell') OR " +
                                 "(Contract = 'CE' AND StrikePrice = " + (iHigher) + " AND TransactionType = 'Sell') OR " +
-                                "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy') " +
-                                "AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                                "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy')";
+                            }
+
+
 
                             DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
 
                             DataTable dt = filteredDataTable.Clone();
 
                             //Create new datatable with name
-                            DataTable dtResult = new DataTable("dt" + iLowerst + iLower + iHigher + iHighest);
+                            DataTable dtResult = new DataTable("dt" + filterConditions.ExpiryDate + iLowerst + iLower + iHigher + iHighest);
                             OCHelper.AddColumnsToOutputGrid(dtResult);
 
                             foreach (DataRow dr in drs)
@@ -149,7 +164,7 @@ namespace TOC.Strategy
 
                                 dt.ImportRow(dr);
                             }
-                            
+
 
                             for (int i = 0; i < dt.Rows.Count; i++)
                             {
@@ -186,7 +201,7 @@ namespace TOC.Strategy
                             Math.Round(quantity*sum,2).ToString()});
                             }
 
-                            if (dtResult.Rows.Count >= 4)
+                            if (dtResult.Rows.Count == 4)
                             {
                                 //dtResult.DefaultView.Sort = "StrikePrice ASC";
                                 dataSet.Tables.Add(dtResult);

@@ -9,13 +9,15 @@ using System.Web;
 namespace TOC
 {
     public class MySession
-    {   // private constructor
+    {   
+        // private constructor
         private MySession()
         {
             RecordsObject = null;
             StrategyBuilderDt = null;
             RecordsNifty = null;
             RecordsBankNifty = null;
+            PositionsTrackerDt = null;
         }
 
         // Gets the current session.
@@ -42,6 +44,7 @@ namespace TOC
         public Records RecordsNifty { get; set; }
         public Records RecordsBankNifty { get; set; }
         public DataTable StrategyBuilderDt { get; set; }
+        public DataTable PositionsTrackerDt { get; set; }
     }
 }
 

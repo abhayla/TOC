@@ -24,6 +24,24 @@ namespace TOC
         protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
+        /// lblLastFetchedTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
+
+        /// <summary>
+        /// lblLastPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLastPrice;
+
+        /// <summary>
         /// lblLotSize control.
         /// </summary>
         /// <remarks>

@@ -26,28 +26,33 @@ namespace TOC
         private static int TRANSTYP_COL_INDEX = 3;
         private static int SP_COL_INDEX = 4;
         private static int CMP_COL_INDEX = 5;
-        private static int PREMINUM_COL_INDEX = 6;
-        private static int LOTS_COL_INDEX = 7;
-        private static int SELECTED_SP_COL_INDEX = 18;
-        private static int LOWER_SP_COL_START_INDEX = 8;
-        private static int HIGHER_SP_COL_END_INDEX = 28;
+        //private static int PREMINUM_COL_INDEX = 6;
+        private static int LOTS_COL_INDEX = 6;
+        private static int SELECTED_SP_COL_INDEX = 17;
+        private static int LOWER_SP_COL_START_INDEX = 7;
+        private static int HIGHER_SP_COL_END_INDEX = 27;
 
         private static int MAX_ROWS_ALLOWED = 15;
 
         private static string SB_FILE_NAME = "StrategyBuilder.csv";
         private static string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
 
-        Records recordsObject = new Records();
+        //Records recordsObject = new Records();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                DataTable dataTable = FileClass.ReadCsvFile(MYFILES_FOLDER_PATH + SB_FILE_NAME);
-                //AddBlankRows(dataTable, 2);
+                DataTable dataTable = FileClass.ReadSBCsvFile(MYFILES_FOLDER_PATH + SB_FILE_NAME);
+
+                if (dataTable.Rows.Count <= 0)
+                    AddBlankRows(dataTable, 2);
+
                 MySession.Current.StrategyBuilderDt = dataTable;
                 //FillExpiryDates(ddlExpiryDates);
                 GridviewDataBind(dataTable);
+                lblLastFetchedTime.Text = MySession.Current.RecordsObject.timestamp;
+                lblLastPrice.Text = MySession.Current.RecordsObject.underlyingValue.ToString();
             }
         }
 
@@ -61,7 +66,7 @@ namespace TOC
 
             for (int iCount = 0; iCount < rowstoadd; iCount++)
             {
-                dataTable.Rows.Add(false, "", "CE", "BUY", OCHelper.DefaultSP(rblOCType.SelectedValue), "", "", "1",
+                dataTable.Rows.Add(false, OCHelper.DefaultExpDate(rblOCType.SelectedValue), "CE", "BUY", OCHelper.DefaultSP(rblOCType.SelectedValue), "", "1",
                     "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
         }
@@ -136,7 +141,7 @@ namespace TOC
                 for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
                 {
                     row[icount] = Convert.ToString(Convert.ToInt32(row[LOTS_COL_INDEX]) * lotsSize *
-                                CalculateExpiryValue(row[CONTRACT_TYP_COL_INDEX].ToString(),
+                                FO.CalcExpVal(row[CONTRACT_TYP_COL_INDEX].ToString(),
                                 row[TRANSTYP_COL_INDEX].ToString(),
                                 Convert.ToDouble(row[SP_COL_INDEX]),
                                 Convert.ToDouble(row[CMP_COL_INDEX]),
@@ -182,18 +187,22 @@ namespace TOC
                 DropDownList ddlContractType = e.Row.FindControl("ddlContractType") as DropDownList;
                 DropDownList ddlTransactionType = e.Row.FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = e.Row.FindControl("ddlStrikePrice") as DropDownList;
-                TextBox txtPremium = e.Row.FindControl("txtPremium") as TextBox;
+                //TextBox txtPremium = e.Row.FindControl("txtPremium") as TextBox;
                 DropDownList ddlLots = e.Row.FindControl("ddlLots") as DropDownList;
                 e.Row.Cells[CMP_COL_INDEX].Text = dataTable.Rows[e.Row.RowIndex][CMP_COL_INDEX].ToString();
                 chkDelete.Checked = Convert.ToBoolean(dataTable.Rows[e.Row.RowIndex][DELETE_COL_INDEX]);
-                FillExpiryDates(ddlExpiryDates);
-                FillStrikePrice(ddlStrikePrice);
+
+                //FillExpiryDates(ddlExpiryDates);
+                //FillStrikePrice(ddlStrikePrice);
+                OCHelper.FillAllExpiryDates(rblOCType.SelectedValue, ddlExpiryDates, false);
+                OCHelper.FillAllStrikePrice(rblOCType.SelectedValue, ddlStrikePrice, false);
+
                 Utility.SelectDataInCombo(ddlExpiryDates, dataTable.Rows[e.Row.RowIndex][EXP_DATE_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlContractType, dataTable.Rows[e.Row.RowIndex][CONTRACT_TYP_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlTransactionType, dataTable.Rows[e.Row.RowIndex][TRANSTYP_COL_INDEX].ToString());
                 Utility.SelectDataInCombo(ddlStrikePrice, dataTable.Rows[e.Row.RowIndex][SP_COL_INDEX].ToString());
 
-                txtPremium.Text = dataTable.Rows[e.Row.RowIndex][PREMINUM_COL_INDEX].ToString();
+                //txtPremium.Text = dataTable.Rows[e.Row.RowIndex][PREMINUM_COL_INDEX].ToString();
                 Utility.SelectDataInCombo(ddlLots, dataTable.Rows[e.Row.RowIndex][LOTS_COL_INDEX].ToString());
 
                 for (int icount = LOWER_SP_COL_START_INDEX; icount <= HIGHER_SP_COL_END_INDEX; icount++)
@@ -210,8 +219,8 @@ namespace TOC
                 ddlStrikePrice.Attributes.Add("onchange", "SetGridviewHeaderValues('"
                     + gvStrategy.ClientID + "'), CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '" + rowindex + "','"
                     + rblOCType.ClientID + "');");
-                txtPremium.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '"
-                    + rowindex + "','" + rblOCType.ClientID + "');");
+                //txtPremium.Attributes.Add("onchange", "CalcExpValForAllCellsInRow('" + gvStrategy.ClientID + "', '"
+                //    + rowindex + "','" + rblOCType.ClientID + "');");
             }
 
             if (e.Row.RowType == DataControlRowType.Footer)
@@ -230,45 +239,45 @@ namespace TOC
             }
         }
 
-        protected double CalculateExpiryValue(string contractType, string transactionType, double strikePrice,
-            double premiumPaid, double expiryPrice)
-        {
-            double result = 0;
-            if (contractType == enumContractType.PE.ToString() && transactionType == enumTransactionType.BUY.ToString())
-                result = FO.PutBuy(strikePrice, premiumPaid, expiryPrice);
-            if (contractType == enumContractType.PE.ToString() && transactionType == enumTransactionType.SELL.ToString())
-                result = FO.PutSell(strikePrice, premiumPaid, expiryPrice);
-            if (contractType == enumContractType.CE.ToString() && transactionType == enumTransactionType.BUY.ToString())
-                result = FO.CallBuy(strikePrice, premiumPaid, expiryPrice);
-            if (contractType == enumContractType.CE.ToString() && transactionType == enumTransactionType.SELL.ToString())
-                result = FO.CallSell(strikePrice, premiumPaid, expiryPrice);
-            if (contractType == enumContractType.EQ.ToString() && transactionType == enumTransactionType.BUY.ToString())
-                result = FO.EQBuy(strikePrice, expiryPrice);
-            if (contractType == enumContractType.FUT.ToString() && transactionType == enumTransactionType.BUY.ToString())
-                result = FO.FutBuy(strikePrice, expiryPrice);
-            if (contractType == enumContractType.FUT.ToString() && transactionType == enumTransactionType.SELL.ToString())
-                result = FO.FutSell(strikePrice, expiryPrice);
+        //protected double CalculateExpiryValue(string contractType, string transactionType, double strikePrice,
+        //    double premiumPaid, double expiryPrice)
+        //{
+        //    double result = 0;
+        //    if (contractType == enumContractType.PE.ToString() && transactionType == enumTransactionType.BUY.ToString())
+        //        result = FO.PutBuy(strikePrice, premiumPaid, expiryPrice);
+        //    if (contractType == enumContractType.PE.ToString() && transactionType == enumTransactionType.SELL.ToString())
+        //        result = FO.PutSell(strikePrice, premiumPaid, expiryPrice);
+        //    if (contractType == enumContractType.CE.ToString() && transactionType == enumTransactionType.BUY.ToString())
+        //        result = FO.CallBuy(strikePrice, premiumPaid, expiryPrice);
+        //    if (contractType == enumContractType.CE.ToString() && transactionType == enumTransactionType.SELL.ToString())
+        //        result = FO.CallSell(strikePrice, premiumPaid, expiryPrice);
+        //    if (contractType == enumContractType.EQ.ToString() && transactionType == enumTransactionType.BUY.ToString())
+        //        result = FO.EQBuy(strikePrice, expiryPrice);
+        //    if (contractType == enumContractType.FUT.ToString() && transactionType == enumTransactionType.BUY.ToString())
+        //        result = FO.FutBuy(strikePrice, expiryPrice);
+        //    if (contractType == enumContractType.FUT.ToString() && transactionType == enumTransactionType.SELL.ToString())
+        //        result = FO.FutSell(strikePrice, expiryPrice);
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        private void FillExpiryDates(DropDownList ddlExpDt)
-        {
-            List<string> expiryDates = OCHelper.GetOCExpList(rblOCType.SelectedValue);
-            foreach (string item in expiryDates)
-            {
-                ddlExpDt.Items.Add(item);
-            }
-        }
+        //private void FillExpiryDates(DropDownList ddlExpDt)
+        //{
+        //    List<string> expiryDates = OCHelper.GetOCExpList(rblOCType.SelectedValue);
+        //    foreach (string item in expiryDates)
+        //    {
+        //        ddlExpDt.Items.Add(item);
+        //    }
+        //}
 
-        private void FillStrikePrice(DropDownList ddlSP)
-        {
-            List<int> expiryDates = OCHelper.GetOCSPList(rblOCType.SelectedValue);
-            foreach (int item in expiryDates)
-            {
-                ddlSP.Items.Add(item.ToString());
-            }
-        }
+        //private void FillStrikePrice(DropDownList ddlSP)
+        //{
+        //    List<int> expiryDates = OCHelper.GetOCSPList(rblOCType.SelectedValue);
+        //    foreach (int item in expiryDates)
+        //    {
+        //        ddlSP.Items.Add(item.ToString());
+        //    }
+        //}
 
         protected void btnAddRows_Click(object sender, EventArgs e)
         {
@@ -280,7 +289,7 @@ namespace TOC
 
         private DataTable SaveGridviewData()
         {
-            DataTable dataTable = FileClass.AddColumns();
+            DataTable dataTable = FileClass.AddSBColumns();
 
             foreach (GridViewRow gvRow in gvStrategy.Rows)
             {
@@ -289,11 +298,11 @@ namespace TOC
                 DropDownList ddlContractType = gvRow.Cells[CONTRACT_TYP_COL_INDEX].FindControl("ddlContractType") as DropDownList;
                 DropDownList ddlTransactionType = gvRow.Cells[TRANSTYP_COL_INDEX].FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = gvRow.Cells[SP_COL_INDEX].FindControl("ddlStrikePrice") as DropDownList;
-                TextBox txtPremium = gvRow.Cells[PREMINUM_COL_INDEX].FindControl("txtPremium") as TextBox;
+                //TextBox txtPremium = gvRow.Cells[PREMINUM_COL_INDEX].FindControl("txtPremium") as TextBox;
                 DropDownList ddlLots = gvRow.Cells[LOTS_COL_INDEX].FindControl("ddlLots") as DropDownList;
 
                 dataTable.Rows.Add(chkDelete.Checked, ddlExpiryDates.SelectedValue, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue,
-                    ddlStrikePrice.SelectedValue, "", txtPremium.Text, ddlLots.SelectedValue, "", "", "", "", "", "", "",
+                    ddlStrikePrice.SelectedValue, "", ddlLots.SelectedValue, "", "", "", "", "", "", "",
                     "", "", "", "", "", "", "", "", "", "", "", "", "", "");
             }
             return dataTable;

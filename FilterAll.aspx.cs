@@ -28,7 +28,7 @@ namespace TOC
                 filterConditions.OcType = rblOCType.SelectedValue;
                 filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
                 filterConditions.TimeGap = timeAddGap;
-                filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
+                filterConditions.ExpiryDate = string.Empty;
                 filterConditions.PercentageRange = iPercentageRage;
                 filterConditions.SPDifference = 100;
 

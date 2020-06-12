@@ -39,9 +39,20 @@ namespace TOC
             return str;
         }
 
-        public static DataTable ReadCsvFile(string filePath)
+        public static DataTable ReadSBCsvFile(string filePath)
         {
-            DataTable dtCsv = AddColumns();
+            DataTable dtCsv = new DataTable();
+            string[] paths = filePath.Split('\\');
+
+            if (paths[paths.Length - 1].Equals("StrategyBuilder.csv"))
+            {
+                dtCsv = AddSBColumns();
+            }
+            if (paths[paths.Length - 1].Equals("PositionsTracker.csv"))
+            {
+                dtCsv = AddPTColumns();
+            }
+
             string Fulltext;
             try
             {
@@ -91,7 +102,31 @@ namespace TOC
             return withoutBlankRowsdt;
         }
 
-        public static DataTable AddColumns()
+        public static DataTable AddPTColumns()
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("Delete");
+            dataTable.Columns.Add("OC Type");
+            dataTable.Columns.Add("Expiry Date");
+            dataTable.Columns.Add("Contract Type");
+            dataTable.Columns.Add("Transaction Type");
+            dataTable.Columns.Add("Strike Price");
+            dataTable.Columns.Add("Lots");
+            dataTable.Columns.Add("Entry Price");
+            dataTable.Columns.Add("Exit Price");
+            dataTable.Columns.Add("CMP");
+            dataTable.Columns.Add("P/L");
+            dataTable.Columns.Add("Chg %");
+            dataTable.Columns.Add("Realised P/L");
+            dataTable.Columns.Add("Strategy");
+            dataTable.Columns.Add("Profile");
+            dataTable.Columns.Add("Position");
+            dataTable.Columns.Add("Id");
+            dataTable.Columns.Add("Max Profit");
+            return dataTable;
+        }
+
+        public static DataTable AddSBColumns()
         {
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("Delete");
@@ -100,7 +135,7 @@ namespace TOC
             dataTable.Columns.Add("Transaction Type");
             dataTable.Columns.Add("Strike Price");
             dataTable.Columns.Add("CMP");
-            dataTable.Columns.Add("Premium");
+            //dataTable.Columns.Add("Premium");
             dataTable.Columns.Add("Lots");
             dataTable.Columns.Add("11");
             dataTable.Columns.Add("12");

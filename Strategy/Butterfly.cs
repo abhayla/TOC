@@ -109,17 +109,29 @@ namespace TOC.Strategy
                             continue;
                         }
 
-                        string selectQuery = "(Contract = '" + contractType + "')" +
-                        " AND ((StrikePrice = " + (iLowerSPIterator) + " AND TransactionType = 'Buy') OR (StrikePrice = " + iMiddleSPIterator +
-                        " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSPIterator) +
-                        " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                        string selectQuery = string.Empty;
+
+                        if (!filterConditions.ExpiryDate.Equals(string.Empty))
+                        {
+                            selectQuery = "(Contract = '" + contractType + "')" +
+                            " AND ((StrikePrice = " + (iLowerSPIterator) + " AND TransactionType = 'Buy') OR (StrikePrice = " + iMiddleSPIterator +
+                            " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSPIterator) +
+                            " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                        }
+                        else
+                        {
+                            selectQuery = "(Contract = '" + contractType + "')" +
+                            " AND ((StrikePrice = " + (iLowerSPIterator) + " AND TransactionType = 'Buy') OR (StrikePrice = " + iMiddleSPIterator +
+                            " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSPIterator) +
+                            " AND TransactionType = 'Buy'))";
+                        }
 
                         DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
 
                         DataTable dt = filteredDataTable.Clone();
 
                         //Create new datatable with name
-                        DataTable dtResult = new DataTable("dt" + contractType + iLowerSPIterator + iMiddleSPIterator + iHighterSPIterator);
+                        DataTable dtResult = new DataTable("dt" + filterConditions.ExpiryDate + contractType + iLowerSPIterator + iMiddleSPIterator + iHighterSPIterator);
                         OCHelper.AddColumnsToOutputGrid(dtResult);
 
                         foreach (DataRow dr in drs)
@@ -173,7 +185,7 @@ namespace TOC.Strategy
                             Math.Round(quantity*sum,2).ToString()});
                         }
 
-                        if (dtResult.Rows.Count >= 3)
+                        if (dtResult.Rows.Count == 3)
                         {
                             dataSet.Tables.Add(dtResult);
                         }

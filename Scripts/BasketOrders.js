@@ -60,11 +60,11 @@ function ZerodhaBasketOrder(gvStrategyId) {
             tradingsymbol: gvStrategy.rows[irowcount].cells[TRADE_SYMBOL_COL_INDEX].innerHTML,
             exchange: 'NFO',
             transaction_type: gvStrategy.rows[irowcount].cells[BUY_SELL_COL_INDEX].innerHTML,
-            order_type: 'MARKET',
+            order_type: 'LIMIT',
             price: parseInt(gvStrategy.rows[irowcount].cells[STRIKE_PRICE_COL_INDEX].innerHTML),
             quantity: parseInt(gvStrategy.rows[irowcount].cells[QUANTITY_COL_INDEX].innerHTML),
             product: 'NRML',
-            readonly: true
+            readonly: false
         });
     }
 }

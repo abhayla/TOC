@@ -80,9 +80,9 @@ namespace TOC
                 if (row.CE != null &&
                     (row.CE.strikePrice <= iUpperStrikePriceRange &&
                     row.CE.strikePrice >= iLowerStrikePriceRange) &&
-                    (row.CE.strikePrice % 100 == 0)
-                    && row.CE.lastPrice > 0 &&
-                    row.expiryDate.Equals(filterConditions.ExpiryDate) &&
+                    (row.CE.strikePrice % 100 == 0) &&
+                    row.CE.lastPrice > 0 &&
+                    //row.expiryDate.Equals(filterConditions.ExpiryDate) &&
                     (filterConditions.ContractType.Equals(enumContractType.CE.ToString()) ||
                     filterConditions.ContractType.Equals("ALL")))
                 {
@@ -127,7 +127,7 @@ namespace TOC
                     (row.PE.strikePrice <= iUpperStrikePriceRange && row.PE.strikePrice >= iLowerStrikePriceRange) &&
                     (row.PE.strikePrice % 100 == 0) &&
                     row.PE.lastPrice > 0 &&
-                    row.expiryDate.Equals(filterConditions.ExpiryDate) &&
+                    //row.expiryDate.Equals(filterConditions.ExpiryDate) &&
                     (filterConditions.ContractType.Equals(enumContractType.PE.ToString()) ||
                     filterConditions.ContractType.Equals("ALL")))
                 {
@@ -239,7 +239,9 @@ namespace TOC
                         }
                     }
                 }
-                MySession.Current.RecordsObject = MySession.Current.RecordsNifty;
+
+                if (MySession.Current.RecordsNifty != null)
+                    MySession.Current.RecordsObject = MySession.Current.RecordsNifty;
             }
 
             if (ocType.Equals(enumOptionChainType.BANKNIFTY.ToString()))
@@ -247,7 +249,7 @@ namespace TOC
                 if (MySession.Current.RecordsBankNifty == null)
                 {
                     JObject jObject = DownloadJSONDataFromURL(ocType);
-                    if (jObject != null)
+                    if (jObject != null && !jObject.ToString().Equals("{}"))
                     {
                         recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
                         MySession.Current.RecordsBankNifty = recordsObject;
@@ -259,14 +261,16 @@ namespace TOC
                     if (FetchOCAgain(recordsObject))
                     {
                         JObject jObject = DownloadJSONDataFromURL(ocType);
-                        if (jObject != null)
+                        if (jObject != null && !jObject.ToString().Equals("{}"))
                         {
                             recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
                             MySession.Current.RecordsBankNifty = recordsObject;
                         }
                     }
                 }
-                MySession.Current.RecordsObject = MySession.Current.RecordsBankNifty;
+
+                if (MySession.Current.RecordsBankNifty != null)
+                    MySession.Current.RecordsObject = MySession.Current.RecordsBankNifty;
             }
             return recordsObject;
         }
@@ -365,6 +369,17 @@ namespace TOC
             return (int)result * 100;
         }
 
+        public static string DefaultExpDate(string ocType)
+        {
+            Records recordsObject = GetOC(ocType);
+            List<string> expDates = recordsObject.expiryDates;
+            string result = string.Empty;
+            if (expDates.Count > 0)
+                result = expDates[0];
+
+            return result;
+        }
+
         public static List<string> GetOCExpList(string ocType)
         {
             Records recordsObject = GetOC(ocType);
@@ -418,8 +433,11 @@ namespace TOC
             return jObject;
         }
 
-        public void FillAllStrikePrice(string ocType, System.Web.UI.WebControls.DropDownList ddlSP)
+        public static void FillAllStrikePrice(string ocType, System.Web.UI.WebControls.DropDownList ddlSP, bool IsAddAll)
         {
+            if (IsAddAll)
+                ddlSP.Items.Add("All");
+
             List<int> expiryDates = OCHelper.GetOCSPList(ocType);
             foreach (int item in expiryDates)
             {
@@ -427,8 +445,11 @@ namespace TOC
             }
         }
 
-        public void FillAllExpiryDates(string ocType, System.Web.UI.WebControls.DropDownList ddlExpDt)
+        public static void FillAllExpiryDates(string ocType, System.Web.UI.WebControls.DropDownList ddlExpDt, bool IsAddAll)
         {
+            if (IsAddAll)
+                ddlExpDt.Items.Add("All");
+
             List<string> expiryDates = OCHelper.GetOCExpList(ocType);
             foreach (string item in expiryDates)
             {

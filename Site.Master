@@ -206,14 +206,15 @@
                 <li><a href="ReadFiles.aspx">Read Files</a></li>
             </ul>
         </div>
-        <div class="container body-content">
+        <div class="container body-content" style="overflow: auto; height: 497px; width: 1250px;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-            <hr />
-            <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - Options of Options</p>
-            </footer>
         </div>
+        <hr />
+        <footer>
+            <p>&copy; <%: DateTime.Now.Year %> - Options of Options</p>
+        </footer>
+
 
     </form>
 </body>

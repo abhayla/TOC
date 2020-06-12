@@ -18,19 +18,21 @@ namespace TOC.Strategy
                 isAddThisTable = true;
                 for (int irowcount = 0; irowcount < dataTable.Rows.Count; irowcount++)
                 {
-                    if (Convert.ToInt32(dataTable.Rows[irowcount]["Profit/Loss"]) > 0)
+                    int pl = Convert.ToInt32(dataTable.Rows[irowcount][6]);
+
+                    if (pl < 0)
                     {
                         isAddThisTable = false;
                     }
                 }
 
-                if(isAddThisTable)
+                if (isAddThisTable)
                 {
                     dataSetResult.Tables.Add(dataTable.Copy());
                 }
             }
 
-            
+
             return dataSetResult;
         }
 
@@ -42,14 +44,29 @@ namespace TOC.Strategy
             DataSet dataSetPEBF = new DataSet();
             DataSet dataSetPEIC = new DataSet();
 
-            dataSetCEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.CE.ToString(), filterConditions);
-            dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetCEBF);
+            List<string> expiryDates = new List<string>();
+            if (filterConditions.ExpiryDate == null || filterConditions.ExpiryDate.Equals(string.Empty))
+            {
+                expiryDates = MySession.Current.RecordsObject.expiryDates;
+            }
+            else
+            {
+                expiryDates.Add(filterConditions.ExpiryDate);
+            }
 
-            dataSetPEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
-            dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetPEBF);
+            foreach (string expDate in expiryDates)
+            {
+                filterConditions.ExpiryDate = expDate;
+                //dataSetCEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.CE.ToString(), filterConditions);
+                //dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetCEBF);
 
-            dataSetPEIC = IronCondorClass.CalculateIronCondors(filteredDataTable, filterConditions);
-            dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetPEIC);
+                dataSetPEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
+                dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetPEBF);
+
+                //dataSetPEIC = IronCondorClass.CalculateIronCondors(filteredDataTable, filterConditions);
+                //dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetPEIC);
+            }
+
 
             return dataSetResult;
         }

@@ -84,7 +84,7 @@ namespace TOC.Strategy
             //for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
             //{
 
-            for (int iHigher = iHighestSP ; iHigher > iLowestSP; iHigher -= diffStrikePrice)//int iHigher = iLowestSP + diffStrikePrice; iHigher <= iHighestSP; iHigher += +diffStrikePrice
+            for (int iHigher = iHighestSP; iHigher > iLowestSP; iHigher -= diffStrikePrice)//int iHigher = iLowestSP + diffStrikePrice; iHigher <= iHighestSP; iHigher += +diffStrikePrice
             {
                 for (int iLower = iHigher - diffStrikePrice; iLower >= iLowestSP; iLower -= diffStrikePrice) //int iLower = iLowestSP; iLower < iHigher; iLower += diffStrikePrice
                 {
@@ -99,16 +99,27 @@ namespace TOC.Strategy
                         continue;
                     }
 
-                    string selectQuery = "(Contract = '" + contractType + "')" +
-                    " AND ((StrikePrice = " + (iLower) + " AND TransactionType = 'Buy') OR (StrikePrice = " + (iHigher) +
-                    " AND TransactionType = 'Sell')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                    string selectQuery = string.Empty;
+
+                    if (!filterConditions.ExpiryDate.Equals(string.Empty))
+                    {
+                        selectQuery = "(Contract = '" + contractType + "')" +
+                       " AND ((StrikePrice = " + (iLower) + " AND TransactionType = 'Buy') OR (StrikePrice = " + (iHigher) +
+                       " AND TransactionType = 'Sell')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                    }
+                    else
+                    {
+                        selectQuery = "(Contract = '" + contractType + "')" +
+                       " AND ((StrikePrice = " + (iLower) + " AND TransactionType = 'Buy') OR (StrikePrice = " + (iHigher) +
+                       " AND TransactionType = 'Sell'))";
+                    }
 
                     DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
 
                     DataTable dt = filteredDataTable.Clone();
 
                     //Create new datatable with name
-                    DataTable dtResult = new DataTable("dt" + contractType + iLower + iHigher);
+                    DataTable dtResult = new DataTable("dt" + filterConditions.ExpiryDate + contractType + iLower + iHigher);
                     OCHelper.AddColumnsToOutputGrid(dtResult);
 
                     foreach (DataRow dr in drs)
@@ -162,7 +173,7 @@ namespace TOC.Strategy
                             Math.Round(quantity*sum,2).ToString()});
                     }
 
-                    if (dtResult.Rows.Count >= 2)
+                    if (dtResult.Rows.Count == 2)
                     {
                         dataSet.Tables.Add(dtResult);
                     }
