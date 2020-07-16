@@ -8,7 +8,7 @@ namespace TOC.Strategy
     {
         public static DataSet GetIronCondors(FilterConditions filterConditions)
         {
-            DataTable filteredDataTable = OCHelper.AddRecordsToDataTable(filterConditions);
+            DataTable filteredDataTable = OCHelper.FilterDataTableRecords(filterConditions);
             DataSet dataSet = new DataSet();
             DataSet dataSetCE = new DataSet();
             DataSet dataSetPE = new DataSet();
@@ -139,8 +139,6 @@ namespace TOC.Strategy
                                 "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy')";
                             }
 
-
-
                             DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
 
                             DataTable dt = filteredDataTable.Clone();
@@ -152,15 +150,15 @@ namespace TOC.Strategy
                             foreach (DataRow dr in drs)
                             {
                                 //This is alternate code for Calculation code in AddRecordsToDataTable function in OCHelper
-                                //for (int iCellCount = 9; iCellCount < dr.ItemArray.Length; iCellCount++)
-                                //{
-                                //    dr[iCellCount] =
-                                //        FO.CalcExpVal(dr["Contract"].ToString(), 
-                                //        dr["TransactionType"].ToString(), 
-                                //        Convert.ToDouble(dr["StrikePrice"]), 
-                                //        Convert.ToDouble(dr["Premium"]), 
-                                //        Convert.ToDouble(dr.Table.Columns[iCellCount].ColumnName));
-                                //}
+                                for (int iCellCount = 9; iCellCount < dr.ItemArray.Length; iCellCount++)
+                                {
+                                    dr[iCellCount] =
+                                        FO.CalcExpVal(dr["Contract"].ToString(),
+                                        dr["TransactionType"].ToString(),
+                                        Convert.ToDouble(dr["StrikePrice"]),
+                                        Convert.ToDouble(dr["Premium"]),
+                                        Convert.ToDouble(dr.Table.Columns[iCellCount].ColumnName));
+                                }
 
                                 dt.ImportRow(dr);
                             }

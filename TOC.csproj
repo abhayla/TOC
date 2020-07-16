@@ -116,7 +116,10 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\AFL Samples.txt" />
-    <Content Include="FilterAll.aspx" />
+    <Content Include="FilterAllStrategies.aspx" />
+    <Content Include="FilterOptions.aspx" />
+    <Content Include="MyWatchlist.aspx" />
+    <Content Include="Settings.aspx" />
     <Content Include="TestPage.aspx" />
     <Content Include="ButterflySpread.aspx" />
     <Content Include="CompareOptions.aspx" />
@@ -134,7 +137,7 @@
     <Content Include="Global.asax" />
     <Content Include="IronCondor.aspx" />
     <Content Include="OptionChain.aspx" />
-    <Content Include="PositionsTracker.aspx" />
+    <Content Include="Positions.aspx" />
     <Content Include="ReadFiles.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -222,6 +225,8 @@
     <Content Include="Spreads.aspx" />
     <Content Include="StrategyBuilder.aspx" />
     <Content Include="TelegramMessage.aspx" />
+    <Content Include="Trades.aspx" />
+    <Content Include="NiftyWatchlist.aspx" />
     <Content Include="WebData.aspx" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
@@ -283,16 +288,41 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="FilterAll.aspx.cs">
-      <DependentUpon>FilterAll.aspx</DependentUpon>
+    <Compile Include="FilterAllStrategies.aspx.cs">
+      <DependentUpon>FilterAllStrategies.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="FilterAll.aspx.designer.cs">
-      <DependentUpon>FilterAll.aspx</DependentUpon>
+    <Compile Include="FilterAllStrategies.aspx.designer.cs">
+      <DependentUpon>FilterAllStrategies.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FilterOptions.aspx.cs">
+      <DependentUpon>FilterOptions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FilterOptions.aspx.designer.cs">
+      <DependentUpon>FilterOptions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MyWatchlist.aspx.cs">
+      <DependentUpon>MyWatchlist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyWatchlist.aspx.designer.cs">
+      <DependentUpon>MyWatchlist.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.aspx.cs">
+      <DependentUpon>Settings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Settings.aspx.designer.cs">
+      <DependentUpon>Settings.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Strategy\FilterOptionsClass.cs" />
     <Compile Include="Strategy\IronCondorClass.cs" />
-    <Compile Include="Strategy\FilterAll.cs" />
+    <Compile Include="Strategy\FilterAllStrategies.cs" />
+    <Compile Include="Strategy\NiftyWatchlistClass.cs" />
+    <Compile Include="Strategy\PositionsClass.cs" />
     <Compile Include="Strategy\SpreadsClass.cs" />
+    <Compile Include="Strategy\StrategyBuilderClass.cs" />
     <Compile Include="TestPage.aspx.cs">
       <DependentUpon>TestPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -352,12 +382,12 @@
     <Compile Include="OptionChain.aspx.designer.cs">
       <DependentUpon>OptionChain.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PositionsTracker.aspx.cs">
-      <DependentUpon>PositionsTracker.aspx</DependentUpon>
+    <Compile Include="Positions.aspx.cs">
+      <DependentUpon>Positions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="PositionsTracker.aspx.designer.cs">
-      <DependentUpon>PositionsTracker.aspx</DependentUpon>
+    <Compile Include="Positions.aspx.designer.cs">
+      <DependentUpon>Positions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadFiles.aspx.cs">
@@ -403,9 +433,17 @@
     <Compile Include="TelegramMessage.aspx.designer.cs">
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Trades.aspx.cs">
+      <DependentUpon>Trades.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Trades.aspx.designer.cs">
+      <DependentUpon>Trades.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Utility\Enum.cs" />
     <Compile Include="Utility\FileClass.cs" />
     <Compile Include="Utility\FilterConditions.cs" />
+    <Compile Include="Utility\GlobalFilterConditions.cs" />
     <Compile Include="Utility\MySession.cs" />
     <Compile Include="Utility\OCClass.cs" />
     <Compile Include="Utility\FO.cs" />
@@ -418,6 +456,13 @@
     </Compile>
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="NiftyWatchlist.aspx.cs">
+      <DependentUpon>NiftyWatchlist.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NiftyWatchlist.aspx.designer.cs">
+      <DependentUpon>NiftyWatchlist.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebData.aspx.cs">
       <DependentUpon>WebData.aspx</DependentUpon>

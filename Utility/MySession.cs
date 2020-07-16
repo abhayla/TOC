@@ -18,6 +18,7 @@ namespace TOC
             RecordsNifty = null;
             RecordsBankNifty = null;
             PositionsTrackerDt = null;
+            GlobalFilterConditions = null;
         }
 
         // Gets the current session.
@@ -37,22 +38,11 @@ namespace TOC
         }
 
         // **** add your session properties here, e.g like this:
-        //public string Property1 { get; set; }
-        //public DateTime MyDate { get; set; }
-        //public int LoginId { get; set; }
         public Records RecordsObject { get; set; }
         public Records RecordsNifty { get; set; }
         public Records RecordsBankNifty { get; set; }
         public DataTable StrategyBuilderDt { get; set; }
         public DataTable PositionsTrackerDt { get; set; }
+        public GlobalFilterConditions GlobalFilterConditions { get; set; }
     }
 }
-
-
-//int loginId = MySession.Current.LoginId;
-
-//string property1 = MySession.Current.Property1;
-//MySession.Current.Property1 = newValue;
-
-//DateTime myDate = MySession.Current.MyDate;
-//MySession.Current.MyDate = DateTime.Now;

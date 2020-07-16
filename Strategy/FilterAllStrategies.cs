@@ -4,7 +4,7 @@ using System.Data;
 
 namespace TOC.Strategy
 {
-    public class FilterAll
+    public class FilterStrategies
     {
         public static DataSet FilterAllStrategies(FilterConditions filterConditions)
         {
@@ -39,7 +39,7 @@ namespace TOC.Strategy
         private static DataSet GetFilterAllStrategies(FilterConditions filterConditions)
         {
             DataSet dataSetResult = new DataSet();
-            DataTable filteredDataTable = OCHelper.AddRecordsToDataTable(filterConditions);
+            DataTable filteredDataTable = OCHelper.FilterDataTableRecords(filterConditions);
             DataSet dataSetCEBF = new DataSet();
             DataSet dataSetPEBF = new DataSet();
             DataSet dataSetPEIC = new DataSet();

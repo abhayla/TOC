@@ -8,7 +8,7 @@ using TOC.Strategy;
 
 namespace TOC
 {
-    public partial class FilterAll : System.Web.UI.Page
+    public partial class FilterAllStrategies : System.Web.UI.Page
     {
         private static double iPercentageRage = 5;
         TimeSpan timeAddGap = new TimeSpan(0, 3, 0);
@@ -32,7 +32,7 @@ namespace TOC
                 filterConditions.PercentageRange = iPercentageRage;
                 filterConditions.SPDifference = 100;
 
-                DataSet dataSetResult = Strategy.FilterAll.FilterAllStrategies(filterConditions);
+                DataSet dataSetResult = FilterStrategies.FilterAllStrategies(filterConditions);
                 PopulateDataSet(dataSetResult);
 
                 PopulateFilterFields(filterConditions);
@@ -83,7 +83,7 @@ namespace TOC
             filterConditions.PercentageRange = 0;
             filterConditions.SPDifference = 100;
 
-            DataSet dataSetResult = Strategy.FilterAll.FilterAllStrategies(filterConditions);
+            DataSet dataSetResult = FilterStrategies.FilterAllStrategies(filterConditions);
             PopulateDataSet(dataSetResult);
 
             PopulateFilterFields(filterConditions);

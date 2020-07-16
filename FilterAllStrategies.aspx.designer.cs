@@ -11,133 +11,169 @@ namespace TOC
 {
 
 
-    public partial class PositionsTracker
+    public partial class FilterAllStrategies
     {
 
         /// <summary>
-        /// lblFilterExpiryDate control.
+        /// lblStart control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilterExpiryDate;
+        protected global::System.Web.UI.WebControls.Label lblStart;
 
         /// <summary>
-        /// ddlFilterExpiryDates control.
+        /// lblEnd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilterExpiryDates;
+        protected global::System.Web.UI.WebControls.Label lblEnd;
 
         /// <summary>
-        /// lblFilterProfiles control.
+        /// lblDifference control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilterProfiles;
+        protected global::System.Web.UI.WebControls.Label lblDifference;
 
         /// <summary>
-        /// ddlFilterProfiles control.
+        /// rblOCType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilterProfiles;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
-        /// lblFilterStrategy control.
+        /// lblLastPrice control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilterStrategy;
+        protected global::System.Web.UI.WebControls.Label lblLastPrice;
 
         /// <summary>
-        /// ddlFilterStrategy control.
+        /// lblLastFetchedTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilterStrategy;
+        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
 
         /// <summary>
-        /// lblFilterPostionStatus control.
+        /// ddlExpiryDates control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilterPostionStatus;
+        protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
 
         /// <summary>
-        /// ddlFilterPostionStatus control.
+        /// ddlContractType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilterPostionStatus;
+        protected global::System.Web.UI.WebControls.DropDownList ddlContractType;
 
         /// <summary>
-        /// btnFilter control.
+        /// lblFilterOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFilter;
+        protected global::System.Web.UI.WebControls.Label lblFilterOptions;
 
         /// <summary>
-        /// gvPosTracker control.
+        /// ddlFilterOptions control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPosTracker;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilterOptions;
 
         /// <summary>
-        /// btnDelete control.
+        /// lblSPLowerRange control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDelete;
+        protected global::System.Web.UI.WebControls.Label lblSPLowerRange;
 
         /// <summary>
-        /// btnAddRows control.
+        /// ddlSPLowerRange control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddRows;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPLowerRange;
 
         /// <summary>
-        /// btnUpdateCMP control.
+        /// lblSPExpiry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateCMP;
+        protected global::System.Web.UI.WebControls.Label lblSPExpiry;
 
         /// <summary>
-        /// btnSave control.
+        /// ddlSPExpiry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPExpiry;
+
+        /// <summary>
+        /// lblSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSPHigherRange;
+
+        /// <summary>
+        /// ddlSPHigherRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSPHigherRange;
+
+        /// <summary>
+        /// btnFilterResults control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnFilterResults;
+
+        /// <summary>
+        /// divMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMain;
     }
 }

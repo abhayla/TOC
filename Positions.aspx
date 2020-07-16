@@ -1,6 +1,11 @@
-﻿<%@ Page Title="Position Tracker" Language="C#" AutoEventWireup="true" CodeBehind="PositionsTracker.aspx.cs" Inherits="TOC.PositionsTracker" MasterPageFile="~/Site.Master" %>
+﻿<%@ Page Title="Position Tracker" Language="C#" AutoEventWireup="true" CodeBehind="Positions.aspx.cs" Inherits="TOC.PositionsTracker" MasterPageFile="~/Site.Master" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style type="text/css">
+        .hideGridColumn {
+            display: none;
+        }
+    </style>
     <div>
         <asp:Label runat="server" ID="lblFilterExpiryDate" Text="Expiry Dates"></asp:Label>
         <asp:DropDownList runat="server" ID="ddlFilterExpiryDates"></asp:DropDownList>
@@ -40,7 +45,7 @@
             <Columns>
                 <asp:TemplateField ItemStyle-Width="10">
                     <ItemTemplate>
-                        <asp:CheckBox runat="server" ID="chkDelete" />
+                        <asp:CheckBox runat="server" ID="chkSelect" />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="OC Type" ItemStyle-Width="105">
@@ -97,6 +102,11 @@
                         </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
+                <asp:TemplateField HeaderText="Entry Date">
+                    <ItemTemplate>
+                        <asp:TextBox runat="server" ID="txtEntryDate" Width="80"></asp:TextBox>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="Entry Price" ItemStyle-Width="50">
                     <ItemTemplate>
                         <asp:TextBox runat="server" ID="txtEntryPrice" Width="50"></asp:TextBox>
@@ -107,10 +117,11 @@
                         <asp:TextBox runat="server" ID="txtExitPrice" Width="50"></asp:TextBox>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField HeaderText="CMP" ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" HeaderText="P/L" />
-                <asp:BoundField ItemStyle-Width="50" HeaderText="Chg %" />
-                <asp:BoundField ItemStyle-Width="50" HeaderText="Realised P/L" />
+                <asp:BoundField DataField="CMP" HeaderText="CMP" ItemStyle-Width="50" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="UnRealisedPL" ItemStyle-Width="50" HeaderText="Unrealised P/L" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="ChgPer" ItemStyle-Width="50" HeaderText="Chg %" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="RealisedPL" ItemStyle-Width="50" HeaderText="Realised P/L" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="MaxProfit" HeaderText="Max Profit" ItemStyle-HorizontalAlign="Right" />
                 <asp:TemplateField HeaderText="Strategy" ItemStyle-Width="100">
                     <ItemTemplate>
                         <asp:DropDownList runat="server" ID="ddlStrategy" Width="100">
@@ -121,6 +132,7 @@
                             <asp:ListItem Text="Straddle" Value="Straddle"></asp:ListItem>
                             <asp:ListItem Text="Strangle" Value="Strangle"></asp:ListItem>
                             <asp:ListItem Text="Spreads" Value="Spreads"></asp:ListItem>
+                            <asp:ListItem Text="Synthetic Future" Value="Synthetic Future"></asp:ListItem>
                         </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -134,7 +146,10 @@
                 </asp:TemplateField>
                 <asp:BoundField DataField="Position" HeaderText="Position" />
                 <asp:BoundField DataField="Id" HeaderText="Id" />
-                <asp:BoundField DataField="Max Profit" HeaderText="Max Profit" />
+
+                <asp:BoundField DataField="DaysToExpiry" HeaderText="Days To Expiry" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="DaysHeld" HeaderText="Days Held" ItemStyle-HorizontalAlign="Right" />
+                <asp:BoundField DataField="Recommendation" HeaderText="Recommendation" />
             </Columns>
         </asp:GridView>
     </div>
@@ -143,4 +158,5 @@
     <asp:Button runat="server" Text="Add row" ID="btnAddRows" OnClick="btnAddRows_Click" />
     <asp:Button runat="server" Text="Refresh" ID="btnUpdateCMP" OnClick="btnUpdateCMP_Click" />
     <asp:Button runat="server" Text="Save" ID="btnSave" OnClick="btnSave_Click" />
+    <asp:Button runat="server" Text="Add to Strategy Builder" ID="btnAddToStrategyBuilder" OnClick="btnAddToStrategyBuilder_Click" />
 </asp:Content>

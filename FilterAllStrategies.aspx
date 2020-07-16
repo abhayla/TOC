@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Filter All" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FilterAll.aspx.cs" Inherits="TOC.FilterAll" %>
+﻿<%@ Page Title="Filter All" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="FilterAllStrategies.aspx.cs" Inherits="TOC.FilterAllStrategies" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>

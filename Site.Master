@@ -184,13 +184,16 @@
     <form runat="server">
         <div>
             <ul id="nav">
-                <li><a href="OptionChain.aspx">Option Chain</a></li>
+                <li><a href="OptionChain.aspx">Option Chain</a>
+                    <ul>
+                        <li><a href="NiftyWatchlist.aspx">Nifty Watchlist</a></li>
+                        <li><a href="FilterOptions.aspx">Filter Options</a></li>
+                    </ul>
+                </li>
                 <li><a href="StrategyBuilder.aspx">Strategy Builder</a></li>
-                <li><a href="PositionsTracker.aspx">Position Tracker</a></li>
-                <li><a href="CompareOptions.aspx">Compare Options</a></li>
                 <li><a href="#">Option Strategies</a>
                     <ul>
-                        <li><a href="FilterAll.aspx">Filter All</a></li>
+                        <li><a href="FilterAllStrategies.aspx">Filter All</a></li>
                         <li><a href="#">Bullish</a>
                         <li><a href="#">Bearish</a>
                         <li><a href="#">Sideways >></a>
@@ -201,21 +204,27 @@
                             </ul>
                         </li>
                     </ul>
-
                 </li>
+                <li><a href="#">Place Orders</a>
+                    <ul>
+                        <li><a href="MyWatchlist.aspx">Nifty Watchlist</a></li>
+                        <li><a href="Positions.aspx">Positions</a></li>
+                        <li><a href="Trades.aspx">Trades</a></li>
+                    </ul>
+                </li>
+                <li><a href="CompareOptions.aspx">Compare Options</a></li>
                 <li><a href="ReadFiles.aspx">Read Files</a></li>
+                <li><a href="Settings.aspx">Settings</a></li>
             </ul>
         </div>
-        <div class="container body-content" style="overflow: auto; height: 497px; width: 1250px;">
+        <div class="container body-content" style="overflow: auto; height: 490px; width: 1250px;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>
         <hr />
         <footer>
-            <p>&copy; <%: DateTime.Now.Year %> - Options of Options</p>
+            <p>&copy; <%: DateTime.Now.Year %> - Options for Options</p>
         </footer>
-
-
     </form>
 </body>
 </html>

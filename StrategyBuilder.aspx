@@ -6,23 +6,25 @@
             <asp:ListItem Text="BANKNIFTY" Value="BANKNIFTY"></asp:ListItem>
             <asp:ListItem Text="NIFTY" Value="NIFTY" Selected="True"></asp:ListItem>
         </asp:RadioButtonList>
+
+        <asp:Label runat="server" ID="lblLastFetchedTime" BorderWidth="0"></asp:Label>
+        <asp:Label runat="server" Text="Last Price" BorderWidth="0"></asp:Label>
+        <asp:Label runat="server" ID="lblLastPrice" BorderWidth="0"></asp:Label>
     </div>
-    <asp:Label runat="server" ID="lblLastFetchedTime" BorderWidth="0"></asp:Label>
-    <asp:Label runat="server" Text="Last Price" BorderWidth="0"></asp:Label>
-    <asp:Label runat="server" ID="lblLastPrice" BorderWidth="0"></asp:Label>
     <div>
-        <asp:Label ID="lblLotSize" runat="server" Text="Lot Size"></asp:Label>
-        <asp:Label ID="lblLotSizeValue" runat="server" Text="75"></asp:Label>
-        <%--<asp:DropDownList runat="server" ID="ddlExpiryDates">
-        </asp:DropDownList>--%>
+        <asp:Label runat="server" ID="lblFilterExpiryDate" Text="Expiry Dates"></asp:Label>
+        <asp:DropDownList runat="server" ID="ddlFilterExpiryDates"></asp:DropDownList>
+
+        <asp:Button runat="server" ID="btnFilter" Text="Filter" OnClick="btnFilter_Click" />
     </div>
     <br />
     <div>
-        <asp:GridView ID="gvStrategy" runat="server" AutoGenerateColumns="false" OnRowDataBound="gvStrategy_RowDataBound" ShowHeader="true" ShowFooter="true">
+        <asp:GridView ID="gvStrategy" runat="server" AutoGenerateColumns="true" OnRowDataBound="gvStrategy_RowDataBound" ShowHeader="true" ShowFooter="true">
             <Columns>
+
                 <asp:TemplateField HeaderText="Select">
                     <ItemTemplate>
-                        <asp:CheckBox runat="server" ID="chkDelete" />
+                        <asp:CheckBox runat="server" ID="chkSelect" />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Expiry Date" ItemStyle-Width="105">
@@ -55,11 +57,10 @@
                         </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField HeaderText="CMP" ItemStyle-Width="50" />
-
                 <asp:TemplateField HeaderText="Lots" ItemStyle-Width="40">
                     <ItemTemplate>
                         <asp:DropDownList runat="server" ID="ddlLots" Width="40">
+                            <asp:ListItem Text="0" Value="0"></asp:ListItem>
                             <asp:ListItem Text="1" Value="1"></asp:ListItem>
                             <asp:ListItem Text="2" Value="2"></asp:ListItem>
                             <asp:ListItem Text="3" Value="3"></asp:ListItem>
@@ -73,27 +74,6 @@
                         </asp:DropDownList>
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
-                <asp:BoundField ItemStyle-Width="50" />
             </Columns>
         </asp:GridView>
         <br />
@@ -101,5 +81,6 @@
         <asp:Button runat="server" Text="Add row" ID="btnAddRows" OnClick="btnAddRows_Click" />
         <asp:Button runat="server" Text="Update CMP" ID="btnUpdateCMP" OnClick="btnUpdateCMP_Click" />
         <asp:Button runat="server" Text="Save" ID="btnSave" OnClick="btnSave_Click" />
+        <asp:Button runat="server" ID="btnAddToPositions" Text="Add To Positions" OnClick="btnAddToPositions_Click" />
     </div>
 </asp:Content>

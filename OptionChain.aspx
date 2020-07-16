@@ -13,7 +13,7 @@
     </div>
     <br />
     <div runat="server" id="divOptionChain">
-        <asp:GridView AutoGenerateColumns="False" AllowPaging="false" runat="server" ID="gvOptionChain">
+        <asp:GridView AutoGenerateColumns="False" AllowPaging="false" runat="server" ID="gvOptionChain" HorizontalAlign="Justify">
             <Columns>
                 <asp:BoundField DataField="CEopenInterest" HeaderText="OI" />
                 <asp:BoundField DataField="CEchangeinOpenInterest" HeaderText="Chng in OI" />
@@ -21,17 +21,17 @@
                 <asp:BoundField DataField="CEimpliedVolatility" HeaderText="IV" />
                 <asp:BoundField DataField="CElastPrice" HeaderText="LTP" />
                 <asp:BoundField DataField="CEchange" HeaderText="Net Chng" />
-                <asp:BoundField DataField="CEbidQty" HeaderText="Bid Qty" />
+                <%--<asp:BoundField DataField="CEbidQty" HeaderText="Bid Qty" />
                 <asp:BoundField DataField="CEbidprice" HeaderText="Bid Price" />
                 <asp:BoundField DataField="CEaskPrice" HeaderText="Ask Price" />
-                <asp:BoundField DataField="CEaskQty" HeaderText="Ask Qty" />
+                <asp:BoundField DataField="CEaskQty" HeaderText="Ask Qty" />--%>
 
                 <asp:BoundField DataField="strikePrice" HeaderText="Strike Price" />
 
-                <asp:BoundField DataField="PEbidQty" HeaderText="Bid Qty" />
+                <%--<asp:BoundField DataField="PEbidQty" HeaderText="Bid Qty" />
                 <asp:BoundField DataField="PEbidprice" HeaderText="Bid Price" />
                 <asp:BoundField DataField="PEaskPrice" HeaderText="Ask Price" />
-                <asp:BoundField DataField="PEaskQty" HeaderText="Ask Qty" />
+                <asp:BoundField DataField="PEaskQty" HeaderText="Ask Qty" />--%>
                 <asp:BoundField DataField="PEchange" HeaderText="Net Chng" />
                 <asp:BoundField DataField="PElastPrice" HeaderText="LTP" />
                 <asp:BoundField DataField="PEimpliedVolatility" HeaderText="IV" />

@@ -11,53 +11,17 @@ namespace TOC
 {
 
 
-    public partial class StrategyBuilder
+    public partial class NiftyWatchlist
     {
 
         /// <summary>
-        /// rblOCType control.
+        /// ddlExpiryDates control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
-
-        /// <summary>
-        /// lblLastFetchedTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
-
-        /// <summary>
-        /// lblLastPrice control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLastPrice;
-
-        /// <summary>
-        /// lblFilterExpiryDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFilterExpiryDate;
-
-        /// <summary>
-        /// ddlFilterExpiryDates control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilterExpiryDates;
+        protected global::System.Web.UI.WebControls.DropDownList ddlExpiryDates;
 
         /// <summary>
         /// btnFilter control.
@@ -69,49 +33,31 @@ namespace TOC
         protected global::System.Web.UI.WebControls.Button btnFilter;
 
         /// <summary>
-        /// gvStrategy control.
+        /// divNiftyWatchlist control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvStrategy;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNiftyWatchlist;
 
         /// <summary>
-        /// btnDelete control.
+        /// gvNiftyWatchlist control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDelete;
+        protected global::System.Web.UI.WebControls.GridView gvNiftyWatchlist;
 
         /// <summary>
-        /// btnAddRows control.
+        /// btnBuyBasketOrder control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddRows;
-
-        /// <summary>
-        /// btnUpdateCMP control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUpdateCMP;
-
-        /// <summary>
-        /// btnSave control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
+        protected global::System.Web.UI.HtmlControls.HtmlButton btnBuyBasketOrder;
 
         /// <summary>
         /// btnAddToPositions control.
@@ -121,5 +67,23 @@ namespace TOC
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAddToPositions;
+
+        /// <summary>
+        /// btnAddToMyWatchlist control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddToMyWatchlist;
+
+        /// <summary>
+        /// btnAddToStrategyBuilder control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddToStrategyBuilder;
     }
 }

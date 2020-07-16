@@ -194,51 +194,6 @@ namespace TOC
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                //StringBuilder cstext1 = new StringBuilder();
-                //cstext1.Append(" ");
-                //cstext1.Append("");
-                //cstext1.Append("KiteConnect.ready(function() {");
-                //cstext1.Append(" var kite = new KiteConnect(\"OptionsOfOptions\");");
-                //cstext1.Append("kite.add({");
-                //cstext1.Append("\"exchange\": \"NFO\",");
-                //cstext1.Append("\"tradingsymbol\": \"" + "BANKNIFTY20JUN16000PE" + "\",");
-                //cstext1.Append("\"quantity\": \"" + 20 + "\",");
-                ////cstext1.Append("quantity: " + 20 + ",");
-                //cstext1.Append("\"transaction_type\": \"" + "SELL" + "\",");
-                //cstext1.Append("\"product\": \"NRML\",");
-                //cstext1.Append("\"order_type\": \"MARKET\",");
-                //cstext1.Append(" });");
-                //cstext1.Append("kite.add({");
-                //cstext1.Append("\"exchange\": \"NFO\",");
-                //cstext1.Append("\"tradingsymbol\": \"" + "NIFTY20MAY9500PE" + "\",");
-                //cstext1.Append("\"quantity\": \"" + 75 + "\",");
-                //cstext1.Append("\"transaction_type\": \"" + "SELL" + "\",");
-                //cstext1.Append("\"product\": \"NRML\",");
-                ////cstext1.Append("\"trigger_price\": \"" + SLTrigger + "\",");
-                //cstext1.Append("\"order_type\": \"MARKET\",");
-                //cstext1.Append(" });");
-                //cstext1.Append(" kite.renderButton(\"#default-button\");");
-                //cstext1.Append("kite.link(\"#custom-button\");");
-                //cstext1.Append(" });");
-                //cstext1.Append("");
-                //cstext1.Append("<span><button type=\"button\" class=\"btn btn-success\" onclick=\"ZerodhaBasketOrder()\">Execute Orders</button></span>");
-                //Page.ClientScript.RegisterStartupScript(this.GetType(), "", cstext1.ToString(), true);
-
-
-                //Button btnZerodha = new Button();
-                //btnZerodha.Text = "Place Zerodha Order";
-                //btnZerodha.ID = "btnPlaceZerodhaOrder";
-                //btnZerodha.Width = 200;
-                //btnZerodha.Attributes.Add("onclick", "ZerodhaBasketOrder();");
-
-                //Button btnUpstox = new Button();
-                //btnUpstox.Text = "Place Upstox Order";
-                //btnUpstox.ID = "btnPlaceUpstoxOrder";
-                //btnUpstox.Width = 200;
-
-                //Control control = new Control();
-                //HtmlInputButton btnZerodhaCustom = new HtmlInputButton();
-                //btnZerodhaCustom.Value = "Submit";
                 string clientId = ((System.Web.UI.Control)sender).ClientID;
 
                 if (e.Row.RowIndex == 0)

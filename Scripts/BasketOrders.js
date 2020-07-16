@@ -69,6 +69,73 @@ function ZerodhaBasketOrder(gvStrategyId) {
     }
 }
 
+function CreateBasketOfOrders(gvNiftyWatchlistId) {
+    var gvNiftyWatchlist = document.getElementById(gvNiftyWatchlistId);
+    //alert("gvNiftyWatchlist1 :- " + gvNiftyWatchlist1);
+    //alert("gvNiftyWatchlist :- " + gvNiftyWatchlist);
+    kite = new KiteConnect("d805j3f0aeciwx8g");
+    //alert("kite :- " + kite);
+    kite.link('span:has(button)');
+    //kite.link("#custom-button");
+    //kite.renderButton("#custom-button");
+    //kite.link("#default-button");
+    //kite.renderButton("#default-button");
+
+    //kite.link(':button');
+    //kite.link('span:has(button)');
+    //kite.link("#custom-button");
+    //kite.renderButton("#custom-button");
+    //kite.link("#default-button");
+    //kite.renderButton("#default-button");
+    //alert("gvNiftyWatchlist.rows.length:- " + gvNiftyWatchlist.rows.length);
+
+    for (var irowcount = 1; irowcount < gvNiftyWatchlist.rows.length; irowcount++) {
+        var chkCE = gvNiftyWatchlist.rows[irowcount].cells[0].getElementsByTagName("input");
+        //var chkCE2 = gvNiftyWatchlist.rows[irowcount].cells[0].getElementById("chkPE");
+        //var chkCE3 = gvNiftyWatchlist.rows[irowcount].cells[0].getElementsByName(chkPE);
+        //var chkCE = document.getElementById(chkCE);
+        //alert(chkCE.checked);
+        if (chkCE !== null && chkCE[0] !== null && chkCE[0].type === "checkbox") {
+            if (chkCE[0].checked) {
+                var tradingsymbolCE = gvNiftyWatchlist.rows[irowcount].cells[1].innerHTML;
+                var priceCE = gvNiftyWatchlist.rows[irowcount].cells[6].innerHTML;
+                kite.add({
+                    variety: 'regular',
+                    tradingsymbol: tradingsymbolCE,
+                    exchange: 'NFO',
+                    transaction_type: 'SELL',
+                    order_type: 'LIMIT',
+                    price: parseInt(priceCE),
+                    quantity: 75,
+                    product: 'NRML',
+                    readonly: false
+                });
+            }
+        }
+
+        var chkPE = gvNiftyWatchlist.rows[irowcount].cells[17].getElementsByTagName("input");
+        //alert(chkPE.checked);
+        if (chkPE !== null && chkPE[0] !== null && chkPE[0].type === "checkbox") {
+            if (chkPE[0].checked) {
+                var tradingsymbolPE = gvNiftyWatchlist.rows[irowcount].cells[16].innerHTML;
+                var pricePE = gvNiftyWatchlist.rows[irowcount].cells[11].innerHTML;
+                kite.add({
+                    variety: 'regular',
+                    tradingsymbol: tradingsymbolPE,
+                    exchange: 'NFO',
+                    transaction_type: 'SELL',
+                    order_type: 'LIMIT',
+                    price: parseInt(pricePE),
+                    quantity: 75,
+                    product: 'NRML',
+                    readonly: false
+                });
+            }
+        }
+    }
+}
+
+
 function ZerodhaBasketOrder123(gvStrategyId) {
 
     var jsonArr = [];

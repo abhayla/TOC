@@ -6,27 +6,25 @@ using System.Threading.Tasks;
 
 namespace TOC
 {
-
-
-    enum enumPTColumns
-    {
-        Delete,
-        OC_Type,
-        Expiry_Date,
-        Contract_Type,
-        Transaction_Type,
-        Strike_Price,
-        Lots,
-        Entry_Price,
-        Exit_Price,
-        CMP,
-        PL,
-        Chg,
-        Realised_PL,
-        Strategy,
-        Position,
-        Profiles
-    }
+    //enum enumPTColumns
+    //{
+    //    Delete,
+    //    OC_Type,
+    //    Expiry_Date,
+    //    Contract_Type,
+    //    Transaction_Type,
+    //    Strike_Price,
+    //    Lots,
+    //    Entry_Price,
+    //    Exit_Price,
+    //    CMP,
+    //    PL,
+    //    Chg,
+    //    Realised_PL,
+    //    Strategy,
+    //    Position,
+    //    Profiles
+    //}
 
     enum enumResultColumns
     {
