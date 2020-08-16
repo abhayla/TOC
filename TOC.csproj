@@ -116,10 +116,33 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="App_Data\AFL Samples.txt" />
-    <Content Include="FilterAllStrategies.aspx" />
+    <Content Include="App_Themes\DefaultTheme\earthyblue.css" />
+    <Content Include="App_Themes\DefaultTheme\StyleSheet1.css" />
+    <Content Include="BankNiftyOptionChain.aspx" />
+    <Content Include="BasketOrder.aspx" />
+    <Content Include="BearCallSpread.aspx" />
+    <Content Include="BearPutSpread.aspx" />
+    <Content Include="BullPut.aspx" />
+    <Content Include="CalendarSpread.aspx" />
+    <Content Include="CallBackSpread.aspx" />
+    <Content Include="CallRatioSpread.aspx" />
+    <Content Include="CoveredCall.aspx" />
+    <Content Include="LongCall.aspx" />
+    <Content Include="LongCallCondor.aspx" />
+    <Content Include="LongCallLadder.aspx" />
+    <Content Include="LongPut.aspx" />
+    <Content Include="LongPutLadder.aspx" />
+    <Content Include="ProfitOnlyStrategies.aspx" />
     <Content Include="FilterOptions.aspx" />
     <Content Include="MyWatchlist.aspx" />
+    <Content Include="PutBackSpread.aspx" />
+    <Content Include="PutRatioSpread.aspx" />
     <Content Include="Settings.aspx" />
+    <Content Include="ShortCall.aspx" />
+    <Content Include="ShortPut.aspx" />
+    <Content Include="ShortStraddle.aspx" />
+    <Content Include="ShortStrangle.aspx" />
+    <Content Include="StockRepairStrategy.aspx" />
     <Content Include="TestPage.aspx" />
     <Content Include="ButterflySpread.aspx" />
     <Content Include="CompareOptions.aspx" />
@@ -226,7 +249,7 @@
     <Content Include="StrategyBuilder.aspx" />
     <Content Include="TelegramMessage.aspx" />
     <Content Include="Trades.aspx" />
-    <Content Include="NiftyWatchlist.aspx" />
+    <Content Include="NiftyOptionChain.aspx" />
     <Content Include="WebData.aspx" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
@@ -288,12 +311,110 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="FilterAllStrategies.aspx.cs">
-      <DependentUpon>FilterAllStrategies.aspx</DependentUpon>
+    <Compile Include="BankNiftyOptionChain.aspx.cs">
+      <DependentUpon>BankNiftyOptionChain.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="FilterAllStrategies.aspx.designer.cs">
-      <DependentUpon>FilterAllStrategies.aspx</DependentUpon>
+    <Compile Include="BankNiftyOptionChain.aspx.designer.cs">
+      <DependentUpon>BankNiftyOptionChain.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BasketOrder.aspx.cs">
+      <DependentUpon>BasketOrder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasketOrder.aspx.designer.cs">
+      <DependentUpon>BasketOrder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BearCallSpread.aspx.cs">
+      <DependentUpon>BearCallSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BearCallSpread.aspx.designer.cs">
+      <DependentUpon>BearCallSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BearPutSpread.aspx.cs">
+      <DependentUpon>BearPutSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BearPutSpread.aspx.designer.cs">
+      <DependentUpon>BearPutSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BullPut.aspx.cs">
+      <DependentUpon>BullPut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BullPut.aspx.designer.cs">
+      <DependentUpon>BullPut.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CalendarSpread.aspx.cs">
+      <DependentUpon>CalendarSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CalendarSpread.aspx.designer.cs">
+      <DependentUpon>CalendarSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CallBackSpread.aspx.cs">
+      <DependentUpon>CallBackSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CallBackSpread.aspx.designer.cs">
+      <DependentUpon>CallBackSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CallRatioSpread.aspx.cs">
+      <DependentUpon>CallRatioSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CallRatioSpread.aspx.designer.cs">
+      <DependentUpon>CallRatioSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CoveredCall.aspx.cs">
+      <DependentUpon>CoveredCall.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CoveredCall.aspx.designer.cs">
+      <DependentUpon>CoveredCall.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LongCall.aspx.cs">
+      <DependentUpon>LongCall.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LongCall.aspx.designer.cs">
+      <DependentUpon>LongCall.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LongCallCondor.aspx.cs">
+      <DependentUpon>LongCallCondor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LongCallCondor.aspx.designer.cs">
+      <DependentUpon>LongCallCondor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LongCallLadder.aspx.cs">
+      <DependentUpon>LongCallLadder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LongCallLadder.aspx.designer.cs">
+      <DependentUpon>LongCallLadder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LongPut.aspx.cs">
+      <DependentUpon>LongPut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LongPut.aspx.designer.cs">
+      <DependentUpon>LongPut.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LongPutLadder.aspx.cs">
+      <DependentUpon>LongPutLadder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LongPutLadder.aspx.designer.cs">
+      <DependentUpon>LongPutLadder.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProfitOnlyStrategies.aspx.cs">
+      <DependentUpon>ProfitOnlyStrategies.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProfitOnlyStrategies.aspx.designer.cs">
+      <DependentUpon>ProfitOnlyStrategies.aspx</DependentUpon>
     </Compile>
     <Compile Include="FilterOptions.aspx.cs">
       <DependentUpon>FilterOptions.aspx</DependentUpon>
@@ -309,6 +430,20 @@
     <Compile Include="MyWatchlist.aspx.designer.cs">
       <DependentUpon>MyWatchlist.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PutBackSpread.aspx.cs">
+      <DependentUpon>PutBackSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PutBackSpread.aspx.designer.cs">
+      <DependentUpon>PutBackSpread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PutRatioSpread.aspx.cs">
+      <DependentUpon>PutRatioSpread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PutRatioSpread.aspx.designer.cs">
+      <DependentUpon>PutRatioSpread.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Settings.aspx.cs">
       <DependentUpon>Settings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -316,10 +451,46 @@
     <Compile Include="Settings.aspx.designer.cs">
       <DependentUpon>Settings.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ShortCall.aspx.cs">
+      <DependentUpon>ShortCall.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShortCall.aspx.designer.cs">
+      <DependentUpon>ShortCall.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShortPut.aspx.cs">
+      <DependentUpon>ShortPut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShortPut.aspx.designer.cs">
+      <DependentUpon>ShortPut.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShortStraddle.aspx.cs">
+      <DependentUpon>ShortStraddle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShortStraddle.aspx.designer.cs">
+      <DependentUpon>ShortStraddle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ShortStrangle.aspx.cs">
+      <DependentUpon>ShortStrangle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShortStrangle.aspx.designer.cs">
+      <DependentUpon>ShortStrangle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="StockRepairStrategy.aspx.cs">
+      <DependentUpon>StockRepairStrategy.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StockRepairStrategy.aspx.designer.cs">
+      <DependentUpon>StockRepairStrategy.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Strategy\BasketOrderClass.cs" />
     <Compile Include="Strategy\FilterOptionsClass.cs" />
     <Compile Include="Strategy\IronCondorClass.cs" />
-    <Compile Include="Strategy\FilterAllStrategies.cs" />
-    <Compile Include="Strategy\NiftyWatchlistClass.cs" />
+    <Compile Include="Strategy\ProfitOnlyStrategies.cs" />
+    <Compile Include="Strategy\NiftyOptionChainClass.cs" />
     <Compile Include="Strategy\PositionsClass.cs" />
     <Compile Include="Strategy\SpreadsClass.cs" />
     <Compile Include="Strategy\StrategyBuilderClass.cs" />
@@ -425,7 +596,7 @@
     <Compile Include="StrategyBuilder.aspx.designer.cs">
       <DependentUpon>StrategyBuilder.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Strategy\Butterfly.cs" />
+    <Compile Include="Strategy\ButterflyClass.cs" />
     <Compile Include="TelegramMessage.aspx.cs">
       <DependentUpon>TelegramMessage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -440,6 +611,7 @@
     <Compile Include="Trades.aspx.designer.cs">
       <DependentUpon>Trades.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\Constants.cs" />
     <Compile Include="Utility\Enum.cs" />
     <Compile Include="Utility\FileClass.cs" />
     <Compile Include="Utility\FilterConditions.cs" />
@@ -457,12 +629,12 @@
     <Compile Include="ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
-    <Compile Include="NiftyWatchlist.aspx.cs">
-      <DependentUpon>NiftyWatchlist.aspx</DependentUpon>
+    <Compile Include="NiftyOptionChain.aspx.cs">
+      <DependentUpon>NiftyOptionChain.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="NiftyWatchlist.aspx.designer.cs">
-      <DependentUpon>NiftyWatchlist.aspx</DependentUpon>
+    <Compile Include="NiftyOptionChain.aspx.designer.cs">
+      <DependentUpon>NiftyOptionChain.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebData.aspx.cs">
       <DependentUpon>WebData.aspx</DependentUpon>

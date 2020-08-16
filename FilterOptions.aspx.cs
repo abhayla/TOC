@@ -16,7 +16,7 @@ namespace TOC
 
             FilterConditions filterConditions = new FilterConditions();
             filterConditions.ContractType = ddlContractType.SelectedValue;
-            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.OCType = rblOCType.SelectedValue;
             filterConditions.StrategyType = string.Empty;
             //filterConditions.TimeGap = new TimeSpan(0, 3, 0);
             filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
@@ -32,7 +32,7 @@ namespace TOC
         {
             FilterConditions filterConditions = new FilterConditions();
             filterConditions.ContractType = ddlContractType.SelectedValue;
-            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.OCType = rblOCType.SelectedValue;
             filterConditions.StrategyType = string.Empty;
             //filterConditions.TimeGap = new TimeSpan(0, 3, 0);
             filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;

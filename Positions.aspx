@@ -10,6 +10,15 @@
         <asp:Label runat="server" ID="lblFilterExpiryDate" Text="Expiry Dates"></asp:Label>
         <asp:DropDownList runat="server" ID="ddlFilterExpiryDates"></asp:DropDownList>
 
+        <asp:Label runat="server" ID="lblContractType" Text="Contract Type"></asp:Label>
+        <asp:DropDownList runat="server" ID="ddlContractType">
+            <asp:ListItem Text="All" Value="All"></asp:ListItem>
+            <asp:ListItem Text="CE" Value="CE"></asp:ListItem>
+            <asp:ListItem Text="PE" Value="PE"></asp:ListItem>
+            <asp:ListItem Text="FUT" Value="FUT"></asp:ListItem>
+            <asp:ListItem Text="EQ" Value="EQ"></asp:ListItem>
+        </asp:DropDownList>
+
         <asp:Label runat="server" ID="lblFilterProfiles" Text="Profiles"></asp:Label>
         <asp:DropDownList runat="server" ID="ddlFilterProfiles">
             <asp:ListItem Text="All" Value="All"></asp:ListItem>
@@ -41,7 +50,7 @@
     </div>
     <br />
     <div>
-        <asp:GridView ID="gvPosTracker" runat="server" AutoGenerateColumns="false" ShowHeader="true" ShowFooter="true" OnRowDataBound="gvPosTracker_RowDataBound">
+        <asp:GridView HeaderStyle-BackColor="LightGray" HeaderStyle-Font-Size="Small" HeaderStyle-Font-Bold="true" RowStyle-HorizontalAlign="Right" RowStyle-Font-Size="Small" FooterStyle-Font-Size="Small" FooterStyle-HorizontalAlign="Right" ID="gvPosTracker" runat="server" AutoGenerateColumns="false" ShowHeader="true" ShowFooter="true" OnRowDataBound="gvPosTracker_RowDataBound">
             <Columns>
                 <asp:TemplateField ItemStyle-Width="10">
                     <ItemTemplate>
@@ -104,7 +113,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Entry Date">
                     <ItemTemplate>
-                        <asp:TextBox runat="server" ID="txtEntryDate" Width="80"></asp:TextBox>
+                        <asp:TextBox runat="server" ID="txtEntryDate" Width="130" TextMode="Date" ToolTip="yyyy-MM-dd"></asp:TextBox>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Entry Price" ItemStyle-Width="50">

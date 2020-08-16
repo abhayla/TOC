@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using TOC.Strategy;
 
 namespace TOC
 {
-    public partial class FilterAllStrategies : System.Web.UI.Page
+    public partial class ProfitOnlyStrategies : System.Web.UI.Page
     {
         private static double iPercentageRage = 5;
         TimeSpan timeAddGap = new TimeSpan(0, 3, 0);
@@ -21,18 +20,14 @@ namespace TOC
                 FillExpiryDates(ddlExpiryDates);
 
                 FilterConditions filterConditions = new FilterConditions();
-                //filterConditions.SPLowerRange = MySession.Current.RecordsObject.strikePrices.Min();
-                //filterConditions.SPHigherRange = MySession.Current.RecordsObject.strikePrices.Max();
-                //filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
                 filterConditions.ContractType = ddlContractType.SelectedValue;
-                filterConditions.OcType = rblOCType.SelectedValue;
+                filterConditions.OCType = rblOCType.SelectedValue;
                 filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
                 filterConditions.TimeGap = timeAddGap;
-                filterConditions.ExpiryDate = string.Empty;
+                filterConditions.ExpiryDate = Constants.ALL;
                 filterConditions.PercentageRange = iPercentageRage;
                 filterConditions.SPDifference = 100;
-
-                DataSet dataSetResult = FilterStrategies.FilterAllStrategies(filterConditions);
+                DataSet dataSetResult = Strategy.ProfitOnlyStrategies.FilterAllStrategies(filterConditions);
                 PopulateDataSet(dataSetResult);
 
                 PopulateFilterFields(filterConditions);
@@ -76,14 +71,14 @@ namespace TOC
                 filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
 
             filterConditions.ContractType = ddlContractType.SelectedValue;
-            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.OCType = rblOCType.SelectedValue;
             filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
             filterConditions.TimeGap = timeAddGap;
             filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
             filterConditions.PercentageRange = 0;
             filterConditions.SPDifference = 100;
 
-            DataSet dataSetResult = FilterStrategies.FilterAllStrategies(filterConditions);
+            DataSet dataSetResult = Strategy.ProfitOnlyStrategies.FilterAllStrategies(filterConditions);
             PopulateDataSet(dataSetResult);
 
             PopulateFilterFields(filterConditions);

@@ -186,28 +186,52 @@
             <ul id="nav">
                 <li><a href="OptionChain.aspx">Option Chain</a>
                     <ul>
-                        <li><a href="NiftyWatchlist.aspx">Nifty Watchlist</a></li>
-                        <li><a href="FilterOptions.aspx">Filter Options</a></li>
+                        <li><a href="NiftyOptionChain.aspx">Nifty Option Chain</a></li>
+                        <li><a href="BankNiftyOptionChain.aspx">BankNifty Option Chain</a></li>
                     </ul>
                 </li>
                 <li><a href="StrategyBuilder.aspx">Strategy Builder</a></li>
                 <li><a href="#">Option Strategies</a>
                     <ul>
-                        <li><a href="FilterAllStrategies.aspx">Filter All</a></li>
-                        <li><a href="#">Bullish</a>
-                        <li><a href="#">Bearish</a>
+                        <li><a href="ProfitOnlyStrategies.aspx">Only Profit Strategies</a></li>
+                        <li><a href="#">Bullish Option Strategies</a>
+                            <ul>
+                                <li><a href="LongCall.aspx">Long Call</a></li>
+                                <li><a href="ShortPut.aspx">Short Put Option</a></li>
+                                <li><a href="BullPut.aspx">Bull Put</a></li>
+                                <li><a href="LongCallLadder.aspx">Long Call Ladder</a></li>
+                                <li><a href="CoveredCall.aspx">Covered Call</a></li>
+                                <li><a href="CallBackSpread.aspx">Call Back Spread</a></li>
+                                <li><a href="StockRepairStrategy.aspx">Stock Repair strategy</a></li>
+                                <li><a href="CallRatioSpread.aspx">Call Ratio Spread</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Bearish Option Strategies</a>
+                            <ul>
+                                <li><a href="LongPut.aspx">Long Put Option</a></li>
+                                <li><a href="ShortCall.aspx">Short Call Option</a></li>
+                                <li><a href="PutRatioSpread.aspx">Put Ratio Spread</a></li>
+                                <li><a href="BearCallSpread.aspx">Bear Call Spread</a></li>
+                                <li><a href="BearPutSpread.aspx">Bear Put Spread</a></li>
+                                <li><a href="PutBackSpread.aspx">Put Back Spread</a></li>
+                                <li><a href="LongPutLadder.aspx">Long Put Ladder</a></li>
+                            </ul>
+                        </li>
                         <li><a href="#">Sideways >></a>
                             <ul>
                                 <li><a href="ButterflySpread.aspx">Butterfly Spread</a></li>
                                 <li><a href="IronCondor.aspx">Iron Condor</a></li>
                                 <li><a href="Spreads.aspx">Spreads</a></li>
+                                <li><a href="ShortStrangle.aspx">Short Strangle</a></li>
+                                <li><a href="ShortStraddle.aspx">Short Straddle</a></li>
+                                <li><a href="LongCallCondor.aspx">Long Call Condor</a></li>
+                                <li><a href="CalendarSpread.aspx">Calendar Spread</a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-                <li><a href="#">Place Orders</a>
+                <li><a href="BasketOrder.aspx">Place Orders</a>
                     <ul>
-                        <li><a href="MyWatchlist.aspx">Nifty Watchlist</a></li>
                         <li><a href="Positions.aspx">Positions</a></li>
                         <li><a href="Trades.aspx">Trades</a></li>
                     </ul>

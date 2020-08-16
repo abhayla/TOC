@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
+﻿using System.Data;
 
 namespace TOC.Strategy
 {
@@ -16,7 +13,10 @@ namespace TOC.Strategy
             dataTable.Columns.Add(enumSBColumns.TransactionType.ToString(), typeof(string));
             dataTable.Columns.Add(enumSBColumns.StrikePrice.ToString(), typeof(int));
             dataTable.Columns.Add(enumSBColumns.Lots.ToString(), typeof(int));
-            dataTable.Columns.Add(enumSBColumns.CMP.ToString(), typeof(int));
+            dataTable.Columns.Add(enumSBColumns.DataSource.ToString(), typeof(string));
+            dataTable.Columns.Add(enumSBColumns.CMP.ToString(), typeof(double));
+            dataTable.Columns.Add(enumSBColumns.StrategyName.ToString(), typeof(string));
+            dataTable.Columns.Add(enumSBColumns.Id.ToString(), typeof(string));
             return dataTable;
         }
 
@@ -27,22 +27,9 @@ namespace TOC.Strategy
             return dataRow;
         }
 
-        public static void AddBlankRows(DataTable dataTable)
-        {
-            dataTable.Rows.Add(
-                    false,                                  //Select,
-                    OCHelper.DefaultExpDate("NIFTY"),       //ExpiryDate,
-                    "CE",                                   //ContractType,
-                    "SELL",                                 //TransactionType,
-                    OCHelper.DefaultSP("NIFTY"),            //StrikePrice,
-                    1,                                      //Lots,
-                    0                                       //CMP
-                );
-        }
-
         public static void AddSBRows(DataTable dataSBTable)
         {
-            DataTable dataTableFromFile = FileClass.ReadCsvFile("C:\\Myfiles\\StrategyBuilder.csv");
+            DataTable dataTableFromFile = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
             bool IsAddRow = true;
 
             foreach (DataRow dataRowInput in dataSBTable.Rows)
@@ -53,6 +40,7 @@ namespace TOC.Strategy
                     if (dataRowFromFile[enumSBColumns.ExpiryDate.ToString()].ToString().Equals(dataRowInput[enumSBColumns.ExpiryDate.ToString()].ToString()) &&
                       dataRowFromFile[enumSBColumns.ContractType.ToString()].ToString().Equals(dataRowInput[enumSBColumns.ContractType.ToString()].ToString()) &&
                       dataRowFromFile[enumSBColumns.TransactionType.ToString()].ToString().Equals(dataRowInput[enumSBColumns.TransactionType.ToString()].ToString()) &&
+                      dataRowFromFile[enumSBColumns.CMP.ToString()].ToString().Equals(dataRowInput[enumSBColumns.CMP.ToString()].ToString()) &&
                       dataRowFromFile[enumSBColumns.StrikePrice.ToString()].ToString().Equals(dataRowInput[enumSBColumns.StrikePrice.ToString()].ToString()))
                     {
                         IsAddRow = false;
@@ -68,12 +56,30 @@ namespace TOC.Strategy
                     newDataRow[enumSBColumns.TransactionType.ToString()] = dataRowInput[enumSBColumns.TransactionType.ToString()].ToString();
                     newDataRow[enumSBColumns.StrikePrice.ToString()] = dataRowInput[enumSBColumns.StrikePrice.ToString()];
                     newDataRow[enumSBColumns.Lots.ToString()] = dataRowInput[enumSBColumns.Lots.ToString()];
-                    newDataRow[enumSBColumns.CMP.ToString()] = 0;
+                    newDataRow[enumSBColumns.DataSource.ToString()] = dataRowInput[enumSBColumns.DataSource.ToString()];
+
+                    if (dataRowInput[enumSBColumns.DataSource.ToString()].Equals(enumDataSource.Positions.ToString()))
+                    {
+                        newDataRow[enumSBColumns.CMP.ToString()] = dataRowInput[enumSBColumns.CMP.ToString()];
+                        newDataRow[enumSBColumns.StrategyName.ToString()] = "Positions";
+                    }
+                    else if (dataRowInput[enumSBColumns.DataSource.ToString()].Equals(enumDataSource.NiftyWatchlist.ToString()))
+                    {
+                        newDataRow[enumSBColumns.CMP.ToString()] = dataRowInput[enumSBColumns.CMP.ToString()];
+                        newDataRow[enumSBColumns.StrategyName.ToString()] = "NiftyWatchlist";
+                    }
+                    else
+                    {
+                        newDataRow[enumSBColumns.CMP.ToString()] = 0;
+                        newDataRow[enumSBColumns.StrategyName.ToString()] = "Default";
+                    }
+
+                    newDataRow[enumSBColumns.Id.ToString()] = dataRowInput[enumSBColumns.Id.ToString()];
 
                     dataTableFromFile.Rows.Add(newDataRow);
                 }
             }
-            FileClass.WriteDataTable(dataTableFromFile, "C:\\Myfiles\\StrategyBuilder.csv");
+            FileClass.WriteDataTable(dataTableFromFile, Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
         }
     }
 
@@ -85,6 +91,9 @@ namespace TOC.Strategy
         TransactionType,
         StrikePrice,
         Lots,
-        CMP
+        DataSource,
+        CMP,
+        StrategyName,
+        Id
     }
 }

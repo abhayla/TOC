@@ -10,14 +10,14 @@ namespace TOC
     {
 
         //Recommendation to close an open position based on current returns and remaining time in expiry
-        private static string NIFTY = "NIFTY";
+        //private static string NIFTY = "NIFTY";
         //private static int NIFTY_COL_DIFF = 100;
-        private static int NIFTY_LOT_SIZE = 75;
+        //private static int NIFTY_LOT_SIZE = 75;
 
-        private static string BANKNIFTY = "BANKNIFTY";
+        //private static string BANKNIFTY = "BANKNIFTY";
         //private static int BANKNIFTY_COL_DIFF = 200;
-        private static int BANKNIFTY_LOT_SIZE_BEF_JUL = 20;
-        private static int BANKNIFTY_LOT_SIZE_AFT_JUL = 25;
+        //private static int BANKNIFTY_LOT_SIZE_BEF_JUL = 20;
+        //private static int BANKNIFTY_LOT_SIZE_AFT_JUL = 25;
 
         //Gridview columns
         //private static int DELETE_COL_INDEX = 0;
@@ -40,24 +40,24 @@ namespace TOC
         //private static int POSITION_COL_INDEX = 17;
         //private static int ID_COL_INDEX = 18;
 
-        private static int MAX_ROWS_ALLOWED = 100;
+        //private static int MAX_ROWS_ALLOWED = 100;
 
-        private static string PT_FILE_NAME = "PositionsTracker.csv";
-        private static string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
+        //private static string PT_FILE_NAME = "PositionsTracker.csv";
+        //private static string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                DataTable dataTable = FileClass.ReadCsvFile(MYFILES_FOLDER_PATH + PT_FILE_NAME);
+                DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
 
                 if (dataTable.Rows.Count <= 0)
-                    AddBlankRows(dataTable, 2);
+                    AddBlankRows(dataTable, Constants.POS_ADD_ROW_COUNT);
 
                 MySession.Current.PositionsTrackerDt = dataTable;
                 GridviewDataBind(dataTable);
 
-                FillAllExpiryDates(NIFTY, ddlFilterExpiryDates, true);
+                FillAllExpiryDates(enumOCType.NIFTY.ToString(), ddlFilterExpiryDates, true);
             }
         }
 
@@ -158,7 +158,7 @@ namespace TOC
         protected void btnAddRows_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
-            AddBlankRows(dataTable, 2);
+            AddBlankRows(dataTable, Constants.POS_ADD_ROW_COUNT);
             MySession.Current.PositionsTrackerDt = dataTable;
             DataTable filteredDataTable = FilterRecords();
             GridviewDataBind(filteredDataTable);
@@ -175,7 +175,7 @@ namespace TOC
         protected void btnSave_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
-            FileClass.WriteDataTable(dataTable, MYFILES_FOLDER_PATH + PT_FILE_NAME);
+            FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
             MySession.Current.PositionsTrackerDt = dataTable;
             DataTable filteredDataTable = FilterRecords();
             GridviewDataBind(filteredDataTable);
@@ -208,6 +208,9 @@ namespace TOC
 
             if (!ddlFilterExpiryDates.SelectedValue.Equals("All"))
                 filters.Add(" (" + enumPTColumns.ExpiryDate.ToString() + " = #" + ddlFilterExpiryDates.SelectedValue + "#) ");
+
+            if (!ddlContractType.SelectedValue.Equals("All"))
+                filters.Add(" (" + enumPTColumns.ContractType.ToString() + " = '" + ddlContractType.SelectedValue + "') ");
 
             if (!ddlFilterProfiles.SelectedValue.Equals("All"))
                 filters.Add(" (" + enumPTColumns.Profile.ToString() + " = '" + ddlFilterProfiles.SelectedValue + "') ");
@@ -264,10 +267,10 @@ namespace TOC
                     row[row.Table.Columns.IndexOf(enumPTColumns.DaysToExpiry.ToString())] = DateTime.Parse(row[row.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())].ToString()).Subtract(DateTime.Now).Days;
 
                 int lotSize = 0;
-                if (row[row.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())].ToString().Equals(NIFTY))
-                    lotSize = NIFTY_LOT_SIZE;
-                if (row[row.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())].ToString().Equals(BANKNIFTY))
-                    lotSize = BANKNIFTY_LOT_SIZE_AFT_JUL;
+                if (row[row.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())].ToString().Equals(enumOCType.NIFTY.ToString()))
+                    lotSize = Constants.NIFTY_LOT_SIZE;
+                if (row[row.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())].ToString().Equals(enumOCType.BANKNIFTY.ToString()))
+                    lotSize = Constants.BANKNIFTY_LOT_SIZE;
 
                 //If current expiry date is not in the Option Chain fetched list then mark the current row position as close
                 //if (!MySession.Current.PositionsTrackerDt.Columns["Expiry Date"].ToString().Contains(row["Expiry Date"].ToString()))
@@ -336,10 +339,10 @@ namespace TOC
         private void AddBlankRows(DataTable dataTable, int iRowCount)
         {
             int rowstoadd = 0;
-            if (dataTable.Rows.Count + iRowCount < MAX_ROWS_ALLOWED)
+            if (dataTable.Rows.Count + iRowCount < Constants.POS_MAX_ROWS)
                 rowstoadd = iRowCount;
-            if (dataTable.Rows.Count + iRowCount >= MAX_ROWS_ALLOWED)
-                rowstoadd = MAX_ROWS_ALLOWED - dataTable.Rows.Count;
+            if (dataTable.Rows.Count + iRowCount >= Constants.POS_MAX_ROWS)
+                rowstoadd = Constants.POS_MAX_ROWS - dataTable.Rows.Count;
 
             for (int iCount = 0; iCount < rowstoadd; iCount++)
             {
@@ -419,14 +422,14 @@ namespace TOC
             List<int> expiryDates = new List<int>();
 
             //Add Nifty Strike Price
-            expiryDates = OCHelper.GetOCSPList(NIFTY);
+            expiryDates = OCHelper.GetOCSPList(enumOCType.NIFTY.ToString());
             foreach (int item in expiryDates)
             {
                 ddlSP.Items.Add(item.ToString());
             }
 
             //Add BankNifty Strike Price
-            expiryDates = OCHelper.GetOCSPList(BANKNIFTY);
+            expiryDates = OCHelper.GetOCSPList(enumOCType.BANKNIFTY.ToString());
             foreach (int item in expiryDates)
             {
                 ddlSP.Items.Add(item.ToString());
@@ -461,21 +464,18 @@ namespace TOC
             {
                 CheckBox chkSelect = gvRow.FindControl("chkSelect") as CheckBox;
 
-                DropDownList ddlOCType = gvRow.FindControl("ddlOCType") as DropDownList;
                 DropDownList ddlExpiryDates = gvRow.FindControl("ddlExpiryDates") as DropDownList;
                 DropDownList ddlContractType = gvRow.FindControl("ddlContractType") as DropDownList;
                 DropDownList ddlTransactionType = gvRow.FindControl("ddlTransactionType") as DropDownList;
                 DropDownList ddlStrikePrice = gvRow.FindControl("ddlStrikePrice") as DropDownList;
                 TextBox txtEntryPrice = gvRow.FindControl("txtEntryPrice") as TextBox;
-                TextBox txtExitPrice = gvRow.FindControl("txtExitPrice") as TextBox;
                 DropDownList ddlLots = gvRow.FindControl("ddlLots") as DropDownList;
-                DropDownList ddlStrategy = gvRow.FindControl("ddlStrategy") as DropDownList;
-                DropDownList ddlProfile = gvRow.FindControl("ddlProfile") as DropDownList;
 
                 if (chkSelect.Checked)
                 {
-                    dataSBTable.Rows.Add(false, ddlExpiryDates.SelectedValue, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue, 
-                        ddlStrikePrice.SelectedValue, ddlLots.SelectedValue, 0);
+                    dataSBTable.Rows.Add(false, ddlExpiryDates.SelectedValue, ddlContractType.SelectedValue, ddlTransactionType.SelectedValue,
+                        ddlStrikePrice.SelectedValue, ddlLots.SelectedValue, enumDataSource.Positions.ToString(), Convert.ToDouble(txtEntryPrice.Text),
+                        enumDataSource.Positions.ToString(), Guid.NewGuid());
                 }
             }
             StrategyBuilderClass.AddSBRows(dataSBTable);

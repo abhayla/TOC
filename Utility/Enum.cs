@@ -26,6 +26,39 @@ namespace TOC
     //    Profiles
     //}
 
+    enum enumOutputGridColumns
+    {
+        TradingSymbol,
+        CEPE,
+        BuySell,
+        StrikePrice,
+        Quantity,
+        Premium,
+        ProfitLoss
+    }
+
+    enum enumStrategyColumns
+    {
+        Stock,
+        Identifier,
+        TradingSymbol,
+        ContractType,
+        TransactionType,
+        StrikePrice,
+        LotSize,
+        Premium,
+        ExpiryDate,
+        WeeksToExpiry,
+        IntrinsicValue
+    }
+
+    enum enumDataSource
+    {
+        Positions,
+        NiftyWatchlist,
+        Others
+    }
+
     enum enumResultColumns
     {
         Trading_Symbol,
@@ -36,6 +69,7 @@ namespace TOC
         Premium,
         Profit_Loss
     }
+
     enum enumStrategyType
     {
         BUTTERFLY,
@@ -44,9 +78,11 @@ namespace TOC
         IRON_CONDOR
 
     }
-    enum enumOptionChainType
+    enum enumOCType
     {
-        NIFTY, BANKNIFTY, NIFTYIT
+        NIFTY,
+        BANKNIFTY,
+        NIFTYIT
     }
     enum enumPositionStatus
     {
@@ -58,7 +94,8 @@ namespace TOC
     }
     enum enumTransactionType
     {
-        BUY, SELL
+        BUY, 
+        SELL
     }
     enum enumContractType
     {

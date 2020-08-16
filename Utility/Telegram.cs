@@ -39,9 +39,35 @@ namespace TOC
         //private InlineKeyboardMarkup m_GameKeyboardMarkup = new InlineKeyboardMarkup();
         //private InlineKeyboardMarkup m_AboutKeyboardMarkup = new InlineKeyboardMarkup();
 
+        //public static void ForwardMessage(string toGroupId, string fromGroupId, int messageId)
+        public static void ForwardMessage()
+        {
+            //Telegram.Bot.Types.Update update = new Update();
+            //Telegram.Bot.Types.Message message = new Message();
+            //Telegram.Bot.Types.Chat chat = new Chat();
+            //Telegram.Bot.Types.ChatId chatId = new ChatId("@Puneites");
+            //Telegram.Bot.Types.ChatMember chatMember = new ChatMember();
+            //Telegram.Bot.Types.ChatPermissions chatPermissions = new ChatPermissions();
+            //Telegram.Bot.Types.MessageEntity messageEntity = new MessageEntity();
+            //Telegram.Bot.Types.User user = new User();
+            //Telegram.Bot.Types.Venue venue = new Venue();
+            //Telegram.Bot.Types.WebhookInfo webhookInfo = new WebhookInfo();
+            //Telegram.Bot.Requests.ForwardMessageRequest forwardMessageRequest = new Telegram.Bot.Requests.ForwardMessageRequest();
+            //Telegram.Bot.Requests.GetChatMemberRequest getChatMemberRequest = new Telegram.Bot.Requests.GetChatMemberRequest();
+            //Telegram.Bot.Requests.GetChatMembersCountRequest getChatMembersCountRequest = new Telegram.Bot.Requests.GetChatMembersCountRequest();
+            //Telegram.Bot.Requests.GetChatRequest getChatRequest = new Telegram.Bot.Requests.GetChatRequest();
+            //Telegram.Bot.Requests.SendMessageRequest sendMessageRequest = new Telegram.Bot.Requests.SendMessageRequest();
 
+            string txtMessage = "How to Make Money in Intraday Trading: A Master Class By One of India’s Most Famous Traders. Check this out.\n https://amzn.to/39x1eMx";
+            TelegramBotClient m_TelegramBotClient = new TelegramBotClient(botToken);
+            if (isInternetConnected())
+            {
+                //m_TelegramBotClient.ForwardMessageAsync("@AngelBroking_Upstox_Zerodha", "@Upstox", 1);
+                m_TelegramBotClient.SendTextMessageAsync("@AngelBroking_Upstox_Zerodha", txtMessage, ParseMode.Html);
+            }
+        }
 
-        public static void SendTelegramMessagewithButtons(string message, string[] rowValues)
+        public static void SendTelegramMessagewithButtons(string message, string[] groupIds)
         {
             var keyboard = new InlineKeyboardMarkup(new[]
                     {
@@ -60,7 +86,7 @@ namespace TOC
             TelegramBotClient m_TelegramBotClient = new TelegramBotClient(botToken);
             if (isInternetConnected())
             {
-                foreach (var groupId in rowValues)
+                foreach (var groupId in groupIds)
                 {
                     m_TelegramBotClient.SendTextMessageAsync(groupId.Trim(), message, replyMarkup: keyboard);
                 }

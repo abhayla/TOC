@@ -24,9 +24,9 @@ namespace TOC
         public static int GetLotSize(string ocType)
         {
             int lotsSize = 0;
-            if (ocType.Equals(enumOptionChainType.NIFTY.ToString()))
+            if (ocType.Equals(enumOCType.NIFTY.ToString()))
                 lotsSize = Convert.ToInt32(enumLotSize.Nifty);
-            if (ocType.Equals(enumOptionChainType.BANKNIFTY.ToString()))
+            if (ocType.Equals(enumOCType.BANKNIFTY.ToString()))
                 lotsSize = Convert.ToInt32(enumLotSize.BankNifty);
 
             return lotsSize;
@@ -34,7 +34,7 @@ namespace TOC
 
         public static DataTable FilterDataTableRecords(FilterConditions filterConditions)
         {
-            DataTable allRecordsDt = AddAllRecordsToDataTable(filterConditions.OcType);
+            DataTable allRecordsDt = AddAllRecordsToDataTable(filterConditions.OCType);
 
             string strFilter = GetFilterString(filterConditions);
 
@@ -52,19 +52,6 @@ namespace TOC
         {
             DataTable allRecordsDt = OCHelper.toDataTable(MySession.Current.RecordsObject);
 
-            //DataTable dt = new DataTable();
-            //dt.Columns.Add("Stock");
-            //dt.Columns.Add("Identifier");
-            //dt.Columns.Add("TradingSymbol");
-            //dt.Columns.Add("Contract");
-            //dt.Columns.Add("TransactionType");
-            //dt.Columns.Add("StrikePrice");
-            //dt.Columns.Add("LotSize");
-            //dt.Columns.Add("Premium");
-            //dt.Columns.Add("ExpiryDate");
-
-            //Records recordsObject = GetOC(filterConditions.OcType);
-
             string strFilter = GetFilterString(filterConditions);
 
             DataRow[] drs = allRecordsDt.Select(strFilter, "StrikePrice ASC");
@@ -75,154 +62,22 @@ namespace TOC
             }
 
             return filteredDataTable;
-
-            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
-            //List<int> filteredStrikePrices = new List<int>();
-
-            //foreach (var item in MySession.Current.RecordsObject.strikePrices)
-            //{
-            //    if (item <= iUpperStrikePriceRange && item >= iLowerStrikePriceRange)
-            //    {
-            //        filteredStrikePrices.Add(item);
-            //        dt.Columns.Add(item.ToString());
-            //    }
-            //}
-
-            //DataRow datarow;
-            //foreach (DataRow datarow in allRecordsDt.Rows)
-            //{
-            //string formattedDateForTradingSymbol = TradingSymbol_DateFormatter(datarow["ExpiryDate"].ToString());
-            //int strikePrice = Convert.ToInt32(datarow["StrikePrice"]);
-
-            //if (strikePrice <= iUpperStrikePriceRange && strikePrice <= iLowerStrikePriceRange && strikePrice % 100 == 0)
-            //{
-
-            //}
-
-
-            //if (!filterConditions.ExpiryDate.Equals(string.Empty))
-            //{
-            //    selectQuery = "(Contract = '" + contractType + "')" +
-            //    " AND ((StrikePrice = " + (iLowerSPIterator) + " AND TransactionType = 'Buy') OR (StrikePrice = " + iMiddleSPIterator +
-            //    " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSPIterator) +
-            //    " AND TransactionType = 'Buy')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
-            //}
-            //else
-            //{
-            //    selectQuery = "(Contract = '" + contractType + "')" +
-            //    " AND ((StrikePrice = " + (iLowerSPIterator) + " AND TransactionType = 'Buy') OR (StrikePrice = " + iMiddleSPIterator +
-            //    " AND TransactionType = 'Sell') OR (StrikePrice = " + (iHighterSPIterator) +
-            //    " AND TransactionType = 'Buy'))";
-            //}
-
-            //if (row.CE != null &&
-            //    (row.CE.strikePrice <= iUpperStrikePriceRange &&
-            //    row.CE.strikePrice >= iLowerStrikePriceRange) &&
-            //    (row.CE.strikePrice % 100 == 0) &&
-            //    row.CE.lastPrice > 0 &&
-            //    //row.expiryDate.Equals(filterConditions.ExpiryDate) &&
-            //    (filterConditions.ContractType.Equals(enumContractType.CE.ToString()) ||
-            //    filterConditions.ContractType.Equals("ALL")))
-            //{
-            //    //Add CE Buy row
-            //    datarow = dt.NewRow();
-            //    datarow["Stock"] = row.CE.underlying;
-            //    datarow["Identifier"] = row.CE.identifier;
-            //    datarow["Contract"] = enumContractType.CE.ToString();
-            //    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
-            //    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-            //    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
-            //    datarow["Premium"] = row.CE.lastPrice.ToString();
-            //    datarow["ExpiryDate"] = row.CE.expiryDate;
-            //    datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
-
-            //    foreach (var item in filteredStrikePrices)
-            //    {
-            //        datarow[dt.Columns[item.ToString()].ColumnName] = FO.CallBuy(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
-            //    }
-            //    dt.Rows.Add(datarow);
-
-            //    //Add CE Sell row
-            //    datarow = dt.NewRow();
-            //    datarow["Stock"] = row.CE.underlying;
-            //    datarow["Identifier"] = row.CE.identifier;
-            //    datarow["Contract"] = enumContractType.CE.ToString();
-            //    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
-            //    datarow["StrikePrice"] = row.CE.strikePrice.ToString();
-            //    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
-            //    datarow["Premium"] = row.CE.lastPrice.ToString();
-            //    datarow["ExpiryDate"] = row.CE.expiryDate;
-            //    datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
-
-            //    foreach (var item in filteredStrikePrices)
-            //    {
-            //        datarow[dt.Columns[item.ToString()].ColumnName] = FO.CallSell(row.CE.strikePrice, row.CE.lastPrice, Convert.ToDouble(item));
-            //    }
-            //    dt.Rows.Add(datarow);
-            //}
-
-            //if (row.PE != null &&
-            //    (row.PE.strikePrice <= iUpperStrikePriceRange && row.PE.strikePrice >= iLowerStrikePriceRange) &&
-            //    (row.PE.strikePrice % 100 == 0) &&
-            //    row.PE.lastPrice > 0 &&
-            //    //row.expiryDate.Equals(filterConditions.ExpiryDate) &&
-            //    (filterConditions.ContractType.Equals(enumContractType.PE.ToString()) ||
-            //    filterConditions.ContractType.Equals("ALL")))
-            //{
-            //    //Add PE Buy row
-            //    datarow = dt.NewRow();
-            //    datarow["Stock"] = row.PE.underlying;
-            //    datarow["Identifier"] = row.PE.identifier;
-            //    datarow["Contract"] = enumContractType.PE.ToString();
-            //    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
-            //    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-            //    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
-            //    datarow["Premium"] = row.PE.lastPrice.ToString();
-            //    datarow["ExpiryDate"] = row.PE.expiryDate;
-            //    datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
-
-            //    foreach (var item in filteredStrikePrices)
-            //    {
-            //        datarow[dt.Columns[item.ToString()].ColumnName] = FO.PutBuy(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
-            //    }
-            //    dt.Rows.Add(datarow);
-
-            //    //Add PE Sell row
-            //    datarow = dt.NewRow();
-            //    datarow["Stock"] = row.PE.underlying;
-            //    datarow["Identifier"] = row.PE.identifier;
-            //    datarow["Contract"] = enumContractType.PE.ToString();
-            //    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
-            //    datarow["StrikePrice"] = row.PE.strikePrice.ToString();
-            //    datarow["LotSize"] = GetLotSize(filterConditions.OcType);
-            //    datarow["Premium"] = row.PE.lastPrice.ToString();
-            //    datarow["ExpiryDate"] = row.PE.expiryDate;
-            //    datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
-
-            //    foreach (var item in filteredStrikePrices)
-            //    {
-            //        datarow[dt.Columns[item.ToString()].ColumnName] = FO.PutSell(row.PE.strikePrice, row.PE.lastPrice, Convert.ToDouble(item));
-            //    }
-            //    dt.Rows.Add(datarow);
-            //}
-            //}
-            //return dt;
         }
 
         public static DataTable AddAllRecordsToDataTable(string OcType)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("Stock");
-            dt.Columns.Add("Identifier");
-            dt.Columns.Add("TradingSymbol");
-            dt.Columns.Add("Contract");
-            dt.Columns.Add("TransactionType");
-            dt.Columns.Add("StrikePrice");
-            dt.Columns.Add("LotSize");
-            dt.Columns.Add("Premium");
-            dt.Columns.Add("ExpiryDate");
-            dt.Columns.Add("WeeksToExpiry");
-            dt.Columns.Add("IntrinsicValue");
+            dt.Columns.Add(enumStrategyColumns.Stock.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.Identifier.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.TradingSymbol.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.ContractType.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.TransactionType.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.StrikePrice.ToString(), typeof(int));
+            dt.Columns.Add(enumStrategyColumns.LotSize.ToString(), typeof(int));
+            dt.Columns.Add(enumStrategyColumns.Premium.ToString(), typeof(double));
+            dt.Columns.Add(enumStrategyColumns.ExpiryDate.ToString(), typeof(string));
+            dt.Columns.Add(enumStrategyColumns.WeeksToExpiry.ToString(), typeof(int));
+            dt.Columns.Add(enumStrategyColumns.IntrinsicValue.ToString(), typeof(double));
 
             Records recordsObject = GetOC(OcType);
 
@@ -237,30 +92,9 @@ namespace TOC
             if (globalFilter.Hide50MulSP)
                 hide50MultimpleStrikePrice = 100;
 
-            //int iUpperStrikePriceRange = 0;
-            //int iLowerStrikePriceRange = 0;
-
-            //if (filterConditions.PercentageRange > 0)
-            //{
-            //    iUpperStrikePriceRange = RoundTo100(recordsObject.underlyingValue + (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
-            //    iLowerStrikePriceRange = RoundTo100(recordsObject.underlyingValue - (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
-            //}
-            //else
-            //{
-            //    iUpperStrikePriceRange = filterConditions.SPHigherRange;
-            //    iLowerStrikePriceRange = filterConditions.SPLowerRange;
-            //}
-
-            //List<int> strikePrices = MySession.Current.RecordsObject.strikePrices;
-            //List<int> filteredStrikePrices = new List<int>();
-
             foreach (var item in MySession.Current.RecordsObject.strikePrices)
             {
-                //if (item <= iUpperStrikePriceRange && item >= iLowerStrikePriceRange)
-                //{
-                //filteredStrikePrices.Add(item);
                 dt.Columns.Add(item.ToString());
-                //}
             }
 
             DataRow datarow;
@@ -269,75 +103,69 @@ namespace TOC
                 string formattedDateForTradingSymbol = TradingSymbol_DateFormatter(row.expiryDate);
                 int weeksToExpiry = DateTime.Parse(row.expiryDate).Subtract(DateTime.Now).Days / 7;
 
-                if (row.CE != null &&
-                    (row.CE.strikePrice % hide50MultimpleStrikePrice == 0) &&
-                    row.CE.lastPrice > 0
-                    )
+                if (row.CE != null && (row.CE.strikePrice % hide50MultimpleStrikePrice == 0) && row.CE.lastPrice > 0)
                 {
                     //Add CE Buy row
                     datarow = dt.NewRow();
-                    datarow["Stock"] = row.CE.underlying;
-                    datarow["Identifier"] = row.CE.identifier;
-                    datarow["Contract"] = enumContractType.CE.ToString();
-                    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
-                    datarow["StrikePrice"] = row.CE.strikePrice;
-                    datarow["LotSize"] = GetLotSize(OcType);
-                    datarow["Premium"] = row.CE.lastPrice.ToString();
-                    datarow["ExpiryDate"] = row.CE.expiryDate;
-                    datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
-                    datarow["WeeksToExpiry"] = weeksToExpiry;
-                    datarow["IntrinsicValue"] = row.CE.lastPrice - Convert.ToDouble(row.CE.strikePrice);
+                    datarow[enumStrategyColumns.Stock.ToString()] = row.CE.underlying;
+                    datarow[enumStrategyColumns.Identifier.ToString()] = row.CE.identifier;
+                    datarow[enumStrategyColumns.ContractType.ToString()] = enumContractType.CE;
+                    datarow[enumStrategyColumns.TransactionType.ToString()] = enumTransactionType.BUY;
+                    datarow[enumStrategyColumns.StrikePrice.ToString()] = row.CE.strikePrice;
+                    datarow[enumStrategyColumns.LotSize.ToString()] = GetLotSize(OcType);
+                    datarow[enumStrategyColumns.Premium.ToString()] = row.CE.lastPrice;
+                    datarow[enumStrategyColumns.ExpiryDate.ToString()] = row.CE.expiryDate;
+                    datarow[enumStrategyColumns.TradingSymbol.ToString()] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
+                    datarow[enumStrategyColumns.WeeksToExpiry.ToString()] = weeksToExpiry;
+                    datarow[enumStrategyColumns.IntrinsicValue.ToString()] = row.CE.lastPrice - Convert.ToDouble(row.CE.strikePrice);
 
                     dt.Rows.Add(datarow);
 
                     //Add CE Sell row
                     datarow = dt.NewRow();
-                    datarow["Stock"] = row.CE.underlying;
-                    datarow["Identifier"] = row.CE.identifier;
-                    datarow["Contract"] = enumContractType.CE.ToString();
-                    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
-                    datarow["StrikePrice"] = row.CE.strikePrice;
-                    datarow["LotSize"] = GetLotSize(OcType);
-                    datarow["Premium"] = row.CE.lastPrice.ToString();
-                    datarow["ExpiryDate"] = row.CE.expiryDate;
-                    datarow["TradingSymbol"] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
-                    datarow["WeeksToExpiry"] = weeksToExpiry;
+                    datarow[enumStrategyColumns.Stock.ToString()] = row.CE.underlying;
+                    datarow[enumStrategyColumns.Identifier.ToString()] = row.CE.identifier;
+                    datarow[enumStrategyColumns.ContractType.ToString()] = enumContractType.CE;
+                    datarow[enumStrategyColumns.TransactionType.ToString()] = enumTransactionType.SELL;
+                    datarow[enumStrategyColumns.StrikePrice.ToString()] = row.CE.strikePrice;
+                    datarow[enumStrategyColumns.LotSize.ToString()] = GetLotSize(OcType);
+                    datarow[enumStrategyColumns.Premium.ToString()] = row.CE.lastPrice;
+                    datarow[enumStrategyColumns.ExpiryDate.ToString()] = row.CE.expiryDate;
+                    datarow[enumStrategyColumns.TradingSymbol.ToString()] = string.Concat(row.CE.underlying, formattedDateForTradingSymbol, row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
+                    datarow[enumStrategyColumns.WeeksToExpiry.ToString()] = weeksToExpiry;
 
                     dt.Rows.Add(datarow);
                 }
 
-                if (row.PE != null &&
-                    (row.PE.strikePrice % hide50MultimpleStrikePrice == 0) &&
-                    row.PE.lastPrice > 0
-                    )
+                if (row.PE != null && (row.PE.strikePrice % hide50MultimpleStrikePrice == 0) && row.PE.lastPrice > 0)
                 {
                     //Add PE Buy row
                     datarow = dt.NewRow();
-                    datarow["Stock"] = row.PE.underlying;
-                    datarow["Identifier"] = row.PE.identifier;
-                    datarow["Contract"] = enumContractType.PE.ToString();
-                    datarow["TransactionType"] = enumTransactionType.BUY.ToString();
-                    datarow["StrikePrice"] = row.PE.strikePrice;
-                    datarow["LotSize"] = GetLotSize(OcType);
-                    datarow["Premium"] = row.PE.lastPrice.ToString();
-                    datarow["ExpiryDate"] = row.PE.expiryDate;
-                    datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
-                    datarow["WeeksToExpiry"] = weeksToExpiry;
+                    datarow[enumStrategyColumns.Stock.ToString()] = row.PE.underlying;
+                    datarow[enumStrategyColumns.Identifier.ToString()] = row.PE.identifier;
+                    datarow[enumStrategyColumns.ContractType.ToString()] = enumContractType.PE;
+                    datarow[enumStrategyColumns.TransactionType.ToString()] = enumTransactionType.BUY;
+                    datarow[enumStrategyColumns.StrikePrice.ToString()] = row.PE.strikePrice;
+                    datarow[enumStrategyColumns.LotSize.ToString()] = GetLotSize(OcType);
+                    datarow[enumStrategyColumns.Premium.ToString()] = row.PE.lastPrice;
+                    datarow[enumStrategyColumns.ExpiryDate.ToString()] = row.PE.expiryDate;
+                    datarow[enumStrategyColumns.TradingSymbol.ToString()] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
+                    datarow[enumStrategyColumns.WeeksToExpiry.ToString()] = weeksToExpiry;
 
                     dt.Rows.Add(datarow);
 
                     //Add PE Sell row
                     datarow = dt.NewRow();
-                    datarow["Stock"] = row.PE.underlying;
-                    datarow["Identifier"] = row.PE.identifier;
-                    datarow["Contract"] = enumContractType.PE.ToString();
-                    datarow["TransactionType"] = enumTransactionType.SELL.ToString();
-                    datarow["StrikePrice"] = row.PE.strikePrice;
-                    datarow["LotSize"] = GetLotSize(OcType);
-                    datarow["Premium"] = row.PE.lastPrice.ToString();
-                    datarow["ExpiryDate"] = row.PE.expiryDate;
-                    datarow["TradingSymbol"] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
-                    datarow["WeeksToExpiry"] = weeksToExpiry;
+                    datarow[enumStrategyColumns.Stock.ToString()] = row.PE.underlying;
+                    datarow[enumStrategyColumns.Identifier.ToString()] = row.PE.identifier;
+                    datarow[enumStrategyColumns.ContractType.ToString()] = enumContractType.PE;
+                    datarow[enumStrategyColumns.TransactionType.ToString()] = enumTransactionType.SELL;
+                    datarow[enumStrategyColumns.StrikePrice.ToString()] = row.PE.strikePrice;
+                    datarow[enumStrategyColumns.LotSize.ToString()] = GetLotSize(OcType);
+                    datarow[enumStrategyColumns.Premium.ToString()] = row.PE.lastPrice;
+                    datarow[enumStrategyColumns.ExpiryDate.ToString()] = row.PE.expiryDate;
+                    datarow[enumStrategyColumns.TradingSymbol.ToString()] = string.Concat(row.PE.underlying, formattedDateForTradingSymbol, row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
+                    datarow[enumStrategyColumns.WeeksToExpiry.ToString()] = weeksToExpiry;
 
                     dt.Rows.Add(datarow);
                 }
@@ -345,15 +173,13 @@ namespace TOC
             return dt;
         }
 
-        private static int GetWeeksToExpiry(string expiryDate)
+        private static int GeDaysToExpiry(string expiryDate)
         {
-            //DateTime expDate = DateTime.Parse(expiryDate);
             int dateDiff = DateTime.Now.Subtract(DateTime.Parse(expiryDate)).Days;
-            //int dateDiff = ts.Days;
             return dateDiff;
         }
 
-        private static string TradingSymbol_DateFormatter(string expiryDate)
+        public static string TradingSymbol_DateFormatter(string expiryDate)
         {
             bool isMonthEndExpiry = true;
             string formattedDate = string.Empty;
@@ -397,7 +223,7 @@ namespace TOC
 
             }
 
-            if (ocType.Equals(enumOptionChainType.NIFTY.ToString()))
+            if (ocType.Equals(enumOCType.NIFTY.ToString()))
             {
                 if (MySession.Current.RecordsNifty == null)
                 {
@@ -426,7 +252,7 @@ namespace TOC
                     MySession.Current.RecordsObject = MySession.Current.RecordsNifty;
             }
 
-            if (ocType.Equals(enumOptionChainType.BANKNIFTY.ToString()))
+            if (ocType.Equals(enumOCType.BANKNIFTY.ToString()))
             {
                 if (MySession.Current.RecordsBankNifty == null)
                 {
@@ -519,13 +345,13 @@ namespace TOC
         }
         public static void AddColumnsToOutputGrid(DataTable dtResult)
         {
-            dtResult.Columns.Add("Trading Symbol");
-            dtResult.Columns.Add("CE/PE");
-            dtResult.Columns.Add("Buy/Sell");
-            dtResult.Columns.Add("StrikePrice");
-            dtResult.Columns.Add("Qty");
-            dtResult.Columns.Add("Premium");
-            dtResult.Columns.Add("Profit/Loss");
+            dtResult.Columns.Add(enumOutputGridColumns.TradingSymbol.ToString(), typeof(string));
+            dtResult.Columns.Add(enumOutputGridColumns.CEPE.ToString(), typeof(string));
+            dtResult.Columns.Add(enumOutputGridColumns.BuySell.ToString(), typeof(string));
+            dtResult.Columns.Add(enumOutputGridColumns.StrikePrice.ToString(), typeof(int));
+            dtResult.Columns.Add(enumOutputGridColumns.Quantity.ToString(), typeof(int));
+            dtResult.Columns.Add(enumOutputGridColumns.Premium.ToString(), typeof(double));
+            dtResult.Columns.Add(enumOutputGridColumns.ProfitLoss.ToString(), typeof(double));
         }
 
         public static int RoundTo100(double value)
@@ -618,7 +444,7 @@ namespace TOC
         public static void FillAllStrikePrice(string ocType, DropDownList ddlSP, bool IsAddAll)
         {
             if (IsAddAll)
-                ddlSP.Items.Add("All");
+                ddlSP.Items.Add(Constants.ALL);
 
             List<int> expiryDates = OCHelper.GetOCSPList(ocType);
             foreach (int item in expiryDates)
@@ -630,7 +456,7 @@ namespace TOC
         public static void FillAllExpiryDates(string ocType, DropDownList ddlExp, bool IsAddAll)
         {
             if (IsAddAll)
-                ddlExp.Items.Add("All");
+                ddlExp.Items.Add(Constants.ALL);
 
             List<string> expiryDates = OCHelper.GetOCExpList(ocType);
             foreach (string item in expiryDates)
@@ -650,48 +476,57 @@ namespace TOC
                 var datarow = result.NewRow();
                 if (row.CE != null)
                 {
-                    datarow["StrikePrice"] = row.CE.strikePrice;
-                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
-                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
-                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
-                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
-                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
-                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
-                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
-                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
-                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
-                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
-                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
-                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
-                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
-                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
-                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
-                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
-                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
-                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
+                    datarow[enumOCColumns.StrikePrice.ToString()] = row.CE.strikePrice;
+                    datarow[enumOCColumns.ExpiryDate.ToString()] = row.CE.expiryDate;
+                    datarow[enumOCColumns.CEunderlying.ToString()] = row.CE.underlying;
+                    datarow[enumOCColumns.CEidentifier.ToString()] = row.CE.identifier;
+                    datarow[enumOCColumns.CEopenInterest.ToString()] = row.CE.openInterest;
+                    datarow[enumOCColumns.CEchangeinOpenInterest.ToString()] = row.CE.changeinOpenInterest;
+                    datarow[enumOCColumns.CEpchangeinOpenInterest.ToString()] = row.CE.pchangeinOpenInterest;
+                    datarow[enumOCColumns.CEtotalTradedVolume.ToString()] = row.CE.totalTradedVolume;
+                    datarow[enumOCColumns.CEimpliedVolatility.ToString()] = row.CE.impliedVolatility;
+                    datarow[enumOCColumns.CElastPrice.ToString()] = row.CE.lastPrice;
+                    datarow[enumOCColumns.CEchange.ToString()] = Math.Round(row.CE.change, 2);
+                    datarow[enumOCColumns.CEpChange.ToString()] = row.CE.pChange;
+                    datarow[enumOCColumns.CEtotalBuyQuantity.ToString()] = row.CE.totalBuyQuantity;
+                    datarow[enumOCColumns.CEtotalSellQuantity.ToString()] = row.CE.totalSellQuantity;
+                    datarow[enumOCColumns.CEbidQty.ToString()] = row.CE.bidQty;
+                    datarow[enumOCColumns.CEbidprice.ToString()] = row.CE.bidprice;
+                    datarow[enumOCColumns.CEaskQty.ToString()] = row.CE.askQty;
+                    datarow[enumOCColumns.CEaskPrice.ToString()] = row.CE.askPrice;
+                    datarow[enumOCColumns.CEunderlyingValue.ToString()] = row.CE.underlyingValue;
+
+                    datarow[enumOCColumns.DaysToExpiry.ToString()] = DateTime.Parse(row.expiryDate).Subtract(DateTime.Now).Days;
+                    datarow[enumOCColumns.SD.ToString()] = 0.0;
+                    datarow[enumOCColumns.CEDelta.ToString()] = 0.0;
+
                 }
 
                 if (row.PE != null)
                 {
-                    datarow["StrikePrice"] = row.PE.strikePrice;
-                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
-                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
-                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
-                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
-                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
-                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
-                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
-                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
-                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
-                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
-                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
-                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
-                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
-                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
-                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
-                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
-                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
-                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
+                    datarow[enumOCColumns.StrikePrice.ToString()] = row.PE.strikePrice;
+                    datarow[enumOCColumns.ExpiryDate.ToString()] = row.PE.expiryDate;
+                    datarow[enumOCColumns.PEunderlying.ToString()] = row.PE.underlying;
+                    datarow[enumOCColumns.PEidentifier.ToString()] = row.PE.identifier;
+                    datarow[enumOCColumns.PEopenInterest.ToString()] = row.PE.openInterest;
+                    datarow[enumOCColumns.PEchangeinOpenInterest.ToString()] = row.PE.changeinOpenInterest;
+                    datarow[enumOCColumns.PEpchangeinOpenInterest.ToString()] = row.PE.pchangeinOpenInterest;
+                    datarow[enumOCColumns.PEtotalTradedVolume.ToString()] = row.PE.totalTradedVolume;
+                    datarow[enumOCColumns.PEimpliedVolatility.ToString()] = row.PE.impliedVolatility;
+                    datarow[enumOCColumns.PElastPrice.ToString()] = row.PE.lastPrice;
+                    datarow[enumOCColumns.PEchange.ToString()] = Math.Round(row.PE.change, 2);
+                    datarow[enumOCColumns.PEpChange.ToString()] = row.PE.pChange;
+                    datarow[enumOCColumns.PEtotalBuyQuantity.ToString()] = row.PE.totalBuyQuantity;
+                    datarow[enumOCColumns.PEtotalSellQuantity.ToString()] = row.PE.totalSellQuantity;
+                    datarow[enumOCColumns.PEbidQty.ToString()] = row.PE.bidQty;
+                    datarow[enumOCColumns.PEbidprice.ToString()] = row.PE.bidprice;
+                    datarow[enumOCColumns.PEaskQty.ToString()] = row.PE.askQty;
+                    datarow[enumOCColumns.PEaskPrice.ToString()] = row.PE.askPrice;
+                    datarow[enumOCColumns.PEunderlyingValue.ToString()] = row.PE.underlyingValue;
+
+                    datarow[enumOCColumns.DaysToExpiry.ToString()] = DateTime.Parse(row.expiryDate).Subtract(DateTime.Now).Days;
+                    datarow[enumOCColumns.SD.ToString()] = 0.0;
+                    datarow[enumOCColumns.CEDelta.ToString()] = 0.0;
                 }
 
                 result.Rows.Add(datarow);
@@ -707,8 +542,8 @@ namespace TOC
 
             if (filterConditions.PercentageRange > 0)
             {
-                iUpperStrikePriceRange = RoundTo100(MySession.Current.RecordsObject.underlyingValue + (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
-                iLowerStrikePriceRange = RoundTo100(MySession.Current.RecordsObject.underlyingValue - (DefaultSP(filterConditions.OcType) * filterConditions.PercentageRange / 100));
+                iUpperStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue + (OCHelper.DefaultSP(filterConditions.OCType) * filterConditions.PercentageRange / 100));
+                iLowerStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue - (OCHelper.DefaultSP(filterConditions.OCType) * filterConditions.PercentageRange / 100));
             }
             else
             {
@@ -719,23 +554,32 @@ namespace TOC
             string strFilter = string.Empty;
             List<string> filters = new List<string>();
 
-            if (filterConditions.ExpiryDate != null && !filterConditions.ExpiryDate.ToUpper().Equals("ALL"))
-                filters.Add(" (ExpiryDate = #" + filterConditions.ExpiryDate + "#) ");
+            if (filterConditions.ExpiryDate != null && !filterConditions.ExpiryDate.ToUpper().Equals(Constants.ALL))
+                filters.Add(" (" + enumStrategyColumns.ExpiryDate + " = #" + filterConditions.ExpiryDate + "#) ");
 
             if (filterConditions.ShowSPBetweenLowHigh)
             {
-                filters.Add(" ((StrikePrice >= " + iLowerStrikePriceRange + ") AND (StrikePrice <= " + iUpperStrikePriceRange + ")) ");
+                filters.Add(" ((" + enumStrategyColumns.StrikePrice + " >= " + iLowerStrikePriceRange + ") AND (" + enumStrategyColumns.StrikePrice + " <= " + iUpperStrikePriceRange + ")) ");
             }
             else
             {
-                filters.Add(" ((StrikePrice <= " + iLowerStrikePriceRange + ") OR (StrikePrice >= " + iUpperStrikePriceRange + ")) ");
+                filters.Add(" ((" + enumStrategyColumns.StrikePrice + " <= " + iLowerStrikePriceRange + ") OR (" + enumStrategyColumns.StrikePrice + " >= " + iUpperStrikePriceRange + ")) ");
             }
 
-            if (filterConditions.ContractType != null && !filterConditions.ContractType.ToUpper().Equals("ALL"))
-                filters.Add(" (Contract = '" + filterConditions.ContractType + "') ");
+            if (filterConditions.ContractType != null && !filterConditions.ContractType.ToUpper().Equals(Constants.ALL))
+                filters.Add(" (" + enumStrategyColumns.ContractType + " = '" + filterConditions.ContractType + "') ");
 
-            if (filterConditions.TransactionType != null && !filterConditions.TransactionType.ToUpper().Equals("ALL"))
-                filters.Add(" (TransactionType = '" + filterConditions.TransactionType + "') ");
+            if (filterConditions.TransactionType != null && !filterConditions.TransactionType.ToUpper().Equals(Constants.ALL))
+                filters.Add(" (" + enumStrategyColumns.TransactionType + " = '" + filterConditions.TransactionType + "') ");
+
+            //if (filterConditions.ExtrinsicValuePer != null && !filterConditions.ExtrinsicValuePer.ToUpper().Equals("ALL"))
+            //    filters.Add(" (" + enumStrategyColumns.ExtrinsicValuePer + " >= '" + filterConditions.ExtrinsicValuePer + "') ");
+
+            //if (filterConditions.LTP != null && !filterConditions.LTP.ToUpper().Equals("ALL"))
+            //    filters.Add(" ((" + enumStrategyColumns.CElastPrice + " >= '" + filterConditions.LTP + "') OR (" + enumStrategyColumns.PElastPrice + " >= '" + filterConditions.LTP + "')) ");
+
+            //if (filterConditions.ImpliedVolatility != null && !filterConditions.ImpliedVolatility.ToUpper().Equals("ALL"))
+            //    filters.Add(" ((" + enumStrategyColumns.CEimpliedVolatility + " >= '" + filterConditions.ImpliedVolatility + "') OR (" + enumStrategyColumns.PEimpliedVolatility + " >= '" + filterConditions.ImpliedVolatility + "')) ");
 
             for (int index = 0; index < filters.Count; index++)
             {
@@ -752,14 +596,75 @@ namespace TOC
             return strFilter;
         }
 
+        //public static string GetFilterString(FilterConditions filterConditions)
+        //{
+        //    int iUpperStrikePriceRange = 0;
+        //    int iLowerStrikePriceRange = 0;
+
+        //    if (filterConditions.PercentageRange > 0)
+        //    {
+        //        iUpperStrikePriceRange = RoundTo100(MySession.Current.RecordsObject.underlyingValue + (DefaultSP(filterConditions.OCType) * filterConditions.PercentageRange / 100));
+        //        iLowerStrikePriceRange = RoundTo100(MySession.Current.RecordsObject.underlyingValue - (DefaultSP(filterConditions.OCType) * filterConditions.PercentageRange / 100));
+        //    }
+        //    else
+        //    {
+        //        iUpperStrikePriceRange = filterConditions.SPHigherRange;
+        //        iLowerStrikePriceRange = filterConditions.SPLowerRange;
+        //    }
+
+        //    string strFilter = string.Empty;
+        //    List<string> filters = new List<string>();
+
+        //    if (filterConditions.ExpiryDate != null && !filterConditions.ExpiryDate.ToUpper().Equals("ALL"))
+        //        filters.Add(" (ExpiryDate = #" + filterConditions.ExpiryDate + "#) ");
+
+        //    if (filterConditions.ShowSPBetweenLowHigh)
+        //    {
+        //        filters.Add(" ((StrikePrice >= " + iLowerStrikePriceRange + ") AND (StrikePrice <= " + iUpperStrikePriceRange + ")) ");
+        //    }
+        //    else
+        //    {
+        //        filters.Add(" ((StrikePrice <= " + iLowerStrikePriceRange + ") OR (StrikePrice >= " + iUpperStrikePriceRange + ")) ");
+        //    }
+
+        //    if (filterConditions.ContractType != null && !filterConditions.ContractType.ToUpper().Equals("ALL"))
+        //        filters.Add(" (" + enumOCColumns.ContractType + " = '" + filterConditions.ContractType + "') ");
+
+        //    if (filterConditions.TransactionType != null && !filterConditions.TransactionType.ToUpper().Equals("ALL"))
+        //        filters.Add(" (TransactionType = '" + filterConditions.TransactionType + "') ");
+
+        //    if (filterConditions.ExtrinsicValuePer != null && !filterConditions.ExtrinsicValuePer.ToUpper().Equals("ALL"))
+        //        filters.Add(" (" + enumOCColumns.ExtrinsicValuePer + " >= '" + filterConditions.ExtrinsicValuePer + "') ");
+
+        //    if (filterConditions.LTP != null && !filterConditions.LTP.ToUpper().Equals("ALL"))
+        //        filters.Add(" ((" + enumOCColumns.CElastPrice + " >= '" + filterConditions.LTP + "') OR (" + enumOCColumns.PElastPrice + " >= '" + filterConditions.LTP + "')) ");
+
+        //    if (filterConditions.ImpliedVolatility != null && !filterConditions.ImpliedVolatility.ToUpper().Equals("ALL"))
+        //        filters.Add(" ((" + enumOCColumns.CEimpliedVolatility + " >= '" + filterConditions.ImpliedVolatility + "') OR (" + enumOCColumns.PEimpliedVolatility + " >= '" + filterConditions.ImpliedVolatility + "')) ");
+
+        //    for (int index = 0; index < filters.Count; index++)
+        //    {
+        //        if (index < filters.Count - 1)
+        //        {
+        //            strFilter += filters[index] + " AND ";
+        //        }
+        //        else
+        //        {
+        //            strFilter += filters[index];
+        //        }
+        //    }
+
+        //    return strFilter;
+        //}
+
         public static void GetGlobalFilterConditions()
         {
             GlobalFilterConditions globalFilterConditions = new GlobalFilterConditions();
 
             //These values should actually be fetched from the database.
             globalFilterConditions.Hide50MulSP = true;
-            globalFilterConditions.Hide1SDSP = true;
-            globalFilterConditions.Hide2SDSP = true;
+            globalFilterConditions.Hide1SDSP = false;
+            globalFilterConditions.Hide2SDSP = false;
 
             MySession.Current.GlobalFilterConditions = globalFilterConditions;
         }
@@ -769,6 +674,7 @@ namespace TOC
             var result = new DataTable();
 
             result = addDataTableColumns(result);
+            double extrinsicValue = 0;
 
             foreach (var row in recordsObject.data)
             {
@@ -776,53 +682,82 @@ namespace TOC
                 var datarow = result.NewRow();
                 if (row.CE != null && row.CE.strikePrice % 100 == 0 && row.CE.lastPrice > 0)
                 {
-                    datarow["StrikePrice"] = row.CE.strikePrice;
-                    datarow["ExpiryDate"] = row.CE.expiryDate.ToString();
-                    datarow["CE" + "underlying"] = row.CE.underlying.ToString();
-                    datarow["CE" + "identifier"] = row.CE.identifier.ToString();
-                    datarow["CE" + "openInterest"] = row.CE.openInterest.ToString();
-                    datarow["CE" + "changeinOpenInterest"] = row.CE.changeinOpenInterest.ToString();
-                    datarow["CE" + "pchangeinOpenInterest"] = row.CE.pchangeinOpenInterest.ToString();
-                    datarow["CE" + "totalTradedVolume"] = row.CE.totalTradedVolume.ToString();
-                    datarow["CE" + "impliedVolatility"] = row.CE.impliedVolatility.ToString();
-                    datarow["CE" + "lastPrice"] = row.CE.lastPrice.ToString();
-                    datarow["CE" + "change"] = Math.Round(row.CE.change, 2).ToString();
-                    datarow["CE" + "pChange"] = row.CE.pChange.ToString();
-                    datarow["CE" + "totalBuyQuantity"] = row.CE.totalBuyQuantity.ToString();
-                    datarow["CE" + "totalSellQuantity"] = row.CE.totalSellQuantity.ToString();
-                    datarow["CE" + "bidQty"] = row.CE.bidQty.ToString();
-                    datarow["CE" + "bidprice"] = row.CE.bidprice.ToString();
-                    datarow["CE" + "askQty"] = row.CE.askQty.ToString();
-                    datarow["CE" + "askPrice"] = row.CE.askPrice.ToString();
-                    datarow["CE" + "underlyingValue"] = row.CE.underlyingValue.ToString();
-                    datarow["Contract"] = enumContractType.CE.ToString();
-                    datarow["CETradingSymbol"] = string.Concat(row.CE.underlying, TradingSymbol_DateFormatter(row.expiryDate), row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
+                    datarow[enumOCColumns.StrikePrice.ToString()] = row.CE.strikePrice;
+                    datarow[enumOCColumns.ExpiryDate.ToString()] = row.CE.expiryDate;
+                    datarow[enumOCColumns.CEunderlying.ToString()] = row.CE.underlying;
+                    datarow[enumOCColumns.CEidentifier.ToString()] = row.CE.identifier;
+                    datarow[enumOCColumns.CEopenInterest.ToString()] = row.CE.openInterest;
+                    datarow[enumOCColumns.CEchangeinOpenInterest.ToString()] = row.CE.changeinOpenInterest;
+                    datarow[enumOCColumns.CEpchangeinOpenInterest.ToString()] = row.CE.pchangeinOpenInterest;
+                    datarow[enumOCColumns.CEtotalTradedVolume.ToString()] = row.CE.totalTradedVolume;
+                    datarow[enumOCColumns.CEimpliedVolatility.ToString()] = row.CE.impliedVolatility;
+                    datarow[enumOCColumns.CElastPrice.ToString()] = row.CE.lastPrice;
+                    datarow[enumOCColumns.CEchange.ToString()] = Math.Round(row.CE.change, 2);
+                    datarow[enumOCColumns.CEpChange.ToString()] = row.CE.pChange;
+                    datarow[enumOCColumns.CEtotalBuyQuantity.ToString()] = row.CE.totalBuyQuantity;
+                    datarow[enumOCColumns.CEtotalSellQuantity.ToString()] = row.CE.totalSellQuantity;
+                    datarow[enumOCColumns.CEbidQty.ToString()] = row.CE.bidQty;
+                    datarow[enumOCColumns.CEbidprice.ToString()] = row.CE.bidprice;
+                    datarow[enumOCColumns.CEaskQty.ToString()] = row.CE.askQty;
+                    datarow[enumOCColumns.CEaskPrice.ToString()] = row.CE.askPrice;
+                    datarow[enumOCColumns.CEunderlyingValue.ToString()] = row.CE.underlyingValue;
+                    datarow[enumOCColumns.ContractType.ToString()] = enumContractType.CE;
+                    datarow[enumOCColumns.CETradingSymbol.ToString()] = string.Concat(row.CE.underlying, TradingSymbol_DateFormatter(row.expiryDate), row.CE.strikePrice.ToString(), enumContractType.CE.ToString());
+
+                    int daysToExpiry = DateTime.Parse(row.expiryDate).Subtract(DateTime.Now).Days + 1;
+                    datarow[enumOCColumns.DaysToExpiry.ToString()] = daysToExpiry;
+                    datarow[enumOCColumns.SD.ToString()] = 0.0;
+                    datarow[enumOCColumns.CEDelta.ToString()] = 0.0;
+
+                    if (row.CE.strikePrice < row.CE.underlyingValue) //ITM - In the money
+                        extrinsicValue = Math.Abs(row.CE.lastPrice + row.CE.strikePrice - row.CE.underlyingValue);
+                    else
+                        extrinsicValue = row.CE.lastPrice;
+
+                    datarow[enumOCColumns.CEExtrinsicValue.ToString()] = Math.Round(extrinsicValue, 2);
+                    datarow[enumOCColumns.CEExtrinsicValuePer.ToString()] = Math.Round((Math.Abs(extrinsicValue) * 100 / row.CE.underlyingValue), 2);
+                    datarow[enumOCColumns.CEExtrinsicValuePerDay.ToString()] = Math.Round(extrinsicValue / daysToExpiry, 2);
                 }
 
                 if (row.PE != null && row.PE.strikePrice % 100 == 0 && row.PE.lastPrice > 0)
                 {
-                    datarow["StrikePrice"] = row.PE.strikePrice;
-                    datarow["ExpiryDate"] = row.PE.expiryDate.ToString();
-                    datarow["PE" + "underlying"] = row.PE.underlying.ToString();
-                    datarow["PE" + "identifier"] = row.PE.identifier.ToString();
-                    datarow["PE" + "openInterest"] = row.PE.openInterest.ToString();
-                    datarow["PE" + "changeinOpenInterest"] = row.PE.changeinOpenInterest.ToString();
-                    datarow["PE" + "pchangeinOpenInterest"] = row.PE.pchangeinOpenInterest.ToString();
-                    datarow["PE" + "totalTradedVolume"] = row.PE.totalTradedVolume.ToString();
-                    datarow["PE" + "impliedVolatility"] = row.PE.impliedVolatility.ToString();
-                    datarow["PE" + "lastPrice"] = row.PE.lastPrice.ToString();
-                    datarow["PE" + "change"] = Math.Round(row.PE.change, 2).ToString();
-                    datarow["PE" + "pChange"] = row.PE.pChange.ToString();
-                    datarow["PE" + "totalBuyQuantity"] = row.PE.totalBuyQuantity.ToString();
-                    datarow["PE" + "totalSellQuantity"] = row.PE.totalSellQuantity.ToString();
-                    datarow["PE" + "bidQty"] = row.PE.bidQty.ToString();
-                    datarow["PE" + "bidprice"] = row.PE.bidprice.ToString();
-                    datarow["PE" + "askQty"] = row.PE.askQty.ToString();
-                    datarow["PE" + "askPrice"] = row.PE.askPrice.ToString();
-                    datarow["PE" + "underlyingValue"] = row.PE.underlyingValue.ToString();
-                    datarow["Contract"] = enumContractType.PE.ToString();
-                    datarow["PETradingSymbol"] = string.Concat(row.PE.underlying, TradingSymbol_DateFormatter(row.expiryDate), row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
+                    datarow[enumOCColumns.StrikePrice.ToString()] = row.PE.strikePrice;
+                    datarow[enumOCColumns.ExpiryDate.ToString()] = row.PE.expiryDate;
+                    datarow[enumOCColumns.PEunderlying.ToString()] = row.PE.underlying;
+                    datarow[enumOCColumns.PEidentifier.ToString()] = row.PE.identifier;
+                    datarow[enumOCColumns.PEopenInterest.ToString()] = row.PE.openInterest;
+                    datarow[enumOCColumns.PEchangeinOpenInterest.ToString()] = row.PE.changeinOpenInterest;
+                    datarow[enumOCColumns.PEpchangeinOpenInterest.ToString()] = row.PE.pchangeinOpenInterest;
+                    datarow[enumOCColumns.PEtotalTradedVolume.ToString()] = row.PE.totalTradedVolume;
+                    datarow[enumOCColumns.PEimpliedVolatility.ToString()] = row.PE.impliedVolatility;
+                    datarow[enumOCColumns.PElastPrice.ToString()] = row.PE.lastPrice;
+                    datarow[enumOCColumns.PEchange.ToString()] = Math.Round(row.PE.change, 2);
+                    datarow[enumOCColumns.PEpChange.ToString()] = row.PE.pChange;
+                    datarow[enumOCColumns.PEtotalBuyQuantity.ToString()] = row.PE.totalBuyQuantity;
+                    datarow[enumOCColumns.PEtotalSellQuantity.ToString()] = row.PE.totalSellQuantity;
+                    datarow[enumOCColumns.PEbidQty.ToString()] = row.PE.bidQty;
+                    datarow[enumOCColumns.PEbidprice.ToString()] = row.PE.bidprice;
+                    datarow[enumOCColumns.PEaskQty.ToString()] = row.PE.askQty;
+                    datarow[enumOCColumns.PEaskPrice.ToString()] = row.PE.askPrice;
+                    datarow[enumOCColumns.PEunderlyingValue.ToString()] = row.PE.underlyingValue;
+                    datarow[enumOCColumns.ContractType.ToString()] = enumContractType.PE;
+                    datarow[enumOCColumns.PETradingSymbol.ToString()] = string.Concat(row.PE.underlying, TradingSymbol_DateFormatter(row.expiryDate), row.PE.strikePrice.ToString(), enumContractType.PE.ToString());
+
+                    int daysToExpiry = DateTime.Parse(row.expiryDate).Subtract(DateTime.Now).Days + 1;
+                    datarow[enumOCColumns.DaysToExpiry.ToString()] = daysToExpiry;
+                    datarow[enumOCColumns.SD.ToString()] = 0.0;
+                    datarow[enumOCColumns.PEDelta.ToString()] = 0.0;
+
+                    if (row.PE.strikePrice > row.PE.underlyingValue) //ITM - In the money
+                        extrinsicValue = Math.Abs(row.PE.lastPrice - (row.PE.strikePrice - row.PE.underlyingValue));
+                    else
+                        extrinsicValue = row.PE.lastPrice;
+
+                    datarow[enumOCColumns.PEExtrinsicValue.ToString()] = Math.Round(extrinsicValue, 2);
+                    datarow[enumOCColumns.PEExtrinsicValuePer.ToString()] = Math.Round((Math.Abs(extrinsicValue) * 100 / row.PE.underlyingValue), 2);
+                    datarow[enumOCColumns.PEExtrinsicValuePerDay.ToString()] = Math.Round(extrinsicValue / daysToExpiry, 2);
                 }
+
                 if ((row.PE != null && row.PE.strikePrice % 100 == 0 && row.PE.lastPrice > 0) ||
                     row.CE != null && row.CE.strikePrice % 100 == 0 && row.CE.lastPrice > 0)
                 {
@@ -835,52 +770,57 @@ namespace TOC
 
         private static DataTable addDataTableColumns(DataTable result)
         {
-            Records.Datum.CE1 ce = new Records.Datum.CE1();
-
-            result.Columns.Add("CE" + "expiryDate");
-            result.Columns.Add("CE" + "underlying");
-            result.Columns.Add("CE" + "identifier");
-            result.Columns.Add("CE" + "pchangeinOpenInterest");
-            result.Columns.Add("CE" + "impliedVolatility");
-            result.Columns.Add("CE" + "totalBuyQuantity");
-            result.Columns.Add("CE" + "totalSellQuantity");
-            result.Columns.Add("CE" + "underlyingValue");
-            result.Columns.Add("CE" + "pChange");
-            result.Columns.Add("Contract");
-            result.Columns.Add("CE" + "openInterest");
-            result.Columns.Add("CE" + "changeinOpenInterest");
-            result.Columns.Add("CE" + "totalTradedVolume");
-            result.Columns.Add("CE" + "lastPrice");
-            result.Columns.Add("CE" + "change");
-            result.Columns.Add("CE" + "bidQty");
-            result.Columns.Add("CE" + "bidprice");
-            result.Columns.Add("CE" + "askPrice");
-            result.Columns.Add("CE" + "askQty");
-            result.Columns.Add("StrikePrice");
-            result.Columns.Add("CETradingSymbol");
-
-            Records.Datum.PE1 pe = new Records.Datum.PE1();
-            //result.Columns.Add("strikePrice");
-            result.Columns.Add("PE" + "bidQty");
-            result.Columns.Add("PE" + "bidprice");
-            result.Columns.Add("PE" + "askPrice");
-            result.Columns.Add("PE" + "askQty");
-            result.Columns.Add("PE" + "change");
-            result.Columns.Add("PE" + "lastPrice");
-            result.Columns.Add("PE" + "totalTradedVolume");
-            result.Columns.Add("PE" + "changeinOpenInterest");
-            result.Columns.Add("PE" + "pchangeinOpenInterest");
-
-            result.Columns.Add("PE" + "pChange");
-            result.Columns.Add("ExpiryDate");
-            result.Columns.Add("PE" + "underlying");
-            result.Columns.Add("PE" + "identifier");
-            result.Columns.Add("PE" + "openInterest");
-            result.Columns.Add("PE" + "impliedVolatility");
-            result.Columns.Add("PE" + "totalBuyQuantity");
-            result.Columns.Add("PE" + "totalSellQuantity");
-            result.Columns.Add("PE" + "underlyingValue");
-            result.Columns.Add("PETradingSymbol");
+            //Records.Datum.CE1 ce = new Records.Datum.CE1();
+            //result.Columns.Add(enumOCColumns.CEexpiryDate.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.CEunderlying.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.CEidentifier.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.CEpchangeinOpenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEimpliedVolatility.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEtotalBuyQuantity.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CEtotalSellQuantity.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CEunderlyingValue.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEpChange.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.ContractType.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.CEopenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEchangeinOpenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEtotalTradedVolume.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CElastPrice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEchange.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEbidQty.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CEbidprice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEaskPrice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEaskQty.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.StrikePrice.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CETradingSymbol.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.PEbidQty.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.PEbidprice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEaskPrice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEaskQty.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.PEchange.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PElastPrice.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEtotalTradedVolume.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.PEchangeinOpenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEpchangeinOpenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEpChange.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.ExpiryDate.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.PEunderlying.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.PEidentifier.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.PEopenInterest.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEimpliedVolatility.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEtotalBuyQuantity.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.PEtotalSellQuantity.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.PEunderlyingValue.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PETradingSymbol.ToString(), typeof(string));
+            result.Columns.Add(enumOCColumns.DaysToExpiry.ToString(), typeof(int));
+            result.Columns.Add(enumOCColumns.CEExtrinsicValue.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEExtrinsicValuePer.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEExtrinsicValuePerDay.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEExtrinsicValue.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEExtrinsicValuePer.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEExtrinsicValuePerDay.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.SD.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.CEDelta.ToString(), typeof(double));
+            result.Columns.Add(enumOCColumns.PEDelta.ToString(), typeof(double));
 
             return result;
         }
@@ -901,5 +841,59 @@ namespace TOC
             }
             return columnIndex;
         }
+    }
+
+    enum enumOCColumns
+    {
+        //CEexpiryDate,
+        CEunderlying,
+        CEidentifier,
+        CEpchangeinOpenInterest,
+        CEimpliedVolatility,
+        CEtotalBuyQuantity,
+        CEtotalSellQuantity,
+        CEunderlyingValue,
+        CEpChange,
+        ContractType,
+        CEopenInterest,
+        CEchangeinOpenInterest,
+        CEtotalTradedVolume,
+        CElastPrice,
+        CEchange,
+        CEbidQty,
+        CEbidprice,
+        CEaskPrice,
+        CEaskQty,
+        StrikePrice,
+        CETradingSymbol,
+        PEbidQty,
+        PEbidprice,
+        PEaskPrice,
+        PEaskQty,
+        PEchange,
+        PElastPrice,
+        PEtotalTradedVolume,
+        PEchangeinOpenInterest,
+        PEpchangeinOpenInterest,
+        PEpChange,
+        ExpiryDate,
+        PEunderlying,
+        PEidentifier,
+        PEopenInterest,
+        PEimpliedVolatility,
+        PEtotalBuyQuantity,
+        PEtotalSellQuantity,
+        PEunderlyingValue,
+        PETradingSymbol,
+        DaysToExpiry,
+        CEExtrinsicValue,
+        CEExtrinsicValuePer,
+        CEExtrinsicValuePerDay,
+        PEExtrinsicValue,
+        PEExtrinsicValuePer,
+        PEExtrinsicValuePerDay,
+        SD,
+        CEDelta,
+        PEDelta,
     }
 }

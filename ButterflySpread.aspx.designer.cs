@@ -15,40 +15,13 @@ namespace TOC
     {
 
         /// <summary>
-        /// lblStart control.
+        /// lblLastFetchedTime control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblStart;
-
-        /// <summary>
-        /// lblEnd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEnd;
-
-        /// <summary>
-        /// lblDifference control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDifference;
-
-        /// <summary>
-        /// rblOCType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
+        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
 
         /// <summary>
         /// lblLastPrice control.
@@ -60,13 +33,13 @@ namespace TOC
         protected global::System.Web.UI.WebControls.Label lblLastPrice;
 
         /// <summary>
-        /// lblLastFetchedTime control.
+        /// rblOCType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblLastFetchedTime;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblOCType;
 
         /// <summary>
         /// ddlExpiryDates control.

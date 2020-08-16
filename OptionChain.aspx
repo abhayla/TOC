@@ -13,7 +13,7 @@
     </div>
     <br />
     <div runat="server" id="divOptionChain">
-        <asp:GridView AutoGenerateColumns="False" AllowPaging="false" runat="server" ID="gvOptionChain" HorizontalAlign="Justify">
+        <asp:GridView AutoGenerateColumns="False" AllowPaging="false" runat="server" ID="gvOptionChain" HorizontalAlign="Center" HeaderStyle-BackColor="LightGray" HeaderStyle-Font-Size="Small" HeaderStyle-Font-Bold="true" RowStyle-Font-Size="Small" RowStyle-HorizontalAlign="Right" FooterStyle-Font-Size="Small" FooterStyle-HorizontalAlign="Right">
             <Columns>
                 <asp:BoundField DataField="CEopenInterest" HeaderText="OI" />
                 <asp:BoundField DataField="CEchangeinOpenInterest" HeaderText="Chng in OI" />

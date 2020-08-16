@@ -4,7 +4,7 @@ using System.Data;
 
 namespace TOC.Strategy
 {
-    public class FilterStrategies
+    public class ProfitOnlyStrategies
     {
         public static DataSet FilterAllStrategies(FilterConditions filterConditions)
         {
@@ -60,7 +60,7 @@ namespace TOC.Strategy
                 //dataSetCEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.CE.ToString(), filterConditions);
                 //dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetCEBF);
 
-                dataSetPEBF = Butterfly.GetButterflySpreadStrategies(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
+                dataSetPEBF = ButterflyClass.GetButterflySpreadStrategies(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
                 dataSetResult = OCHelper.MergeDataSets(dataSetResult, dataSetPEBF);
 
                 //dataSetPEIC = IronCondorClass.CalculateIronCondors(filteredDataTable, filterConditions);

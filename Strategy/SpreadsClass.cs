@@ -46,7 +46,7 @@ namespace TOC.Strategy
             int iHighestSP = int.MinValue;
             foreach (DataRow dr in filteredDataTable.Rows)
             {
-                int accountLevel = Convert.ToInt32(dr.Field<string>("StrikePrice"));
+                int accountLevel = dr.Field<int>(enumStrategyColumns.StrikePrice.ToString());
                 iLowestSP = Math.Min(iLowestSP, accountLevel);
                 iHighestSP = Math.Max(iHighestSP, accountLevel);
             }
@@ -59,39 +59,14 @@ namespace TOC.Strategy
                 diffStrikePrice = (prices[1] - prices[0]);
             }
 
-            //double iHighterSPIterator = iLowestSP;
-            //double iMiddleSPIterator = iLowestSP;
-            //double iLowerSPIterator = iLowestSP;
-
-            //int iMiddleLowerRange = 0;
-            //int iMiddleHigherRange = 0;
-
-            //If "NONE" selected in the ddlb
-            //if (filterConditions.SPExpiry == 0)
-            //{
-            //    iMiddleLowerRange = iLowestSP + diffStrikePrice;
-            //    iMiddleHigherRange = iHighestSP;
-            //}
-            //else
-            //{
-            //    iMiddleLowerRange = filterConditions.SPExpiry;
-            //    iMiddleHigherRange = filterConditions.SPExpiry + 1;
-            //}
-
             int currentStrikePrice = OCHelper.RoundTo100(recordsObject.underlyingValue);
             int maxDiff = iHighestSP - currentStrikePrice;
-
-            //for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
-            //{
+            var enumStrategyColumnsCount = Enum.GetNames(typeof(enumStrategyColumns)).Length;
 
             for (int iHigher = iHighestSP; iHigher > iLowestSP; iHigher -= diffStrikePrice)//int iHigher = iLowestSP + diffStrikePrice; iHigher <= iHighestSP; iHigher += +diffStrikePrice
             {
                 for (int iLower = iHigher - diffStrikePrice; iLower >= iLowestSP; iLower -= diffStrikePrice) //int iLower = iLowestSP; iLower < iHigher; iLower += diffStrikePrice
                 {
-                    //iMiddleSPIterator = iMiddle;
-                    //iHighterSPIterator = iHigher;
-                    //iLowerSPIterator = iLower;
-
                     if (iLower >= iHigher ||
                         iHigher > iHighestSP ||
                         iLower < iLowestSP)
@@ -103,18 +78,18 @@ namespace TOC.Strategy
 
                     if (!filterConditions.ExpiryDate.Equals(string.Empty))
                     {
-                        selectQuery = "(Contract = '" + contractType + "')" +
-                       " AND ((StrikePrice = " + (iLower) + " AND TransactionType = 'Buy') OR (StrikePrice = " + (iHigher) +
-                       " AND TransactionType = 'Sell')) AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                        selectQuery = "(" + enumStrategyColumns.ContractType + " = '" + contractType + "')" +
+                       " AND ((" + enumStrategyColumns.StrikePrice + " = " + (iLower) + " AND TransactionType = 'Buy') OR (" + enumStrategyColumns.StrikePrice + " = " + (iHigher) +
+                       " AND " + enumStrategyColumns.TransactionType + " = 'Sell')) AND (" + enumStrategyColumns.ExpiryDate + " = #" + filterConditions.ExpiryDate + "#)";
                     }
                     else
                     {
-                        selectQuery = "(Contract = '" + contractType + "')" +
-                       " AND ((StrikePrice = " + (iLower) + " AND TransactionType = 'Buy') OR (StrikePrice = " + (iHigher) +
-                       " AND TransactionType = 'Sell'))";
+                        selectQuery = "(" + enumStrategyColumns.ContractType + " = '" + contractType + "')" +
+                       " AND ((" + enumStrategyColumns.StrikePrice + " = " + (iLower) + " AND " + enumStrategyColumns.TransactionType + " = 'Buy') OR (" + enumStrategyColumns.StrikePrice + " = " + (iHigher) +
+                       " AND " + enumStrategyColumns.TransactionType + " = 'Sell'))";
                     }
 
-                    DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
+                    DataRow[] drs = filteredDataTable.Select(selectQuery, enumStrategyColumns.StrikePrice + " ASC");
 
                     DataTable dt = filteredDataTable.Clone();
 
@@ -125,13 +100,13 @@ namespace TOC.Strategy
                     foreach (DataRow dr in drs)
                     {
                         //This is alternate code for Calculation code in AddRecordsToDataTable function in OCHelper
-                        for (int iCellCount = 9; iCellCount < dr.ItemArray.Length; iCellCount++)
+                        for (int iCellCount = enumStrategyColumnsCount; iCellCount < dr.ItemArray.Length; iCellCount++)
                         {
                             dr[iCellCount] =
-                                FO.CalcExpVal(dr["Contract"].ToString(),
-                                dr["TransactionType"].ToString(),
-                                Convert.ToDouble(dr["StrikePrice"]),
-                                Convert.ToDouble(dr["Premium"]),
+                                FO.CalcExpVal(dr[enumStrategyColumns.ContractType.ToString()].ToString(),
+                                dr[enumStrategyColumns.TransactionType.ToString()].ToString(),
+                                Convert.ToDouble(dr[enumStrategyColumns.StrikePrice.ToString()]),
+                                Convert.ToDouble(dr[enumStrategyColumns.Premium.ToString()]),
                                 Convert.ToDouble(dr.Table.Columns[iCellCount].ColumnName));
                         }
 
@@ -141,36 +116,28 @@ namespace TOC.Strategy
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         double sum = 0;
-                        var strikePrice = dt.Rows[i]["StrikePrice"].ToString();
-                        //int quantity = 0;
+                        var strikePrice = dt.Rows[i][enumStrategyColumns.StrikePrice.ToString()].ToString();
 
                         for (int j = 0; j < dt.Rows.Count; j++)
                         {
-                            var rowStrikePrice = dt.Rows[j]["StrikePrice"].ToString();
+                            var rowStrikePrice = dt.Rows[j][enumStrategyColumns.StrikePrice.ToString()].ToString();
 
-                            //if (rowStrikePrice == iMiddleSPIterator.ToString())
-                            //{
-                            //    sum += Convert.ToDouble(dt.Rows[j][strikePrice]) * 2;
-                            //}
                             if (rowStrikePrice == iLower.ToString() || rowStrikePrice == iHigher.ToString())
                             {
                                 sum += Convert.ToDouble(dt.Rows[j][strikePrice]);
                             }
                         }
 
-                        int quantity = Convert.ToInt32(dt.Rows[i]["LotSize"]);
+                        int quantity = Convert.ToInt32(dt.Rows[i][enumStrategyColumns.LotSize.ToString()]);
                         int newquantity = quantity;
-                        //if (strikePrice.Equals(iMiddleSPIterator.ToString()))
-                        //    newquantity = quantity * 2;
 
                         dtResult.Rows.Add(new string[] {
-                            dt.Rows[i]["TradingSymbol"].ToString(),
-                            dt.Rows[i]["Contract"].ToString(),
-                            dt.Rows[i]["TransactionType"].ToString(),
-                            dt.Rows[i]["StrikePrice"].ToString(),
-                            newquantity.ToString(),
-                            dt.Rows[i]["Premium"].ToString(),
-                            Math.Round(quantity*sum,2).ToString()});
+                            dt.Rows[i][enumStrategyColumns.TradingSymbol.ToString()].ToString(),
+                            dt.Rows[i][enumStrategyColumns.ContractType.ToString()].ToString(),
+                            dt.Rows[i][enumStrategyColumns.TransactionType.ToString()].ToString(),
+                            dt.Rows[i][enumStrategyColumns.StrikePrice.ToString()].ToString(), newquantity.ToString(),
+                            dt.Rows[i][enumStrategyColumns.Premium.ToString()].ToString(),
+                            Math.Round(quantity * sum, 2).ToString()});
                     }
 
                     if (dtResult.Rows.Count == 2)
@@ -179,7 +146,6 @@ namespace TOC.Strategy
                     }
                 }
             }
-            //}
             return dataSet;
         }
     }

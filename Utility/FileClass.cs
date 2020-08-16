@@ -44,13 +44,17 @@ namespace TOC
             DataTable dtCsv = new DataTable();
             string[] paths = filePath.Split('\\');
 
-            if (paths[paths.Length - 1].Equals("StrategyBuilder.csv"))
+            if (paths[paths.Length - 1].Equals(Constants.SB_FILE_NAME))
             {
                 dtCsv = Strategy.StrategyBuilderClass.AddSBColumns();
             }
-            if (paths[paths.Length - 1].Equals("PositionsTracker.csv"))
+            if (paths[paths.Length - 1].Equals(Constants.PT_FILE_NAME))
             {
                 dtCsv = Strategy.PositionsClass.AddPTColumns();
+            }
+            if (paths[paths.Length - 1].Equals(Constants.BO_FILE_NAME))
+            {
+                dtCsv = Strategy.BasketOrderClass.AddBOColumns();
             }
 
             string Fulltext;

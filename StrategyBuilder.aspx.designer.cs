@@ -60,6 +60,15 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlFilterExpiryDates;
 
         /// <summary>
+        /// ddlStrategyListFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlStrategyListFilter;
+
+        /// <summary>
         /// btnFilter control.
         /// </summary>
         /// <remarks>
@@ -114,12 +123,12 @@ namespace TOC
         protected global::System.Web.UI.WebControls.Button btnSave;
 
         /// <summary>
-        /// btnAddToPositions control.
+        /// btnAddToOrderBasket control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddToPositions;
+        protected global::System.Web.UI.WebControls.Button btnAddToOrderBasket;
     }
 }

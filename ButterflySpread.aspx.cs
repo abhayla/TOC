@@ -15,7 +15,7 @@ namespace TOC
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            lblStart.Text = DateTime.Now.ToString();
+            //lblStart.Text = DateTime.Now.ToString();
             if (!IsPostBack)
             {
                 FillExpiryDates(ddlExpiryDates);
@@ -25,14 +25,14 @@ namespace TOC
                 //filterConditions.SPHigherRange = MySession.Current.RecordsObject.strikePrices.Max();
                 //filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
                 filterConditions.ContractType = ddlContractType.SelectedValue;
-                filterConditions.OcType = rblOCType.SelectedValue;
+                filterConditions.OCType = rblOCType.SelectedValue;
                 filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
                 filterConditions.TimeGap = timeAddGap;
                 filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
                 filterConditions.PercentageRange = iPercentageRage;
                 filterConditions.SPDifference = 100;
 
-                DataSet dataSetResult = Butterfly.GetButterflySpreadStrategies(filterConditions);
+                DataSet dataSetResult = ButterflyClass.GetButterflySpreadStrategies(filterConditions);
                 PopulateDataSet(dataSetResult);
 
                 PopulateFilterFields(filterConditions);
@@ -42,7 +42,7 @@ namespace TOC
 
         private void Page_LoadComplete(object sender, EventArgs e)
         {
-            lblEnd.Text = DateTime.Now.ToString();
+            //lblEnd.Text = DateTime.Now.ToString();
             //throw new NotImplementedException();
         }
 
@@ -217,14 +217,14 @@ namespace TOC
                 filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
 
             filterConditions.ContractType = ddlContractType.SelectedValue;
-            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.OCType = rblOCType.SelectedValue;
             filterConditions.StrategyType = enumStrategyType.BUTTERFLY.ToString();
             filterConditions.TimeGap = timeAddGap;
             filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
             filterConditions.PercentageRange = 0;
             filterConditions.SPDifference = 100;
 
-            DataSet dataSetResult = Butterfly.GetButterflySpreadStrategies(filterConditions);
+            DataSet dataSetResult = ButterflyClass.GetButterflySpreadStrategies(filterConditions);
             PopulateDataSet(dataSetResult);
 
             PopulateFilterFields(filterConditions);

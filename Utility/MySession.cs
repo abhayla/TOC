@@ -19,6 +19,7 @@ namespace TOC
             RecordsBankNifty = null;
             PositionsTrackerDt = null;
             GlobalFilterConditions = null;
+            BasketOrderDt = null;
         }
 
         // Gets the current session.
@@ -44,5 +45,6 @@ namespace TOC
         public DataTable StrategyBuilderDt { get; set; }
         public DataTable PositionsTrackerDt { get; set; }
         public GlobalFilterConditions GlobalFilterConditions { get; set; }
+        public DataTable BasketOrderDt { get; set; }
     }
 }

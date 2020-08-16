@@ -38,12 +38,12 @@ namespace TOC.Strategy
         public static void AddBlankRows(DataTable dataTable)
         {
             dataTable.Rows.Add(
-                    false,                                  // Select,
-                    "NIFTY",                                //OCType,
-                    OCHelper.DefaultExpDate("NIFTY"),       //ExpiryDate,
-                    "CE",                                   //ContractType,
-                    "SELL",                                 //TransactionType,
-                    OCHelper.DefaultSP("NIFTY"),            //StrikePrice,
+                    false,                                                      // Select,
+                    enumOCType.NIFTY.ToString(),                                //OCType,
+                    OCHelper.DefaultExpDate(enumOCType.NIFTY.ToString()),       //ExpiryDate,
+                    "CE",                                                       //ContractType,
+                    "SELL",                                                     //TransactionType,
+                    OCHelper.DefaultSP(enumOCType.NIFTY.ToString()),            //StrikePrice,
                     1,                                      //Lots,
                     0,                                      //EntryPrice,
                     0,                                      //ExitPrice,
@@ -63,13 +63,66 @@ namespace TOC.Strategy
                 );
         }
 
+        public static void AddPTRows(DataTable dataPTTable)
+        {
+            DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+            bool IsAddRow = true;
+
+            foreach (DataRow dataRowInput in dataPTTable.Rows)
+            {
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (dataRow[enumPTColumns.OCType.ToString()].ToString().Equals(dataRowInput[enumPTColumns.OCType.ToString()].ToString()) &&
+                        dataRow[enumPTColumns.ExpiryDate.ToString()].ToString().Equals(dataRowInput[enumPTColumns.ExpiryDate.ToString()].ToString()) &&
+                        dataRow[enumPTColumns.ContractType.ToString()].ToString().Equals(dataRowInput[enumPTColumns.ContractType.ToString()].ToString()) &&
+                        dataRow[enumPTColumns.TransactionType.ToString()].ToString().Equals(dataRowInput[enumPTColumns.TransactionType.ToString()].ToString()) &&
+                        dataRow[enumPTColumns.CMP.ToString()].ToString().Equals(dataRowInput[enumPTColumns.CMP.ToString()].ToString()) &&
+                        dataRow[enumPTColumns.StrikePrice.ToString()].ToString().Equals(dataRowInput[enumPTColumns.StrikePrice.ToString()].ToString()))
+                    {
+                        IsAddRow = false;
+                    }
+                }
+
+                if (IsAddRow)
+                {
+                    DataRow newDataRow = dataTable.NewRow();
+                    newDataRow[enumPTColumns.Select.ToString()] = false;
+                    newDataRow[enumPTColumns.OCType.ToString()] = dataRowInput[enumPTColumns.OCType.ToString()].ToString();
+                    newDataRow[enumPTColumns.ExpiryDate.ToString()] = dataRowInput[enumPTColumns.ExpiryDate.ToString()].ToString();
+                    newDataRow[enumPTColumns.ContractType.ToString()] = dataRowInput[enumPTColumns.ContractType.ToString()].ToString();
+                    newDataRow[enumPTColumns.TransactionType.ToString()] = dataRowInput[enumPTColumns.TransactionType.ToString()].ToString();
+                    newDataRow[enumPTColumns.StrikePrice.ToString()] = dataRowInput[enumPTColumns.StrikePrice.ToString()].ToString();
+                    newDataRow[enumPTColumns.Lots.ToString()] = 1;
+                    newDataRow[enumPTColumns.EntryPrice.ToString()] = 0;
+                    newDataRow[enumPTColumns.ExitPrice.ToString()] = 0;
+                    newDataRow[enumPTColumns.CMP.ToString()] = 0;
+                    newDataRow[enumPTColumns.UnRealisedPL.ToString()] = 0;
+                    newDataRow[enumPTColumns.ChgPer.ToString()] = 0;
+                    newDataRow[enumPTColumns.RealisedPL.ToString()] = 0;
+                    newDataRow[enumPTColumns.MaxProfit.ToString()] = 0;
+                    newDataRow[enumPTColumns.Recommendation.ToString()] = string.Empty;
+                    newDataRow[enumPTColumns.Strategy.ToString()] = string.Empty;
+                    newDataRow[enumPTColumns.Profile.ToString()] = string.Empty;
+                    newDataRow[enumPTColumns.Position.ToString()] = "Open";
+                    newDataRow[enumPTColumns.Id.ToString()] = Guid.NewGuid();
+                    newDataRow[enumPTColumns.DaysToExpiry.ToString()] = 0;
+                    newDataRow[enumPTColumns.DaysHeld.ToString()] = 0;
+                    newDataRow[enumPTColumns.EntryDate.ToString()] = DateTime.Now.Date;
+
+                    dataTable.Rows.Add(newDataRow);
+                }
+                FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+            }
+        }
+
+
         public static void AddPTRows(string oCType, string expiryDate, string contractType, string transactionType, int strikePrice, string strategy, string profile)
         {
-            DataTable dataTable = FileClass.ReadCsvFile("C:\\Myfiles\\PositionsTracker.csv");
+            DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
             bool IsAddRow = true;
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                if (dataRow[enumPTColumns.OCType.ToString()].ToString().Equals(oCType) && 
+                if (dataRow[enumPTColumns.OCType.ToString()].ToString().Equals(oCType) &&
                     dataRow[enumPTColumns.ExpiryDate.ToString()].ToString().Equals(expiryDate) &&
                    dataRow[enumPTColumns.ContractType.ToString()].ToString().Equals(contractType) &&
                    dataRow[enumPTColumns.TransactionType.ToString()].ToString().Equals(transactionType) &&
@@ -107,7 +160,7 @@ namespace TOC.Strategy
 
                 dataTable.Rows.Add(newDataRow);
 
-                FileClass.WriteDataTable(dataTable, "C:\\Myfiles\\PositionsTracker.csv");
+                FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
             }
         }
     }

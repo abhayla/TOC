@@ -9,7 +9,7 @@ namespace TOC
 {
     public partial class IronCondor : System.Web.UI.Page
     {
-        private static double iPercentageRage = 10;
+        //private static double iPercentageRage = 5;
         TimeSpan timeAddGap = new TimeSpan(0, 3, 0);
 
         protected void Page_Load(object sender, EventArgs e)
@@ -18,15 +18,15 @@ namespace TOC
 
             if (!IsPostBack)
             {
-                FillExpiryDates(ddlExpiryDates);
+                OCHelper.FillAllExpiryDates(rblOCType.SelectedValue, ddlExpiryDates, false);
 
                 FilterConditions filterConditions = new FilterConditions();
                 filterConditions.ContractType = ddlContractType.SelectedValue;
-                filterConditions.OcType = rblOCType.SelectedValue;
+                filterConditions.OCType = rblOCType.SelectedValue;
                 filterConditions.StrategyType = enumStrategyType.IRON_CONDOR.ToString();
                 filterConditions.TimeGap = timeAddGap;
                 filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
-                filterConditions.PercentageRange = iPercentageRage;
+                filterConditions.PercentageRange = 5;
                 filterConditions.SPDifference = 100;
 
                 DataSet dataSetResult = IronCondorClass.GetIronCondors(filterConditions);
@@ -113,7 +113,7 @@ namespace TOC
 
         private void PopulateSPLowerRange(FilterConditions filterConditions)
         {
-            int iLowerStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue - (OCHelper.DefaultSP(rblOCType.SelectedValue) * iPercentageRage / 100));
+            int iLowerStrikePriceRange = OCHelper.RoundTo100(MySession.Current.RecordsObject.underlyingValue - (OCHelper.DefaultSP(rblOCType.SelectedValue) * filterConditions.PercentageRange / 100));
 
             int iUpperStrikePrice = iLowerStrikePriceRange;
 
@@ -199,11 +199,11 @@ namespace TOC
             //    filterConditions.SPExpiry = Convert.ToInt32(ddlSPExpiry.SelectedValue);
 
             filterConditions.ContractType = ddlContractType.SelectedValue;
-            filterConditions.OcType = rblOCType.SelectedValue;
+            filterConditions.OCType = rblOCType.SelectedValue;
             filterConditions.StrategyType = enumStrategyType.IRON_CONDOR.ToString();
             filterConditions.TimeGap = timeAddGap;
             filterConditions.ExpiryDate = ddlExpiryDates.SelectedValue;
-            filterConditions.PercentageRange = iPercentageRage;
+            filterConditions.PercentageRange = 5;
             filterConditions.SPDifference = 100;
 
             DataSet dataSetResult = IronCondorClass.GetIronCondors(filterConditions);

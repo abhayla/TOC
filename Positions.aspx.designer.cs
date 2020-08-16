@@ -33,6 +33,24 @@ namespace TOC
         protected global::System.Web.UI.WebControls.DropDownList ddlFilterExpiryDates;
 
         /// <summary>
+        /// lblContractType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblContractType;
+
+        /// <summary>
+        /// ddlContractType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlContractType;
+
+        /// <summary>
         /// lblFilterProfiles control.
         /// </summary>
         /// <remarks>

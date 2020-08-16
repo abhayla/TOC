@@ -9,6 +9,7 @@ namespace TOC.Strategy
         public static DataSet GetIronCondors(FilterConditions filterConditions)
         {
             DataTable filteredDataTable = OCHelper.FilterDataTableRecords(filterConditions);
+
             DataSet dataSet = new DataSet();
             DataSet dataSetCE = new DataSet();
             DataSet dataSetPE = new DataSet();
@@ -25,13 +26,10 @@ namespace TOC.Strategy
                 dataSet = OCHelper.MergeDataSets(dataSet, dataSetPE);
             }
 
-            if (filterConditions.ContractType.Equals("ALL"))
+            if (filterConditions.ContractType.Equals(Constants.ALL))
             {
                 dataSetCE = CalculateIronCondors(filteredDataTable, filterConditions);
                 dataSet = OCHelper.MergeDataSets(dataSet, dataSetCE);
-
-                //dataSetPE = CalculateIronCondors(filteredDataTable, enumContractType.PE.ToString(), filterConditions);
-                //dataSet = OCHelper.MergeDataSets(dataSet, dataSetPE);
             }
             return dataSet;
         }
@@ -46,7 +44,7 @@ namespace TOC.Strategy
             int iHighestSP = int.MinValue;
             foreach (DataRow dr in filteredDataTable.Rows)
             {
-                int accountLevel = Convert.ToInt32(dr.Field<string>("StrikePrice"));
+                int accountLevel = dr.Field<int>(enumStrategyColumns.StrikePrice.ToString());
                 iLowestSP = Math.Min(iLowestSP, accountLevel);
                 iHighestSP = Math.Max(iHighestSP, accountLevel);
             }
@@ -56,39 +54,19 @@ namespace TOC.Strategy
             int diffStrikePrice = 0;
             if (prices.Count > 2)
             {
-                diffStrikePrice = (prices[1] - prices[0]);
+                //diffStrikePrice = (prices[1] - prices[0]);
+                diffStrikePrice = filterConditions.SPDifference;
             }
             else
             {
                 diffStrikePrice = filterConditions.SPDifference;
             }
 
-            //double iHighterSPIterator = iLowestSP;
-            //double iMiddleSPIterator = iLowestSP;
-            //double iLowerSPIterator = iLowestSP;
-
-            //int iMiddleLowerRange = 0;
-            //int iMiddleHigherRange = 0;
-
-            //If "NONE" selected in the ddlb
-            //if (filterConditions.SPExpiry == 0)
-            //{
-            //    iMiddleLowerRange = iLowestSP + diffStrikePrice;
-            //    iMiddleHigherRange = iHighestSP;
-            //}
-            //else
-            //{
-            //    iMiddleLowerRange = filterConditions.SPExpiry;
-            //    iMiddleHigherRange = filterConditions.SPExpiry + 1;
-            //}
-
             int ATMStrikePrice = 0;
             if (OCHelper.RoundTo100(recordsObject.underlyingValue) < recordsObject.underlyingValue)
                 ATMStrikePrice = OCHelper.RoundTo100(recordsObject.underlyingValue) + 100;
             else
                 ATMStrikePrice = OCHelper.RoundTo100(recordsObject.underlyingValue);
-
-            //int maxDiff = iHighestSP - ATMStrikePrice;
 
             if (filterConditions.SPLowerRange == 0)
             {
@@ -100,109 +78,102 @@ namespace TOC.Strategy
                 filterConditions.SPHigherRange = ATMStrikePrice;
             }
 
-            //for (int iMiddle = iMiddleLowerRange; iMiddle < iMiddleHigherRange; iMiddle = iMiddle + diffStrikePrice)
-            //{
+            var enumStrategyColumnsCount = Enum.GetNames(typeof(enumStrategyColumns)).Length;
+
             for (int iHighest = filterConditions.SPHigherRange + diffStrikePrice; iHighest <= iHighestSP; iHighest += diffStrikePrice)
             {
                 for (int iHigher = filterConditions.SPHigherRange; iHigher < iHighest; iHigher += diffStrikePrice)
                 {
                     for (int iLower = filterConditions.SPLowerRange; iLower > iLowestSP + diffStrikePrice; iLower -= diffStrikePrice)//iLowestSP + diffStrikePrice
                     {
-                        for (int iLowerst = iLower - diffStrikePrice; iLowerst >= iLowestSP; iLowerst -= diffStrikePrice)//iLowestSP
+                        for (int iLowest = iLower - diffStrikePrice; iLowest >= iLowestSP; iLowest -= diffStrikePrice)//iLowestSP
                         {
-                            //iMiddleSPIterator = iMiddle;
-                            //iHighterSPIterator = iHigher;
-                            //iLowerSPIterator = iLower;
-
-                            if (iLowerst >= iLower || iLower >= iHigher || iHigher >= iHighest)
+                            if (iLowest >= iLower || iLower >= iHigher || iHigher >= iHighest)
                             {
                                 continue;
                             }
 
                             string selectQuery = string.Empty;
 
-                            if (!filterConditions.ExpiryDate.Equals(string.Empty))
+                            if (filterConditions.ExpiryDate != null && !filterConditions.ExpiryDate.ToUpper().Equals(Constants.ALL))
                             {
                                 selectQuery =
-                                   "(Contract = 'PE' AND StrikePrice = " + (iLowerst) + " AND TransactionType = 'Buy') OR " +
-                                   "(Contract = 'PE' AND StrikePrice = " + (iLower) + " AND TransactionType = 'Sell') OR " +
-                                   "(Contract = 'CE' AND StrikePrice = " + (iHigher) + " AND TransactionType = 'Sell') OR " +
-                                   "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy') " +
-                                   "AND (ExpiryDate = #" + filterConditions.ExpiryDate + "#)";
+                                "(" + enumStrategyColumns.ContractType + " = 'PE' AND " + enumStrategyColumns.StrikePrice + " = " + (iLowest) + " AND " + enumStrategyColumns.TransactionType + " = 'Buy') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'PE' AND " + enumStrategyColumns.StrikePrice + " = " + (iLower) + " AND " + enumStrategyColumns.TransactionType + " = 'Sell') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'CE' AND " + enumStrategyColumns.StrikePrice + " = " + (iHigher) + " AND " + enumStrategyColumns.TransactionType + " = 'Sell') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'CE' AND " + enumStrategyColumns.StrikePrice + " = " + (iHighest) + " AND " + enumStrategyColumns.TransactionType + " = 'Buy') " +
+                                "AND (" + enumStrategyColumns.ExpiryDate + " = #" + filterConditions.ExpiryDate + "#)";
                             }
                             else
                             {
                                 selectQuery =
-                                "(Contract = 'PE' AND StrikePrice = " + (iLowerst) + " AND TransactionType = 'Buy') OR " +
-                                "(Contract = 'PE' AND StrikePrice = " + (iLower) + " AND TransactionType = 'Sell') OR " +
-                                "(Contract = 'CE' AND StrikePrice = " + (iHigher) + " AND TransactionType = 'Sell') OR " +
-                                "(Contract = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy')";
+                                "(" + enumStrategyColumns.ContractType + " = 'PE' AND " + enumStrategyColumns.StrikePrice + " = " + (iLowest) + " AND " + enumStrategyColumns.TransactionType + " = 'Buy') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'PE' AND " + enumStrategyColumns.StrikePrice + " = " + (iLower) + " AND " + enumStrategyColumns.TransactionType + " = 'Sell') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'CE' AND " + enumStrategyColumns.StrikePrice + " = " + (iHigher) + " AND " + enumStrategyColumns.TransactionType + " = 'Sell') OR " +
+                                "(" + enumStrategyColumns.ContractType + " = 'CE' AND " + enumStrategyColumns.StrikePrice + " = " + (iHighest) + " AND " + enumStrategyColumns.TransactionType + " = 'Buy') ";
+
+                                //"(ContractType = 'PE' AND StrikePrice = " + (iLowest) + " AND TransactionType = 'Buy') OR " +
+                                //"(ContractType = 'PE' AND StrikePrice = " + (iLower) + " AND TransactionType = 'Sell') OR " +
+                                //"(ContractType = 'CE' AND StrikePrice = " + (iHigher) + " AND TransactionType = 'Sell') OR " +
+                                //"(ContractType = 'CE' AND StrikePrice = " + (iHighest) + " AND TransactionType = 'Buy')";
                             }
 
-                            DataRow[] drs = filteredDataTable.Select(selectQuery, "StrikePrice ASC");
+                            DataRow[] drs = filteredDataTable.Select(selectQuery, enumStrategyColumns.StrikePrice + " ASC");
 
-                            DataTable dt = filteredDataTable.Clone();
-
-                            //Create new datatable with name
-                            DataTable dtResult = new DataTable("dt" + filterConditions.ExpiryDate + iLowerst + iLower + iHigher + iHighest);
-                            OCHelper.AddColumnsToOutputGrid(dtResult);
-
-                            foreach (DataRow dr in drs)
+                            if (drs.Length == 4)
                             {
-                                //This is alternate code for Calculation code in AddRecordsToDataTable function in OCHelper
-                                for (int iCellCount = 9; iCellCount < dr.ItemArray.Length; iCellCount++)
+                                DataTable dt = filteredDataTable.Clone();
+
+                                //Create new datatable with name
+                                DataTable dtResult = new DataTable("dt" + filterConditions.ExpiryDate + iLowest + iLower + iHigher + iHighest);
+                                OCHelper.AddColumnsToOutputGrid(dtResult);
+
+                                foreach (DataRow dr in drs)
                                 {
-                                    dr[iCellCount] =
-                                        FO.CalcExpVal(dr["Contract"].ToString(),
-                                        dr["TransactionType"].ToString(),
-                                        Convert.ToDouble(dr["StrikePrice"]),
-                                        Convert.ToDouble(dr["Premium"]),
-                                        Convert.ToDouble(dr.Table.Columns[iCellCount].ColumnName));
+                                    //This is alternate code for Calculation code in AddRecordsToDataTable function in OCHelper
+                                    for (int iCellCount = enumStrategyColumnsCount; iCellCount < dr.ItemArray.Length; iCellCount++)
+                                    {
+                                        dr[iCellCount] =
+                                            FO.CalcExpVal(dr[enumStrategyColumns.ContractType.ToString()].ToString(),
+                                            dr[enumStrategyColumns.TransactionType.ToString()].ToString(),
+                                            Convert.ToDouble(dr[enumStrategyColumns.StrikePrice.ToString()]),
+                                            Convert.ToDouble(dr[enumStrategyColumns.Premium.ToString()]),
+                                            Convert.ToDouble(dr.Table.Columns[iCellCount].ColumnName));
+                                    }
+
+                                    dt.ImportRow(dr);
                                 }
 
-                                dt.ImportRow(dr);
-                            }
 
-
-                            for (int i = 0; i < dt.Rows.Count; i++)
-                            {
-                                double sum = 0;
-                                var strikePrice = dt.Rows[i]["StrikePrice"].ToString();
-                                //int quantity = 0;
-
-                                for (int j = 0; j < dt.Rows.Count; j++)
+                                for (int i = 0; i < dt.Rows.Count; i++)
                                 {
-                                    var rowStrikePrice = dt.Rows[j]["StrikePrice"].ToString();
+                                    double sum = 0;
+                                    var strikePrice = dt.Rows[i][enumStrategyColumns.StrikePrice.ToString()].ToString();
+                                    //int quantity = 0;
 
-                                    //if (rowStrikePrice == iMiddleSPIterator.ToString())
-                                    //{
-                                    //    sum += Convert.ToDouble(dt.Rows[j][strikePrice]) * 2;
-                                    //}
-                                    //if (rowStrikePrice == iLower.ToString() || rowStrikePrice == iHigher.ToString())
-                                    //{
-                                    sum += Convert.ToDouble(dt.Rows[j][strikePrice]);
-                                    //}
+                                    for (int j = 0; j < dt.Rows.Count; j++)
+                                    {
+                                        var rowStrikePrice = dt.Rows[j][enumStrategyColumns.StrikePrice.ToString()].ToString();
+
+                                        sum += Convert.ToDouble(dt.Rows[j][strikePrice]);
+                                    }
+
+                                    int quantity = Convert.ToInt32(dt.Rows[i][enumStrategyColumns.LotSize.ToString()]);
+                                    int newquantity = quantity;
+
+                                    dtResult.Rows.Add(new string[] {
+                                    dt.Rows[i][enumStrategyColumns.TradingSymbol.ToString()].ToString(),
+                                    dt.Rows[i][enumStrategyColumns.ContractType.ToString()].ToString(),
+                                    dt.Rows[i][enumStrategyColumns.TransactionType.ToString()].ToString(),
+                                    dt.Rows[i][enumStrategyColumns.StrikePrice.ToString()].ToString(), newquantity.ToString(),
+                                    dt.Rows[i][enumStrategyColumns.Premium.ToString()].ToString(),
+                                    Math.Round(quantity * sum, 2).ToString()});
                                 }
 
-                                int quantity = Convert.ToInt32(dt.Rows[i]["LotSize"]);
-                                int newquantity = quantity;
-                                //if (strikePrice.Equals(iMiddleSPIterator.ToString()))
-                                //    newquantity = quantity * 2;
-
-                                dtResult.Rows.Add(new string[] {
-                            dt.Rows[i]["TradingSymbol"].ToString(),
-                            dt.Rows[i]["Contract"].ToString(),
-                            dt.Rows[i]["TransactionType"].ToString(),
-                            dt.Rows[i]["StrikePrice"].ToString(),
-                            newquantity.ToString(),
-                            dt.Rows[i]["Premium"].ToString(),
-                            Math.Round(quantity*sum,2).ToString()});
-                            }
-
-                            if (dtResult.Rows.Count == 4)
-                            {
-                                //dtResult.DefaultView.Sort = "StrikePrice ASC";
-                                dataSet.Tables.Add(dtResult);
+                                if (dtResult.Rows.Count == 4)
+                                {
+                                    dataSet.Tables.Add(dtResult);
+                                }
                             }
                         }
                     }

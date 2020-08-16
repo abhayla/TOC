@@ -11,7 +11,7 @@ namespace TOC
 {
 
 
-    public partial class FilterAllStrategies
+    public partial class ProfitOnlyStrategies
     {
 
         /// <summary>

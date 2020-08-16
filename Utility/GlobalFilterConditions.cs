@@ -14,8 +14,8 @@ namespace TOC
         public GlobalFilterConditions()
         {
             Hide50MulSP = true;
-            Hide1SDSP = true;
-            Hide2SDSP = true;
+            Hide1SDSP = false;
+            Hide2SDSP = false;
         }
     }
 }
