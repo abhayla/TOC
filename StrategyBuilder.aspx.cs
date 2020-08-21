@@ -15,7 +15,9 @@ namespace TOC
         {
             if (!IsPostBack)
             {
-                DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+                //DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+                DataTable dataTable = DatabaseClass.ReadStrategyBuilderData();
+
                 OCHelper.FillAllExpiryDates(enumOCType.NIFTY.ToString(), ddlFilterExpiryDates, true);
                 if (dataTable.Rows.Count <= 0)
                     AddBlankRows(dataTable, Constants.SB_ADD_ROW_COUNT);
@@ -304,7 +306,7 @@ namespace TOC
                 DropDownList ddlStrategyList = e.Row.FindControl("ddlStrategyList") as DropDownList;
 
                 e.Row.Cells[OCHelper.GetColumnIndexByName(e.Row, enumSBColumns.CMP.ToString())].Text = dataTableForColumns.Rows[e.Row.RowIndex][dataTableForColumns.Columns.IndexOf(enumSBColumns.CMP.ToString())].ToString();
-                chkSelect.Checked = Convert.ToBoolean(dataTableForColumns.Rows[e.Row.RowIndex][dataTableForColumns.Columns.IndexOf(enumSBColumns.Select.ToString())]);
+                chkSelect.Checked = Convert.ToBoolean(dataTableForColumns.Rows[e.Row.RowIndex][dataTableForColumns.Columns.IndexOf(enumSBColumns.SelectFlg.ToString())]);
 
                 OCHelper.FillAllExpiryDates(rblOCType.SelectedValue, ddlExpiryDates, false);
                 OCHelper.FillAllStrikePrice(rblOCType.SelectedValue, ddlStrikePrice, false);
@@ -402,7 +404,7 @@ namespace TOC
                         //    MySession.Current.StrategyBuilderDt.Rows[gvRow.RowIndex][enumSBColumns.CMP.ToString()].ToString(), ddlStrategyList.SelectedValue);
 
                         //dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.CMP.ToString())] = MySession.Current.StrategyBuilderDt.Rows[gvRow.RowIndex][enumSBColumns.CMP.ToString()].ToString();
-                        dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.Select.ToString())] = chkSelect.Checked;
+                        dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.SelectFlg.ToString())] = chkSelect.Checked;
                         dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.ExpiryDate.ToString())] = ddlExpiryDates.SelectedValue;
                         dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.ContractType.ToString())] = ddlContractType.SelectedValue;
                         dataRow[dataRow.Table.Columns.IndexOf(enumSBColumns.TransactionType.ToString())] = ddlTransactionType.SelectedValue;
@@ -428,7 +430,8 @@ namespace TOC
         protected void btnSave_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
-            FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            //FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            DatabaseClass.SaveStrategyBuilder(dataTable);
             MySession.Current.StrategyBuilderDt = dataTable;
             DataTable filteredDataTable = FilterRecords();
             GridviewDataBind(filteredDataTable);
@@ -441,7 +444,7 @@ namespace TOC
             DataTable newDataTable = dataTable.Clone();
             foreach (DataRow row in dataTable.Rows)
             {
-                if (!Convert.ToBoolean(row[row.Table.Columns.IndexOf(enumSBColumns.Select.ToString())]))
+                if (!Convert.ToBoolean(row[row.Table.Columns.IndexOf(enumSBColumns.SelectFlg.ToString())]))
                 {
                     newDataTable.Rows.Add(row.ItemArray);
                 }

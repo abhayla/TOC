@@ -8,48 +8,12 @@ namespace TOC
 {
     public partial class PositionsTracker : System.Web.UI.Page
     {
-
-        //Recommendation to close an open position based on current returns and remaining time in expiry
-        //private static string NIFTY = "NIFTY";
-        //private static int NIFTY_COL_DIFF = 100;
-        //private static int NIFTY_LOT_SIZE = 75;
-
-        //private static string BANKNIFTY = "BANKNIFTY";
-        //private static int BANKNIFTY_COL_DIFF = 200;
-        //private static int BANKNIFTY_LOT_SIZE_BEF_JUL = 20;
-        //private static int BANKNIFTY_LOT_SIZE_AFT_JUL = 25;
-
-        //Gridview columns
-        //private static int DELETE_COL_INDEX = 0;
-        //private static int OC_TYPE_COL_INDEX = 1;
-        //private static int EXP_DATE_COL_INDEX = 2;
-        //private static int CONTRACT_TYP_COL_INDEX = 3;
-        //private static int TRANSTYP_COL_INDEX = 4;
-        //private static int SP_COL_INDEX = 5;
-        //private static int LOTS_COL_INDEX = 6;
-        //private static int ENTRY_PRICE_COL_INDEX = 7;
-        //private static int EXIT_PRICE_COL_INDEX = 8;
-        //private static int CMP_COL_INDEX = 9;
-        //private static int PL_UR_COL_INDEX = 10;
-        //private static int CHG_COL_INDEX = 11;
-        //private static int PL_R_COL_INDEX = 12;
-        //private static int MAX_PROFIT_COL_INDEX = 13;
-        //private static int RECOM_COL_INDEX = 14;
-        //private static int STRATEGY_COL_INDEX = 15;
-        //private static int PROFILE_COL_INDEX = 16;
-        //private static int POSITION_COL_INDEX = 17;
-        //private static int ID_COL_INDEX = 18;
-
-        //private static int MAX_ROWS_ALLOWED = 100;
-
-        //private static string PT_FILE_NAME = "PositionsTracker.csv";
-        //private static string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+                //DataTable dataTable = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+                DataTable dataTable = DatabaseClass.ReadPositionsData();
 
                 if (dataTable.Rows.Count <= 0)
                     AddBlankRows(dataTable, Constants.POS_ADD_ROW_COUNT);
@@ -81,7 +45,7 @@ namespace TOC
                 CheckBox chkSelect = e.Row.FindControl("chkSelect") as CheckBox;
 
                 //if (dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.Select.ToString())] != true)
-                chkSelect.Checked = Convert.ToBoolean(dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.Select.ToString())]);
+                chkSelect.Checked = Convert.ToBoolean(dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.SelectFlg.ToString())]);
 
                 DropDownList ddlOCType = e.Row.FindControl("ddlOCType") as DropDownList;
                 DropDownList ddlExpiryDates = e.Row.FindControl("ddlExpiryDates") as DropDownList;
@@ -91,7 +55,7 @@ namespace TOC
                 DropDownList ddlLots = e.Row.FindControl("ddlLots") as DropDownList;
                 DropDownList ddlStrategy = e.Row.FindControl("ddlStrategy") as DropDownList;
                 DropDownList ddlProfile = e.Row.FindControl("ddlProfile") as DropDownList;
-
+                TextBox txtEntryDate = e.Row.FindControl("txtEntryDate") as TextBox;
                 TextBox txtEntryPrice = e.Row.FindControl("txtEntryPrice") as TextBox;
                 TextBox txtExitPrice = e.Row.FindControl("txtExitPrice") as TextBox;
                 txtEntryPrice.Style["text-align"] = "right";
@@ -110,6 +74,7 @@ namespace TOC
                 Utility.SelectDataInCombo(ddlTransactionType, dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.TransactionType.ToString())].ToString());
                 Utility.SelectDataInCombo(ddlStrikePrice, dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.StrikePrice.ToString())].ToString());
 
+                txtEntryDate.Text = dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.EntryDate.ToString())].ToString();
                 txtEntryPrice.Text = dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.EntryPrice.ToString())].ToString();
                 txtExitPrice.Text = dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.ExitPrice.ToString())].ToString();
                 Utility.SelectDataInCombo(ddlLots, dataTable.Rows[e.Row.RowIndex][dataTable.Columns.IndexOf(enumPTColumns.Lots.ToString())].ToString());
@@ -145,7 +110,7 @@ namespace TOC
             DataTable newDataTable = dataTable.Clone();
             foreach (DataRow row in dataTable.Rows)
             {
-                if (!Convert.ToBoolean(row[dataTable.Columns.IndexOf(enumPTColumns.Select.ToString())]))
+                if (!Convert.ToBoolean(row[dataTable.Columns.IndexOf(enumPTColumns.SelectFlg.ToString())]))
                 {
                     newDataTable.Rows.Add(row.ItemArray);
                 }
@@ -175,7 +140,8 @@ namespace TOC
         protected void btnSave_Click(object sender, EventArgs e)
         {
             DataTable dataTable = SaveGridviewData();
-            FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+            //FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
+            DatabaseClass.SavePositions(dataTable);
             MySession.Current.PositionsTrackerDt = dataTable;
             DataTable filteredDataTable = FilterRecords();
             GridviewDataBind(filteredDataTable);
@@ -236,8 +202,6 @@ namespace TOC
             return strFilter;
         }
 
-
-
         private void GridviewDataBind(DataTable dataTable)
         {
             foreach (DataRow row in dataTable.Rows)
@@ -264,7 +228,7 @@ namespace TOC
                 }
 
                 if (!row[row.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())].ToString().Equals(string.Empty))
-                    row[row.Table.Columns.IndexOf(enumPTColumns.DaysToExpiry.ToString())] = DateTime.Parse(row[row.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())].ToString()).Subtract(DateTime.Now).Days;
+                    row[row.Table.Columns.IndexOf(enumPTColumns.DaysToExpiry.ToString())] = DateTime.Parse(row[row.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())].ToString()).Subtract(DateTime.Now).Days + 1;
 
                 int lotSize = 0;
                 if (row[row.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())].ToString().Equals(enumOCType.NIFTY.ToString()))
@@ -273,8 +237,6 @@ namespace TOC
                     lotSize = Constants.BANKNIFTY_LOT_SIZE;
 
                 //If current expiry date is not in the Option Chain fetched list then mark the current row position as close
-                //if (!MySession.Current.PositionsTrackerDt.Columns["Expiry Date"].ToString().Contains(row["Expiry Date"].ToString()))
-
                 if (!IsContainExpiryDate(row[row.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())].ToString()))
                 {
                     row[row.Table.Columns.IndexOf(enumPTColumns.Position.ToString())] = "Close";
@@ -328,10 +290,12 @@ namespace TOC
 
                 if (row[row.Table.Columns.IndexOf(enumPTColumns.Id.ToString())].ToString().Trim().Equals(string.Empty))
                     row[row.Table.Columns.IndexOf(enumPTColumns.Id.ToString())] = Guid.NewGuid();
+
+                if (!row[row.Table.Columns.IndexOf(enumPTColumns.EntryDate.ToString())].ToString().Trim().Equals(string.Empty))
+                    row[row.Table.Columns.IndexOf(enumPTColumns.DaysHeld.ToString())] = Math.Abs(DateTime.Parse(row[row.Table.Columns.IndexOf(enumPTColumns.EntryDate.ToString())].ToString()).Subtract(DateTime.Now).Days) + 1;
+
             }
 
-            //MySession.Current.PositionsTrackerDt = dataTable;
-            //gvPosTracker.Columns
             gvPosTracker.DataSource = dataTable;
             gvPosTracker.DataBind();
         }
@@ -346,16 +310,12 @@ namespace TOC
 
             for (int iCount = 0; iCount < rowstoadd; iCount++)
             {
-                //dataTable.Rows.Add(false, NIFTY, OCHelper.DefaultExpDate(NIFTY), "CE", "SELL", OCHelper.DefaultSP(NIFTY),
-                //    "1", "0", "0", "0", "0", "0", "0", "0", "", "Butterfly", "Abhay", "Open", Guid.NewGuid(), "0", "0", "09/07/2020");
-                //dataTable.Rows.Add(dataTable.NewRow());
                 PositionsClass.AddBlankRows(dataTable);
             }
         }
 
         private DataTable SaveGridviewData()
         {
-            //DataTable dataTable = FileClass.AddPTColumns();
             DataTable dataTable = MySession.Current.PositionsTrackerDt;
 
             foreach (DataRow dataRow in dataTable.Rows)
@@ -370,6 +330,7 @@ namespace TOC
                         DropDownList ddlContractType = gvRow.FindControl("ddlContractType") as DropDownList;
                         DropDownList ddlTransactionType = gvRow.FindControl("ddlTransactionType") as DropDownList;
                         DropDownList ddlStrikePrice = gvRow.FindControl("ddlStrikePrice") as DropDownList;
+                        TextBox txtEntryDate = gvRow.FindControl("txtEntryDate") as TextBox;
                         TextBox txtEntryPrice = gvRow.FindControl("txtEntryPrice") as TextBox;
                         TextBox txtExitPrice = gvRow.FindControl("txtExitPrice") as TextBox;
                         DropDownList ddlLots = gvRow.FindControl("ddlLots") as DropDownList;
@@ -381,7 +342,7 @@ namespace TOC
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.ChgPer.ToString())] = "0";
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.RealisedPL.ToString())] = "0";
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.MaxProfit.ToString())] = "0";
-                        dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.Select.ToString())] = chkSelect.Checked;
+                        dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.SelectFlg.ToString())] = chkSelect.Checked;
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.OCType.ToString())] = ddlOCType.SelectedValue;
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.ExpiryDate.ToString())] = ddlExpiryDates.SelectedValue;
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.ContractType.ToString())] = ddlContractType.SelectedValue;
@@ -392,6 +353,7 @@ namespace TOC
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.ExitPrice.ToString())] = txtExitPrice.Text;
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.Strategy.ToString())] = ddlStrategy.SelectedValue;
                         dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.Profile.ToString())] = ddlProfile.SelectedValue;
+                        dataRow[dataRow.Table.Columns.IndexOf(enumPTColumns.EntryDate.ToString())] = txtEntryDate.Text;
                     }
                 }
             }

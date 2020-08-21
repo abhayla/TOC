@@ -10,7 +10,8 @@ namespace TOC.Strategy
         public static DataTable AddPTColumns()
         {
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add(enumPTColumns.Select.ToString(), typeof(bool));
+            dataTable.Columns.Add(enumPTColumns.Id.ToString(), typeof(string));
+            dataTable.Columns.Add(enumPTColumns.SelectFlg.ToString(), typeof(bool));
             dataTable.Columns.Add(enumPTColumns.OCType.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.ExpiryDate.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.ContractType.ToString(), typeof(string));
@@ -28,39 +29,78 @@ namespace TOC.Strategy
             dataTable.Columns.Add(enumPTColumns.Strategy.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.Profile.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.Position.ToString(), typeof(string));
-            dataTable.Columns.Add(enumPTColumns.Id.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.DaysToExpiry.ToString(), typeof(int));
             dataTable.Columns.Add(enumPTColumns.DaysHeld.ToString(), typeof(int));
+            dataTable.Columns.Add(enumPTColumns.UserId.ToString(), typeof(string));
             dataTable.Columns.Add(enumPTColumns.EntryDate.ToString(), typeof(string));
+            dataTable.Columns.Add(enumPTColumns.ExitDate.ToString(), typeof(string));
             return dataTable;
         }
 
         public static void AddBlankRows(DataTable dataTable)
         {
             dataTable.Rows.Add(
+                    Guid.NewGuid(),                                             //Id,
                     false,                                                      // Select,
                     enumOCType.NIFTY.ToString(),                                //OCType,
                     OCHelper.DefaultExpDate(enumOCType.NIFTY.ToString()),       //ExpiryDate,
                     "CE",                                                       //ContractType,
                     "SELL",                                                     //TransactionType,
                     OCHelper.DefaultSP(enumOCType.NIFTY.ToString()),            //StrikePrice,
-                    1,                                      //Lots,
-                    0,                                      //EntryPrice,
-                    0,                                      //ExitPrice,
-                    0,                                      //CMP,
-                    0,                                      //UnRealisedPL,
-                    0,                                      //ChgPer,
-                    0,                                      //RealisedPL,
-                    0,                                      //MaxProfit,
-                    string.Empty,                           //Recommendation,
-                    "Butterfly",                            //Strategy,
-                    "Abhay",                                //Profile,
-                    "Open",                                 //Position,
-                    Guid.NewGuid(),                         //Id,
-                    0,                                      //DaysToExpiry,
-                    0,                                      //DaysHeld,
-                    DateTime.Now.Date                       //EntryDate
+                    1,                                                          //Lots,
+                    0,                                                          //EntryPrice,
+                    0,                                                          //ExitPrice,
+                    0,                                                          //CMP,
+                    0,                                                          //UnRealisedPL,
+                    0,                                                          //ChgPer,
+                    0,                                                          //RealisedPL,
+                    0,                                                          //MaxProfit,
+                    string.Empty,                                               //Recommendation,
+                    "Butterfly",                                                //Strategy,
+                    "Abhay",                                                    //Profile,
+                    "Open",                                                     //Position,
+                    0,                                                          //DaysToExpiry,
+                    0,                                                          //DaysHeld,
+                    "DA1707",                                                   //UserId,
+                    DateTime.Now.ToString("dd-MMM-yyyy"),                       //EntryDate
+                    null                                                        //ExitDate
                 );
+        }
+
+        public static DataTable ConvertToRegularPTTable(DataTable sourceDataTable)
+        {
+            DataTable resultTable = PositionsClass.AddPTColumns();
+            foreach (DataRow dataRowInput in sourceDataTable.Rows)
+            {
+                DataRow newDataRow = resultTable.NewRow();
+                newDataRow[enumPTColumns.Id.ToString()] = dataRowInput[enumPTColumns.Id.ToString()].ToString();
+                newDataRow[enumPTColumns.SelectFlg.ToString()] = false;
+                newDataRow[enumPTColumns.OCType.ToString()] = dataRowInput[enumPTColumns.OCType.ToString()].ToString();
+                newDataRow[enumPTColumns.ExpiryDate.ToString()] = dataRowInput[enumPTColumns.ExpiryDate.ToString()].ToString();
+                newDataRow[enumPTColumns.ContractType.ToString()] = dataRowInput[enumPTColumns.ContractType.ToString()].ToString();
+                newDataRow[enumPTColumns.TransactionType.ToString()] = dataRowInput[enumPTColumns.TransactionType.ToString()].ToString();
+                newDataRow[enumPTColumns.StrikePrice.ToString()] = dataRowInput[enumPTColumns.StrikePrice.ToString()].ToString();
+                newDataRow[enumPTColumns.Lots.ToString()] = dataRowInput[enumPTColumns.Lots.ToString()].ToString();
+                newDataRow[enumPTColumns.EntryPrice.ToString()] = dataRowInput[enumPTColumns.EntryPrice.ToString()].ToString();
+                newDataRow[enumPTColumns.ExitPrice.ToString()] = dataRowInput[enumPTColumns.ExitPrice.ToString()].ToString();
+                newDataRow[enumPTColumns.CMP.ToString()] = 0;
+                newDataRow[enumPTColumns.UnRealisedPL.ToString()] = 0;
+                newDataRow[enumPTColumns.ChgPer.ToString()] = 0;
+                newDataRow[enumPTColumns.RealisedPL.ToString()] = 0;
+                newDataRow[enumPTColumns.MaxProfit.ToString()] = 0;
+                newDataRow[enumPTColumns.Recommendation.ToString()] = dataRowInput[enumPTColumns.Recommendation.ToString()].ToString();
+                newDataRow[enumPTColumns.Strategy.ToString()] = dataRowInput[enumPTColumns.Strategy.ToString()].ToString();
+                newDataRow[enumPTColumns.Profile.ToString()] = dataRowInput[enumPTColumns.Profile.ToString()].ToString();
+                newDataRow[enumPTColumns.Position.ToString()] = dataRowInput[enumPTColumns.Position.ToString()].ToString();
+                newDataRow[enumPTColumns.DaysToExpiry.ToString()] = 0;
+                newDataRow[enumPTColumns.DaysHeld.ToString()] = 0;
+                newDataRow[enumPTColumns.UserId.ToString()] = dataRowInput[enumPTColumns.UserId.ToString()].ToString();
+                newDataRow[enumPTColumns.EntryDate.ToString()] = dataRowInput[enumPTColumns.EntryDate.ToString()].ToString();
+                newDataRow[enumPTColumns.ExitDate.ToString()] = dataRowInput[enumPTColumns.ExitDate.ToString()].ToString();
+                resultTable.Rows.Add(newDataRow);
+            }
+
+            return resultTable;
         }
 
         public static void AddPTRows(DataTable dataPTTable)
@@ -86,7 +126,7 @@ namespace TOC.Strategy
                 if (IsAddRow)
                 {
                     DataRow newDataRow = dataTable.NewRow();
-                    newDataRow[enumPTColumns.Select.ToString()] = false;
+                    newDataRow[enumPTColumns.SelectFlg.ToString()] = false;
                     newDataRow[enumPTColumns.OCType.ToString()] = dataRowInput[enumPTColumns.OCType.ToString()].ToString();
                     newDataRow[enumPTColumns.ExpiryDate.ToString()] = dataRowInput[enumPTColumns.ExpiryDate.ToString()].ToString();
                     newDataRow[enumPTColumns.ContractType.ToString()] = dataRowInput[enumPTColumns.ContractType.ToString()].ToString();
@@ -107,8 +147,8 @@ namespace TOC.Strategy
                     newDataRow[enumPTColumns.Id.ToString()] = Guid.NewGuid();
                     newDataRow[enumPTColumns.DaysToExpiry.ToString()] = 0;
                     newDataRow[enumPTColumns.DaysHeld.ToString()] = 0;
-                    newDataRow[enumPTColumns.EntryDate.ToString()] = DateTime.Now.Date;
-
+                    newDataRow[enumPTColumns.EntryDate.ToString()] = DateTime.Now.ToString("dd-MMM-yyyy");
+                    newDataRow[enumPTColumns.ExitDate.ToString()] = null;
                     dataTable.Rows.Add(newDataRow);
                 }
                 FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
@@ -135,7 +175,7 @@ namespace TOC.Strategy
             if (IsAddRow)
             {
                 DataRow newDataRow = dataTable.NewRow();
-                newDataRow[enumPTColumns.Select.ToString()] = false;
+                newDataRow[enumPTColumns.SelectFlg.ToString()] = false;
                 newDataRow[enumPTColumns.OCType.ToString()] = oCType;
                 newDataRow[enumPTColumns.ExpiryDate.ToString()] = expiryDate;
                 newDataRow[enumPTColumns.ContractType.ToString()] = contractType;
@@ -156,8 +196,8 @@ namespace TOC.Strategy
                 newDataRow[enumPTColumns.Id.ToString()] = Guid.NewGuid();
                 newDataRow[enumPTColumns.DaysToExpiry.ToString()] = 0;
                 newDataRow[enumPTColumns.DaysHeld.ToString()] = 0;
-                newDataRow[enumPTColumns.EntryDate.ToString()] = DateTime.Now.Date;
-
+                newDataRow[enumPTColumns.EntryDate.ToString()] = DateTime.Now.ToString("dd-MMM-yyyy");
+                newDataRow[enumPTColumns.ExitDate.ToString()] = null;
                 dataTable.Rows.Add(newDataRow);
 
                 FileClass.WriteDataTable(dataTable, Constants.MYFILES_FOLDER_PATH + Constants.PT_FILE_NAME);
@@ -167,7 +207,7 @@ namespace TOC.Strategy
 
     enum enumPTColumns
     {
-        Select,
+        SelectFlg,
         OCType,
         ExpiryDate,
         ContractType,
@@ -188,7 +228,9 @@ namespace TOC.Strategy
         Id,
         DaysToExpiry,
         DaysHeld,
-        EntryDate
+        EntryDate,
+        ExitDate,
+        UserId
     }
 
 }

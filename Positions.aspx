@@ -113,7 +113,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Entry Date">
                     <ItemTemplate>
-                        <asp:TextBox runat="server" ID="txtEntryDate" Width="130" TextMode="Date" ToolTip="yyyy-MM-dd"></asp:TextBox>
+                        <asp:TextBox runat="server" ID="txtEntryDate" Width="130" TextMode="Date" ToolTip="dd-MMM-yyyy"></asp:TextBox>
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Entry Price" ItemStyle-Width="50">

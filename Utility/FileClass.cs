@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.IO;
+using System.Web.UI.WebControls;
+using TOC.Strategy;
+using MySql.Data.MySqlClient;
 
 namespace TOC
 {
@@ -12,6 +15,8 @@ namespace TOC
         {
             try
             {
+                //DatabaseClass.UpsertPositions(sourceTable, filePath);
+                //UpsertStrategyBuilder(sourceTable, filePath);
                 //Clear the file before writing new content
                 System.IO.File.WriteAllText(filePath, string.Empty);
 
@@ -105,69 +110,5 @@ namespace TOC
             }
             return withoutBlankRowsdt;
         }
-
-        //public static DataTable AddPTColumns()
-        //{
-        //    DataTable dataTable = new DataTable();
-        //    dataTable.Columns.Add("Delete");
-        //    dataTable.Columns.Add("OC Type");
-        //    dataTable.Columns.Add("Expiry Date");
-        //    dataTable.Columns.Add("Contract Type");
-        //    dataTable.Columns.Add("Transaction Type");
-        //    dataTable.Columns.Add("Strike Price");
-        //    dataTable.Columns.Add("Lots");
-        //    dataTable.Columns.Add("Entry Price");
-        //    dataTable.Columns.Add("Exit Price");
-        //    dataTable.Columns.Add("CMP");
-        //    dataTable.Columns.Add("P/L");
-        //    dataTable.Columns.Add("Chg %");
-        //    dataTable.Columns.Add("Realised P/L");
-        //    dataTable.Columns.Add("Max Profit");
-        //    dataTable.Columns.Add("Recommendation");
-        //    dataTable.Columns.Add("Strategy");
-        //    dataTable.Columns.Add("Profile");
-        //    dataTable.Columns.Add("Position");
-        //    dataTable.Columns.Add("Id");
-        //    dataTable.Columns.Add("Days To Expiry");
-        //    dataTable.Columns.Add("Days Held");
-        //    dataTable.Columns.Add("Entry Date");
-        //    return dataTable;
-        //}
-
-        //public static DataTable AddSBColumns()
-        //{
-        //    DataTable dataTable = new DataTable();
-        //    dataTable.Columns.Add("Delete");
-        //    dataTable.Columns.Add("Expiry Date");
-        //    dataTable.Columns.Add("Contract Type");
-        //    dataTable.Columns.Add("Transaction Type");
-        //    dataTable.Columns.Add("Strike Price");
-        //    dataTable.Columns.Add("CMP");
-        //    //dataTable.Columns.Add("Premium");
-        //    dataTable.Columns.Add("Lots");
-        //    dataTable.Columns.Add("11");
-        //    dataTable.Columns.Add("12");
-        //    dataTable.Columns.Add("13");
-        //    dataTable.Columns.Add("14");
-        //    dataTable.Columns.Add("15");
-        //    dataTable.Columns.Add("16");
-        //    dataTable.Columns.Add("17");
-        //    dataTable.Columns.Add("18");
-        //    dataTable.Columns.Add("19");
-        //    dataTable.Columns.Add("20");
-        //    dataTable.Columns.Add("1");
-        //    dataTable.Columns.Add("21");
-        //    dataTable.Columns.Add("22");
-        //    dataTable.Columns.Add("23");
-        //    dataTable.Columns.Add("24");
-        //    dataTable.Columns.Add("25");
-        //    dataTable.Columns.Add("26");
-        //    dataTable.Columns.Add("27");
-        //    dataTable.Columns.Add("28");
-        //    dataTable.Columns.Add("29");
-        //    dataTable.Columns.Add("30");
-        //    return dataTable;
-        //}
-
     }
 }

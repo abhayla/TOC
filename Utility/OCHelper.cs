@@ -227,24 +227,36 @@ namespace TOC
             {
                 if (MySession.Current.RecordsNifty == null)
                 {
-                    JObject jObject = DownloadJSONDataFromURL(ocType);
-                    if (jObject != null && !jObject.ToString().Equals("{}"))
-                    {
-                        recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-                        MySession.Current.RecordsNifty = recordsObject;
-                    }
+                    //JObject jObject = DownloadJSONDataFromURL(ocType);
+                    //if (jObject == null || jObject.ToString().Equals("{}"))
+                    //{
+                    //    jObject = GetJObjectFromDB(ocType);
+                    //}
+                    //recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                    //MySession.Current.RecordsNifty = recordsObject;
+
+                    recordsObject = UpdateRecordsObject(ocType);
                 }
                 else
                 {
                     recordsObject = MySession.Current.RecordsNifty;
                     if (FetchOCAgain(recordsObject))
                     {
-                        JObject jObject = DownloadJSONDataFromURL(ocType);
-                        if (jObject != null && !jObject.ToString().Equals("{}"))
-                        {
-                            recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-                            MySession.Current.RecordsNifty = recordsObject;
-                        }
+                        //JObject jObject = DownloadJSONDataFromURL(ocType);
+                        //if (jObject != null && !jObject.ToString().Equals("{}"))
+                        //{
+                        //    recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                        //    MySession.Current.RecordsNifty = recordsObject;
+                        //}
+                        //JObject jObject = DownloadJSONDataFromURL(ocType);
+                        //if (jObject == null || jObject.ToString().Equals("{}"))
+                        //{
+                        //    jObject = GetJObjectFromDB(ocType);
+                        //}
+                        //recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                        //MySession.Current.RecordsNifty = recordsObject;
+
+                        recordsObject = UpdateRecordsObject(ocType);
                     }
                 }
 
@@ -256,30 +268,61 @@ namespace TOC
             {
                 if (MySession.Current.RecordsBankNifty == null)
                 {
-                    JObject jObject = DownloadJSONDataFromURL(ocType);
-                    if (jObject != null && !jObject.ToString().Equals("{}"))
-                    {
-                        recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-                        MySession.Current.RecordsBankNifty = recordsObject;
-                    }
+                    //JObject jObject = DownloadJSONDataFromURL(ocType);
+                    //if (jObject != null && !jObject.ToString().Equals("{}"))
+                    //{
+                    //    recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                    //    MySession.Current.RecordsBankNifty = recordsObject;
+                    //}
+
+                    recordsObject = UpdateRecordsObject(ocType);
                 }
                 else
                 {
                     recordsObject = MySession.Current.RecordsBankNifty;
                     if (FetchOCAgain(recordsObject))
                     {
-                        JObject jObject = DownloadJSONDataFromURL(ocType);
-                        if (jObject != null && !jObject.ToString().Equals("{}"))
-                        {
-                            recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
-                            MySession.Current.RecordsBankNifty = recordsObject;
-                        }
+                        //JObject jObject = DownloadJSONDataFromURL(ocType);
+                        //if (jObject != null && !jObject.ToString().Equals("{}"))
+                        //{
+                        //    recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+                        //    MySession.Current.RecordsBankNifty = recordsObject;
+                        //}
+
+                        recordsObject = UpdateRecordsObject(ocType);
                     }
                 }
 
                 if (MySession.Current.RecordsBankNifty != null)
                     MySession.Current.RecordsObject = MySession.Current.RecordsBankNifty;
             }
+            return recordsObject;
+        }
+
+        private static Records UpdateRecordsObject(string ocType)
+        {
+            Records recordsObject = new Records();
+            JObject jObject = DownloadJSONDataFromURL(ocType);
+            if (jObject == null || jObject.ToString().Equals("{}"))
+            {
+                DataTable dataTable = DatabaseClass.ReadOptionsChain(ocType);
+                jObject = (JObject)dataTable.Rows[0][1];
+            }
+            else
+            {
+                DatabaseClass.UpdateOptionsChain(ocType, jObject["records"].ToString());
+            }
+            recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
+            
+            if (ocType.Equals(enumOCType.NIFTY.ToString()))
+            {
+                MySession.Current.RecordsNifty = recordsObject;
+            }
+            if (ocType.Equals(enumOCType.BANKNIFTY.ToString()))
+            {
+                MySession.Current.RecordsBankNifty = recordsObject;
+            }
+
             return recordsObject;
         }
 
@@ -894,6 +937,6 @@ namespace TOC
         PEExtrinsicValuePerDay,
         SD,
         CEDelta,
-        PEDelta,
+        PEDelta
     }
 }

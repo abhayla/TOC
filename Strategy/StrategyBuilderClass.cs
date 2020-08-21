@@ -7,7 +7,7 @@ namespace TOC.Strategy
         public static DataTable AddSBColumns()
         {
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add(enumSBColumns.Select.ToString(), typeof(bool));
+            dataTable.Columns.Add(enumSBColumns.SelectFlg.ToString(), typeof(bool));
             dataTable.Columns.Add(enumSBColumns.ExpiryDate.ToString(), typeof(string));
             dataTable.Columns.Add(enumSBColumns.ContractType.ToString(), typeof(string));
             dataTable.Columns.Add(enumSBColumns.TransactionType.ToString(), typeof(string));
@@ -29,7 +29,8 @@ namespace TOC.Strategy
 
         public static void AddSBRows(DataTable dataSBTable)
         {
-            DataTable dataTableFromFile = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            //DataTable dataTableFromFile = FileClass.ReadCsvFile(Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            DataTable dataTableFromFile = DatabaseClass.ReadStrategyBuilderData();
             bool IsAddRow = true;
 
             foreach (DataRow dataRowInput in dataSBTable.Rows)
@@ -50,7 +51,7 @@ namespace TOC.Strategy
                 if (IsAddRow)
                 {
                     DataRow newDataRow = dataTableFromFile.NewRow();
-                    newDataRow[enumSBColumns.Select.ToString()] = false;
+                    newDataRow[enumSBColumns.SelectFlg.ToString()] = false;
                     newDataRow[enumSBColumns.ExpiryDate.ToString()] = dataRowInput[enumSBColumns.ExpiryDate.ToString()].ToString();
                     newDataRow[enumSBColumns.ContractType.ToString()] = dataRowInput[enumSBColumns.ContractType.ToString()].ToString();
                     newDataRow[enumSBColumns.TransactionType.ToString()] = dataRowInput[enumSBColumns.TransactionType.ToString()].ToString();
@@ -79,13 +80,14 @@ namespace TOC.Strategy
                     dataTableFromFile.Rows.Add(newDataRow);
                 }
             }
-            FileClass.WriteDataTable(dataTableFromFile, Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            //FileClass.WriteDataTable(dataTableFromFile, Constants.MYFILES_FOLDER_PATH + Constants.SB_FILE_NAME);
+            DatabaseClass.SaveStrategyBuilder(dataTableFromFile);
         }
     }
 
     enum enumSBColumns
     {
-        Select,
+        SelectFlg,
         ExpiryDate,
         ContractType,
         TransactionType,
@@ -94,6 +96,7 @@ namespace TOC.Strategy
         DataSource,
         CMP,
         StrategyName,
+        UserId,
         Id
     }
 }
