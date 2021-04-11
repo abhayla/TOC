@@ -184,7 +184,7 @@
     <form runat="server">
         <div>
             <ul id="nav">
-                <li><a href="OptionChain.aspx">Option Chain</a>
+                <li><a href="#">Option Chain</a>
                     <ul>
                         <li><a href="NiftyOptionChain.aspx">Nifty Option Chain</a></li>
                         <li><a href="BankNiftyOptionChain.aspx">BankNifty Option Chain</a></li>
@@ -230,12 +230,7 @@
                         </li>
                     </ul>
                 </li>
-                <li><a href="BasketOrder.aspx">Place Orders</a>
-                    <ul>
-                        <li><a href="Positions.aspx">Positions</a></li>
-                        <li><a href="Trades.aspx">Trades</a></li>
-                    </ul>
-                </li>
+                <li><a href="Positions.aspx">Positions</a></li>
                 <li><a href="CompareOptions.aspx">Compare Options</a></li>
                 <li><a href="ReadFiles.aspx">Read Files</a></li>
                 <li><a href="Settings.aspx">Settings</a></li>

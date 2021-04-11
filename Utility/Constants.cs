@@ -7,7 +7,7 @@ namespace TOC
 {
     public class Constants
     {
-        public const string CONNECTION_STRING = "Server=sql12.freemysqlhosting.net;Database=sql12360617;Uid=sql12360617;Pwd=Q1erBBuEKa;Convert Zero Datetime=True";
+        public const string CONNECTION_STRING = "Server=remotemysql.com;Database=xhKg6X3Og7;Uid=xhKg6X3Og7;Pwd=yz055y5WpE;Convert Zero Datetime=True";
 
         public const string MYFILES_FOLDER_PATH = "C:\\Myfiles\\";
         public const string SB_FILE_NAME = "StrategyBuilder.csv";

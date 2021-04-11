@@ -310,7 +310,7 @@ namespace TOC
             }
             else
             {
-                DatabaseClass.UpdateOptionsChain(ocType, jObject["records"].ToString());
+                DatabaseClass.UpdateOptionsChainAsync(ocType, jObject["records"].ToString());
             }
             recordsObject = JsonConvert.DeserializeObject<Records>(jObject["records"].ToString());
             

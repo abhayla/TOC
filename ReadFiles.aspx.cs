@@ -19,9 +19,9 @@ namespace TOC
         private static string ORDERS_FILE_NAME = "orders.csv";
         private static string MY_ORDERS_FILE_NAME = "myorders.csv";
         private static string ORDER_TRACKER_FILE_NAME = "OrderTracker.csv";
-        private static string ORDER_TRACKER_WEEKLY_FILE_NAME = "OrderTrackerWeekly.csv";
-        private static string ORDER_TRACKER_MONTHLY_FILE_NAME = "OrderTrackerMonthly.csv";
-        private static string ORDER_TRACKER_YEARLY_FILE_NAME = "OrderTrackerYearly.csv";
+        //private static string ORDER_TRACKER_WEEKLY_FILE_NAME = "OrderTrackerWeekly.csv";
+        //private static string ORDER_TRACKER_MONTHLY_FILE_NAME = "OrderTrackerMonthly.csv";
+        //private static string ORDER_TRACKER_YEARLY_FILE_NAME = "OrderTrackerYearly.csv";
         private static string LOG_FILE_NAME = "LogFile.csv";
         private static string GROUPS_AND_CHANNELS = "groupschannels.csv";
         private static string ORDERS_FILE_PATH = "C:\\autotrader\\data\\order\\" + ORDERS_FILE_NAME;

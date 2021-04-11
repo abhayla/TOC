@@ -5,6 +5,7 @@ using System.Text;
 using MySql.Data.MySqlClient;
 using System.Data;
 using TOC.Strategy;
+using System.Threading.Tasks;
 
 namespace TOC
 {
@@ -42,7 +43,7 @@ namespace TOC
             return dataTable;
         }
 
-        public static void UpdateOptionsChain(string ocType, string indexType)
+        public static void UpdateOptionsChainAsync(string ocType, string indexType)
         {
             StringBuilder sbSqlQuery = new StringBuilder();
             List<string> sqlQueryList = new List<string>();
@@ -58,7 +59,7 @@ namespace TOC
                 using (MySqlCommand myCmd = new MySqlCommand(sbSqlQuery.ToString(), sqlConnection))
                 {
                     myCmd.CommandType = CommandType.Text;
-                    myCmd.ExecuteNonQuery();
+                    myCmd.ExecuteNonQueryAsync();
                 }
             }
         }
